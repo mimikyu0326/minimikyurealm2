@@ -2,8 +2,7 @@
 // MINIMIKYU REALM - MAIN CLIENT ENTRY POINT & SCREEN REGISTRATION
 // =========================================================
 
-import { initializeInputLock } from './game_plugins/inputLock';
-import { handleServerEvents } from './event_control/maintenance';
+import { initializeInputLock, handleServerEvents } from './gameUtils';
 import { GameStateService } from './services/GameStateService';
 import { AudioService } from './services/AudioService';
 import { UIService } from './services/UIService';

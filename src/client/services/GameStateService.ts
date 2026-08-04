@@ -5,7 +5,7 @@
 export type JobClass = 'WARRIOR' | 'MAGE' | 'ARCHER' | 'SAMURAI';
 export type GenderType = 'MALE' | 'FEMALE';
 export type RarityType = 'common' | 'rare' | 'epic' | 'legendary' | 'mythic' | 'divine';
-export type ItemType = 'weapon' | 'armor' | 'rune' | 'consumable' | 'skill' | 'accessory' | 'companion' | 'cutscene' | 'unique_power' | 'mount';
+export type ItemType = 'weapon' | 'armor' | 'rune' | 'consumable' | 'skill' | 'accessory' | 'companion' | 'cutscene' | 'unique_power' | 'mount' | 'porter';
 export type ElementType = 'fire' | 'lightning' | 'nature' | 'none' | 'ice' | 'shadow' | 'divine';
 export type SkillId = 'spinning_stone' | 'flaming_field' | 'necromancer' | 'acid_rain' | 'cyborg' | 'teleporter' | 'samurai_slash';
 export type CutsceneId = 'shadow_arise' | 'getsuga_tensho' | 'i_am_atomic';
@@ -362,6 +362,7 @@ export class GameStateService {
     equippedPets: [],
     equippedCutscene: null,
     equippedMount: null,
+    equippedPorter: null,
     isWeaponLocked: false,
     isArmorLocked: false,
     isRuneLocked: false,
@@ -369,6 +370,7 @@ export class GameStateService {
     isPetLocked: false,
     isCutsceneLocked: false,
     isMountLocked: false,
+    isPorterLocked: false,
     idleVault: {
       accumulatedExp: 0,
       accumulatedGold: 0,
@@ -720,6 +722,7 @@ export class GameStateService {
       equippedPets: [],
       equippedCutscene: null,
       equippedMount: null,
+      equippedPorter: null,
       isWeaponLocked: false,
       isArmorLocked: false,
       isRuneLocked: false,
@@ -727,6 +730,7 @@ export class GameStateService {
       isPetLocked: false,
       isCutsceneLocked: false,
       isMountLocked: false,
+      isPorterLocked: false,
       isAutoAllocateStats: false,
       idleVault: {
         accumulatedExp: 0,

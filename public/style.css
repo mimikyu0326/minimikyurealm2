@@ -1,0 +1,378 @@
+/* =========================================================
+   SPATIAL UI DESIGN SYSTEM - VISIONOS 3D DEPTH & GLASSMORPHISM
+   ========================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Orbitron:wght@700;900&family=Outfit:wght@400;600;800;900&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap');
+
+:root {
+  --spatial-perspective: 1200px;
+  --spatial-glass-bg: rgba(15, 23, 42, 0.88);
+  --spatial-border: rgba(56, 189, 248, 0.45);
+  --spatial-shadow: 0 35px 70px -15px rgba(0, 0, 0, 0.85), 0 0 35px rgba(56, 189, 248, 0.3);
+}
+
+html, body {
+  font-family: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  perspective: var(--spatial-perspective);
+  background-color: #090d16;
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  touch-action: manipulation;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.title-font {
+  font-family: 'Orbitron', 'Cinzel', sans-serif;
+  letter-spacing: 0.05em;
+}
+
+/* Glowing Icon Emblem Ring */
+.game-icon-glow {
+  box-shadow: 0 0 25px rgba(52, 211, 153, 0.8), 0 0 50px rgba(16, 185, 129, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.4);
+  animation: pulse-icon-glow 3s infinite ease-in-out;
+}
+
+@keyframes pulse-icon-glow {
+  0%, 100% { transform: scale(1) rotate(0deg); box-shadow: 0 0 25px rgba(52, 211, 153, 0.8), 0 0 50px rgba(16, 185, 129, 0.5); }
+  50% { transform: scale(1.04) rotate(2deg); box-shadow: 0 0 35px rgba(52, 211, 153, 1), 0 0 70px rgba(16, 185, 129, 0.8); }
+}
+
+.aura-ring-spin {
+  position: absolute;
+  inset: -6px;
+  border-radius: 9999px;
+  border: 2px dashed rgba(52, 211, 153, 0.7);
+  animation: spin-ring 12s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes spin-ring {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Spatial Floating Glass Panels */
+.glass-panel, .spatial-panel {
+  background: var(--spatial-glass-bg);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1.5px solid var(--spatial-border);
+  box-shadow: var(--spatial-shadow);
+  transform-style: preserve-3d;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease;
+}
+
+.glass-panel:hover, .spatial-panel:hover {
+  border-color: rgba(52, 211, 153, 0.85);
+  box-shadow: 0 45px 90px -20px rgba(0, 0, 0, 0.9), 0 0 50px rgba(16, 185, 129, 0.5);
+}
+
+/* Spatial Modal Windows with 3D Depth */
+.spatial-window {
+  transform: translateZ(50px);
+  box-shadow: 0 60px 120px -25px rgba(0, 0, 0, 0.95), 0 0 60px rgba(16, 185, 129, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  animation: spatial-pop-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes spatial-pop-in {
+  0% { opacity: 0; transform: scale(0.82) translateZ(-120px) translateY(40px); }
+  100% { opacity: 1; transform: scale(1) translateZ(50px) translateY(0); }
+}
+
+/* Spatial Interactive Buttons & Items */
+button, .item-slot, .tab-btn {
+  transform-style: preserve-3d;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+}
+
+button:hover, .item-slot:hover, .tab-btn:hover {
+  transform: translateY(-4px) translateZ(20px) scale(1.04);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(16, 185, 129, 0.45);
+}
+
+button:active, .item-slot:active, .tab-btn:active {
+  transform: translateY(1px) translateZ(8px) scale(0.97);
+}
+
+/* Glow Text Utility */
+.emerald-glow-text {
+  text-shadow: 0 0 25px rgba(52, 211, 153, 0.8), 0 0 45px rgba(16, 185, 129, 0.5);
+}
+
+/* Float Animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg) translateZ(10px); }
+  50% { transform: translateY(-8px) rotate(1deg) translateZ(25px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Rarity Item Borders & Spatial Shadows */
+.item-slot.common { border-color: #9ca3af; }
+.item-slot.rare { border-color: #60a5fa; box-shadow: 0 0 20px rgba(96, 165, 250, 0.5), inset 0 0 12px rgba(96, 165, 250, 0.3); }
+.item-slot.legendary { border-color: #fbbf24; box-shadow: 0 0 25px rgba(251, 191, 36, 0.7), inset 0 0 16px rgba(251, 191, 36, 0.4); }
+.item-slot.mythic { border-color: #ec4899; box-shadow: 0 0 30px rgba(236, 72, 153, 0.9), inset 0 0 20px rgba(236, 72, 153, 0.6); animation: pulse-mythic 2s infinite ease-in-out; }
+
+@keyframes pulse-mythic {
+  0%, 100% { box-shadow: 0 0 20px rgba(236, 72, 153, 0.7), inset 0 0 12px rgba(236, 72, 153, 0.4); }
+  50% { box-shadow: 0 0 35px rgba(244, 114, 182, 1), inset 0 0 22px rgba(244, 114, 182, 0.8); }
+}
+
+/* Floating Level Up Text */
+.level-up-float-text {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  color: #fbbf24;
+  font-weight: 900;
+  font-size: 1.6rem;
+  text-shadow: 0 0 20px rgba(251, 191, 36, 1), 0 0 35px rgba(234, 179, 8, 1);
+  pointer-events: none;
+  animation: float-level-up 1.2s ease-out forwards;
+  z-index: 100;
+}
+
+@keyframes float-level-up {
+  0% { opacity: 0; transform: translate(-50%, 0) scale(0.5) translateZ(0); }
+  30% { opacity: 1; transform: translate(-50%, -35px) scale(1.35) translateZ(60px); }
+  100% { opacity: 0; transform: translate(-50%, -75px) scale(1) translateZ(100px); }
+}
+
+@keyframes shootingStar {
+  0% { transform: translateX(-100vw) translateY(50vh) rotate(-35deg) scaleX(0.2); opacity: 0; }
+  50% { transform: translateX(0) translateY(0) rotate(-35deg) scaleX(2.5); opacity: 1; }
+  100% { transform: translateX(100vw) translateY(-50vh) rotate(-35deg) scaleX(0.2); opacity: 0; }
+}
+
+.animate-shootingStar {
+  animation: shootingStar 0.45s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+}
+
+@keyframes shatter {
+  0% { transform: scale(1) rotate(0deg); opacity: 1; filter: drop-shadow(0 0 10px rgba(239,68,68,0.8)); }
+  50% { transform: scale(1.15) rotate(12deg); opacity: 0.6; }
+  100% { transform: scale(0) rotate(-45deg); opacity: 0; }
+}
+
+.animate-shatter {
+  animation: shatter 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Tab buttons */
+.tab-btn {
+  padding: 10px 22px;
+  border-radius: 14px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.tab-btn.active {
+  background: rgba(16, 185, 129, 0.35);
+  border-color: #10b981;
+  color: #34d399;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transform: translateZ(15px);
+}
+
+/* FLOATING PURPLE EXP GAINED POPUP */
+.exp-popup-text {
+  position: absolute;
+  color: #c084fc;
+  font-weight: 900;
+  font-size: 1.15rem;
+  font-family: monospace;
+  pointer-events: none;
+  z-index: 100;
+  text-shadow: 0 0 10px rgba(192, 132, 252, 0.9), 0 0 20px rgba(168, 85, 247, 0.8);
+  animation: floatUpPurple 1s ease-out forwards;
+}
+
+@keyframes floatUpPurple {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(0.8);
+  }
+  25% {
+    opacity: 1;
+    transform: translate(-50%, -20px) scale(1.2);
+  }
+  75% {
+    opacity: 1;
+    transform: translate(-50%, -45px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -65px) scale(0.85);
+  }
+}
+
+/* =========================================================
+   FULLSCREEN RESPONSIVE PLACE BACKDROP SYSTEM
+   ========================================================= */
+#place-fullscreen-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+  z-index: 0;
+  pointer-events: none;
+  transition: background-image 0.5s ease-in-out, opacity 0.4s ease;
+}
+
+/* Landscape Mode (Horizontal Screens) */
+@media (orientation: landscape) {
+  #place-fullscreen-bg {
+    background-size: cover !important;
+    background-position: center center !important;
+  }
+}
+
+/* Portrait Mode (Vertical Screens / Mobile Devices) */
+@media (orientation: portrait) {
+  #place-fullscreen-bg {
+    background-size: cover !important;
+    background-position: center top !important;
+  }
+}
+
+/* =========================================================
+   MURIM MANGA GAME UI & MARTIAL BORDER DESIGN SYSTEM
+   ========================================================= */
+
+.murim-manga-dock {
+  background: linear-gradient(135deg, rgba(8, 15, 26, 0.96) 0%, rgba(15, 23, 42, 0.98) 50%, rgba(6, 11, 20, 0.96) 100%);
+  border: 2px solid #f59e0b;
+  box-shadow: 0 0 30px rgba(245, 158, 11, 0.45), 0 0 60px rgba(16, 185, 129, 0.25), inset 0 0 20px rgba(245, 158, 11, 0.2);
+  position: relative;
+  overflow: visible;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.murim-manga-dock::before,
+.murim-manga-dock::after {
+  content: '☯';
+  position: absolute;
+  font-size: 13px;
+  color: #fbbf24;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 1);
+  pointer-events: none;
+}
+
+.murim-manga-dock::before {
+  top: -8px;
+  left: -8px;
+}
+
+.murim-manga-dock::after {
+  bottom: -8px;
+  right: -8px;
+}
+
+.murim-corner-tr,
+.murim-corner-bl {
+  position: absolute;
+  font-size: 13px;
+  color: #fbbf24;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 1);
+  pointer-events: none;
+}
+
+.murim-corner-tr {
+  top: -8px;
+  right: -8px;
+}
+
+.murim-corner-bl {
+  bottom: -8px;
+  left: -8px;
+}
+
+.manga-gauge-bg {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+  transform: skewX(-12deg);
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.manga-gauge-fill {
+  transform: skewX(12deg) scaleX(1.1);
+  transform-origin: left center;
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.murim-seal-badge {
+  background: linear-gradient(135deg, #b91c1c 0%, #dc2626 50%, #991b1b 100%);
+  border: 1.5px solid #fef08a;
+  box-shadow: 0 0 15px rgba(220, 38, 38, 0.8), inset 0 0 8px rgba(254, 240, 138, 0.5);
+  color: #ffffff;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+/* =========================================================
+   2026 MODERN MOBILE PORTRAIT GAME UI SCALING & RESPONSIVENESS
+   ========================================================= */
+
+@media (max-width: 768px) {
+  /* Hide scrollbar for smooth touch swipe navigation */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Screen padding for portrait mobile devices */
+  #screen-game-world {
+    padding: 0.5rem !important;
+  }
+
+  /* Mobile Touch-friendly tab buttons */
+  .tab-btn {
+    padding: 6px 12px !important;
+    font-size: 0.75rem !important;
+    border-radius: 10px !important;
+  }
+
+  /* Compact Hero Stats Dock in Mobile Portrait */
+  #dungeon-hero-stats-dock {
+    width: 94vw !important;
+    max-width: 340px !important;
+    bottom: 0.5rem !important;
+    padding: 0.6rem 0.85rem !important;
+  }
+
+  /* Game View Screens fit cleanly in portrait viewports */
+  .game-view-screen {
+    max-height: calc(100vh - 110px) !important;
+    overflow-y: auto !important;
+  }
+
+  /* Item Slots sizing on mobile screens */
+  .item-slot {
+    height: 5.5rem !important;
+    padding: 0.35rem !important;
+  }
+}
+
+
+

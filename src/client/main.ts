@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Bind Global Window Methods for Inline HTML Attributes
   (window as any).switchAuthTab = (tab: 'login' | 'register') => authScreen.switchTab(tab);
-  (window as any).handleFirebaseDbAuth = (e: Event) => (authScreen as any).handleSubmit(e);
+  (window as any).handleFirebaseDbAuth = (e: Event, mode?: 'login' | 'register') => (authScreen as any).handleSubmit(e, mode);
   (window as any).toggleExploreRealmsModal = (show: boolean) => {
     const modal = document.getElementById('modal-explore-realms');
     if (!modal) return;

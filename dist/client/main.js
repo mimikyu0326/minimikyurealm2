@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeMobileJoystick(dungeonScreen);
     // Bind Global Window Methods for Inline HTML Attributes
     window.switchAuthTab = (tab) => authScreen.switchTab(tab);
-    window.handleFirebaseDbAuth = (e) => authScreen.handleSubmit(e);
+    window.handleFirebaseDbAuth = (e, mode) => authScreen.handleSubmit(e, mode);
     window.toggleExploreRealmsModal = (show) => {
         const modal = document.getElementById('modal-explore-realms');
         if (!modal)

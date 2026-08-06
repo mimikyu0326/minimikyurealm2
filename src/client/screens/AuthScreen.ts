@@ -12,11 +12,14 @@ export class AuthScreen implements ScreenLifecycle {
   public init(): void {
     const loginTab = document.getElementById('auth-tab-login');
     const registerTab = document.getElementById('auth-tab-register');
-    const form = document.querySelector('#screen-auth form');
+    const loginForm = document.getElementById('form-login-container');
+    const registerForm = document.getElementById('form-register-container');
 
     if (loginTab) loginTab.onclick = () => this.switchTab('login');
     if (registerTab) registerTab.onclick = () => this.switchTab('register');
-    if (form) (form as HTMLFormElement).onsubmit = (e: Event) => this.handleSubmit(e);
+
+    if (loginForm) (loginForm as HTMLFormElement).onsubmit = (e: Event) => this.handleSubmit(e, 'login');
+    if (registerForm) (registerForm as HTMLFormElement).onsubmit = (e: Event) => this.handleSubmit(e, 'register');
 
     this.checkExistingSession();
     this.loadRememberedCredentials();
@@ -36,18 +39,18 @@ export class AuthScreen implements ScreenLifecycle {
     const rememberedPass = localStorage.getItem('minimikyu_remembered_password');
 
     const rememberCheck = document.getElementById('auth-remember-me') as HTMLInputElement;
-    const userIdInput = document.getElementById('auth-userid') as HTMLInputElement;
-    const passwordInput = document.getElementById('auth-password') as HTMLInputElement;
+    const loginUser = document.getElementById('login-userid') as HTMLInputElement;
+    const loginPass = document.getElementById('login-password') as HTMLInputElement;
 
     if (rememberCheck) rememberCheck.checked = isRemember;
 
     if (isRemember && rememberedUser && rememberedPass) {
-      if (userIdInput) userIdInput.value = rememberedUser;
-      if (passwordInput) {
+      if (loginUser) loginUser.value = rememberedUser;
+      if (loginPass) {
         try {
-          passwordInput.value = decryptData(rememberedPass);
+          loginPass.value = decryptData(rememberedPass);
         } catch (e) {
-          passwordInput.value = rememberedPass;
+          loginPass.value = rememberedPass;
         }
       }
     }
@@ -57,24 +60,26 @@ export class AuthScreen implements ScreenLifecycle {
     this.mode = tab;
     const loginTab = document.getElementById('auth-tab-login');
     const registerTab = document.getElementById('auth-tab-register');
-    const submitBtn = document.getElementById('auth-submit-btn');
-    const rememberContainer = document.getElementById('auth-remember-me-container');
+    const loginForm = document.getElementById('form-login-container');
+    const registerForm = document.getElementById('form-register-container');
+    const errDiv = document.getElementById('auth-error');
 
-    if (loginTab && registerTab && submitBtn) {
+    if (errDiv) errDiv.classList.add('hidden');
+
+    if (loginTab && registerTab && loginForm && registerForm) {
       if (tab === 'login') {
-        loginTab.className = 'flex-1 py-3 rounded-xl text-sm font-extrabold transition text-white bg-emerald-600/90';
-        registerTab.className = 'flex-1 py-3 rounded-xl text-sm font-extrabold transition text-emerald-400';
-        submitBtn.innerText = 'ENTER REALM (SIGN IN)';
-        if (rememberContainer) rememberContainer.classList.remove('hidden');
+        loginTab.className = 'flex-1 py-2.5 rounded-xl text-xs font-black transition text-white bg-emerald-600 shadow-md';
+        registerTab.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold transition text-emerald-400 hover:text-white';
+        loginForm.classList.remove('hidden');
+        registerForm.classList.add('hidden');
       } else {
-        registerTab.className = 'flex-1 py-3 rounded-xl text-sm font-extrabold transition text-white bg-emerald-600/90';
-        loginTab.className = 'flex-1 py-3 rounded-xl text-sm font-extrabold transition text-emerald-400';
-        submitBtn.innerText = 'CREATE ACCOUNT & PLAY';
-        if (rememberContainer) rememberContainer.classList.add('hidden');
+        registerTab.className = 'flex-1 py-2.5 rounded-xl text-xs font-black transition text-white bg-emerald-600 shadow-md';
+        loginTab.className = 'flex-1 py-2.5 rounded-xl text-xs font-bold transition text-emerald-400 hover:text-white';
+        registerForm.classList.remove('hidden');
+        loginForm.classList.add('hidden');
       }
     }
   }
-
 
   private async checkExistingSession(): Promise<void> {
     const { getSessionCookie, setSessionCookie } = require('../services/GameStateService');
@@ -109,49 +114,75 @@ export class AuthScreen implements ScreenLifecycle {
     }
   }
 
-  private async handleSubmit(e: Event): Promise<void> {
+  public async handleSubmit(e: Event, forcedMode?: 'login' | 'register'): Promise<void> {
     e.preventDefault();
-    const userIdInput = (document.getElementById('auth-userid') as HTMLInputElement)?.value.trim();
-    const passwordInput = (document.getElementById('auth-password') as HTMLInputElement)?.value;
-    const isRememberChecked = (document.getElementById('auth-remember-me') as HTMLInputElement)?.checked;
+    const mode = forcedMode || this.mode;
     const errDiv = document.getElementById('auth-error');
 
-    if (!userIdInput || !passwordInput) return;
-    if (errDiv) errDiv.classList.add('hidden');
+    let userIdInput = '';
+    let passwordInput = '';
+    let submitBtn: HTMLButtonElement | null = null;
+    let originalBtnText = '';
 
-    const FirebaseApp = (window as any).FirebaseApp;
-    if (!FirebaseApp) {
+    if (mode === 'register') {
+      userIdInput = (document.getElementById('reg-userid') as HTMLInputElement)?.value.trim();
+      passwordInput = (document.getElementById('reg-password') as HTMLInputElement)?.value;
+      submitBtn = document.getElementById('register-submit-btn') as HTMLButtonElement;
+      originalBtnText = '✨ CREATE NEW ACCOUNT & START PLAYING';
+    } else {
+      userIdInput = (document.getElementById('login-userid') as HTMLInputElement)?.value.trim();
+      passwordInput = (document.getElementById('login-password') as HTMLInputElement)?.value;
+      submitBtn = document.getElementById('login-submit-btn') as HTMLButtonElement;
+      originalBtnText = 'ENTER REALM (SIGN IN)';
+    }
+
+    const isRememberChecked = (document.getElementById('auth-remember-me') as HTMLInputElement)?.checked;
+
+    if (!userIdInput || !passwordInput) {
       if (errDiv) {
-        errDiv.innerText = 'Firebase database not loaded yet. Please wait...';
+        errDiv.innerText = 'Please enter both User ID and Secret Password.';
         errDiv.classList.remove('hidden');
       }
       return;
     }
 
+    if (errDiv) errDiv.classList.add('hidden');
+
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.innerText = mode === 'register' ? '⏳ CREATING ACCOUNT...' : '⏳ SIGNING IN...';
+    }
+
+    const FirebaseApp = (window as any).FirebaseApp;
+    if (!FirebaseApp) {
+      if (errDiv) {
+        errDiv.innerText = 'Connecting to Firebase database... Please try again in 2 seconds.';
+        errDiv.classList.remove('hidden');
+      }
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerText = originalBtnText;
+      }
+      return;
+    }
+
     const { db, ref, get, child, set } = FirebaseApp;
-    const { setSessionCookie } = require('../services/GameStateService');
 
     try {
       const userRef = child(ref(db), `users/${userIdInput}`);
       const snapshot = await get(userRef);
 
-      // Handle Remember Me credentials saving
-      if (isRememberChecked) {
+      if (isRememberChecked && mode === 'login') {
         localStorage.setItem('minimikyu_remember_me', 'true');
         localStorage.setItem('minimikyu_remembered_userid', userIdInput);
         localStorage.setItem('minimikyu_remembered_password', encryptData(passwordInput));
-      } else {
-        localStorage.removeItem('minimikyu_remember_me');
-        localStorage.removeItem('minimikyu_remembered_userid');
-        localStorage.removeItem('minimikyu_remembered_password');
       }
 
-      if (this.mode === 'register') {
+      if (mode === 'register') {
         if (snapshot.exists()) {
-          throw new Error(`User ID "${userIdInput}" is already taken. Please choose another.`);
+          throw new Error(`User ID "${userIdInput}" is already taken. Please choose another ID.`);
         }
 
-        // RESET ALL PREVIOUS COOKIES & STORAGE BEFORE CREATING NEW ACCOUNT
         const { deleteSessionCookie, setSessionCookie } = require('../services/GameStateService');
         deleteSessionCookie('minimikyu_logged_user');
         deleteSessionCookie('minimikyurealm_logged_user');
@@ -159,9 +190,7 @@ export class AuthScreen implements ScreenLifecycle {
         localStorage.removeItem('minimikyurealm_logged_user');
         localStorage.removeItem('minimikyurealm_state');
 
-        // Fully reset memory state to fresh defaults for the new user ID
         this.gameState.resetStateToDefault(userIdInput);
-
         const defaultState = this.gameState.getDefaultState(userIdInput);
         const encryptedPass = encryptData(passwordInput);
 
@@ -202,11 +231,16 @@ export class AuthScreen implements ScreenLifecycle {
         localStorage.setItem('minimikyurealm_logged_user', userIdInput);
         this.gameState.saveToLocalStorage();
         this.gameState.logCombat(`[AUTH] Account created for User ID: ${userIdInput}`);
+        
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerText = originalBtnText;
+        }
         this.onAuthSuccess(userIdInput, false);
 
       } else {
         if (!snapshot.exists()) {
-          throw new Error(`User ID "${userIdInput}" not found. Please create an account.`);
+          throw new Error(`User ID "${userIdInput}" not found. Click "Create Account" tab to register.`);
         }
 
         const userData = snapshot.val();
@@ -215,7 +249,6 @@ export class AuthScreen implements ScreenLifecycle {
           throw new Error('Incorrect password for this User ID.');
         }
 
-        // ONLY SYNC COOKIES THAT ARE FETCHED DIRECTLY FROM FIREBASE REALTIME DB
         const verifiedUserId = userData.userId || userIdInput;
         const { setSessionCookie } = require('../services/GameStateService');
         
@@ -225,6 +258,11 @@ export class AuthScreen implements ScreenLifecycle {
         localStorage.setItem('minimikyu_logged_user', verifiedUserId);
         localStorage.setItem('minimikyurealm_logged_user', verifiedUserId);
         this.gameState.logCombat(`[AUTH] User ID "${verifiedUserId}" authenticated from Firebase DB.`);
+
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerText = originalBtnText;
+        }
 
         if (userData.character) {
           this.gameState.loadFromSavedCharacter(userData.character);
@@ -236,8 +274,12 @@ export class AuthScreen implements ScreenLifecycle {
       }
 
     } catch (err: any) {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerText = originalBtnText;
+      }
       if (errDiv) {
-        errDiv.innerText = err.message || 'Authentication error';
+        errDiv.innerText = err.message || 'Authentication error occurred.';
         errDiv.classList.remove('hidden');
       }
     }

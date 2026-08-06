@@ -83,20 +83,20 @@
 
       <div id="auth-error" class="hidden p-3 rounded-xl bg-red-950/90 border border-red-500/80 text-red-200 text-xs font-bold shadow-lg"></div>
 
-      <!-- Form Inputs -->
-      <form onsubmit="handleFirebaseDbAuth(event)" class="space-y-4 text-left">
+      <!-- SIGN IN (LOGIN) FORM -->
+      <form id="form-login-container" onsubmit="handleFirebaseDbAuth(event, 'login')" class="space-y-4 text-left">
         <div>
-          <label class="block text-[11px] font-black tracking-widest text-emerald-300 uppercase mb-1">Hero User ID</label>
+          <label class="block text-[11px] font-black tracking-widest text-emerald-300 uppercase mb-1">Sign In User ID</label>
           <div class="relative">
             <span class="absolute left-3.5 top-3 text-emerald-400 text-sm">👤</span>
-            <input type="text" id="auth-userid" required placeholder="e.g. kyu_hero_99" class="w-full pl-10 pr-4 py-3 bg-slate-900/90 border border-emerald-600/70 rounded-xl text-white text-sm font-mono focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition shadow-inner">
+            <input type="text" id="login-userid" required placeholder="Enter your Hero User ID" class="w-full pl-10 pr-4 py-3 bg-slate-900/90 border border-emerald-600/70 rounded-xl text-white text-sm font-mono focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition shadow-inner">
           </div>
         </div>
         <div>
-          <label class="block text-[11px] font-black tracking-widest text-emerald-300 uppercase mb-1">Secret Password</label>
+          <label class="block text-[11px] font-black tracking-widest text-emerald-300 uppercase mb-1">Sign In Password</label>
           <div class="relative">
             <span class="absolute left-3.5 top-3 text-emerald-400 text-sm">🔒</span>
-            <input type="password" id="auth-password" required minlength="4" placeholder="••••••••" class="w-full pl-10 pr-4 py-3 bg-slate-900/90 border border-emerald-600/70 rounded-xl text-white text-sm font-mono focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition shadow-inner">
+            <input type="password" id="login-password" required minlength="4" placeholder="••••••••" class="w-full pl-10 pr-4 py-3 bg-slate-900/90 border border-emerald-600/70 rounded-xl text-white text-sm font-mono focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition shadow-inner">
           </div>
         </div>
 
@@ -108,9 +108,30 @@
           </label>
         </div>
 
-        <button type="submit" id="auth-submit-btn" class="w-full py-4 bg-gradient-to-r from-emerald-500 via-teal-600 to-emerald-700 hover:from-emerald-400 hover:to-teal-500 text-xs font-black text-white rounded-xl shadow-xl border border-emerald-300/40 tracking-widest uppercase transition-all duration-300 hover:scale-[1.02]">
-
+        <button type="submit" id="login-submit-btn" class="w-full py-4 bg-gradient-to-r from-emerald-500 via-teal-600 to-emerald-700 hover:from-emerald-400 hover:to-teal-500 text-xs font-black text-white rounded-xl shadow-xl border border-emerald-300/40 tracking-widest uppercase transition-all duration-300 hover:scale-[1.02] cursor-pointer">
           ENTER REALM (SIGN IN)
+        </button>
+      </form>
+
+      <!-- CREATE ACCOUNT (REGISTER) FORM -->
+      <form id="form-register-container" onsubmit="handleFirebaseDbAuth(event, 'register')" class="hidden space-y-4 text-left">
+        <div>
+          <label class="block text-[11px] font-black tracking-widest text-amber-300 uppercase mb-1">Create New Hero User ID</label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-3 text-amber-400 text-sm">🆕</span>
+            <input type="text" id="reg-userid" required placeholder="Choose a unique Hero User ID" class="w-full pl-10 pr-4 py-3 bg-slate-900/90 border border-amber-600/70 rounded-xl text-white text-sm font-mono focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition shadow-inner">
+          </div>
+        </div>
+        <div>
+          <label class="block text-[11px] font-black tracking-widest text-amber-300 uppercase mb-1">Create Secret Password</label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-3 text-amber-400 text-sm">🔑</span>
+            <input type="password" id="reg-password" required minlength="4" placeholder="Min 4 characters" class="w-full pl-10 pr-4 py-3 bg-slate-900/90 border border-amber-600/70 rounded-xl text-white text-sm font-mono focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition shadow-inner">
+          </div>
+        </div>
+
+        <button type="submit" id="register-submit-btn" class="w-full py-4 bg-gradient-to-r from-amber-500 via-orange-600 to-amber-700 hover:from-amber-400 hover:to-orange-500 text-xs font-black text-slate-950 rounded-xl shadow-xl border border-amber-300/60 tracking-widest uppercase transition-all duration-300 hover:scale-[1.02] cursor-pointer">
+          ✨ CREATE NEW ACCOUNT & START PLAYING
         </button>
       </form>
 

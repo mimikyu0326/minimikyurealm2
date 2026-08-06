@@ -91,16 +91,20 @@ class AuthScreen {
                     const snapshot = await get(child(ref(db), `users/${loggedUser}`));
                     if (snapshot.exists()) {
                         const userData = snapshot.val();
+                        const savedChar = userData.character || (userData.name ? userData : null);
                         this.gameState.setUserId(loggedUser);
                         setSessionCookie('minimikyu_logged_user', loggedUser, 7);
                         setSessionCookie('minimikyurealm_logged_user', loggedUser, 7);
                         localStorage.setItem('minimikyu_logged_user', loggedUser);
                         localStorage.setItem('minimikyurealm_logged_user', loggedUser);
-                        if (userData.character) {
-                            this.gameState.loadFromSavedCharacter(userData.character);
-                            this.gameState.listenToFirebase();
-                            this.onAuthSuccess(loggedUser, true);
+                        if (savedChar) {
+                            this.gameState.loadFromSavedCharacter(savedChar);
                         }
+                        else {
+                            this.gameState.resetStateToDefault(loggedUser);
+                        }
+                        this.gameState.listenToFirebase();
+                        this.onAuthSuccess(loggedUser, true);
                     }
                 }
                 catch (e) {
@@ -211,13 +215,14 @@ class AuthScreen {
                 setSessionCookie('minimikyurealm_logged_user', userIdInput, 7);
                 localStorage.setItem('minimikyu_logged_user', userIdInput);
                 localStorage.setItem('minimikyurealm_logged_user', userIdInput);
-                this.gameState.saveToLocalStorage();
+                this.gameState.flushSaveToFirebase();
+                this.gameState.listenToFirebase();
                 this.gameState.logCombat(`[AUTH] Account created for User ID: ${userIdInput}`);
                 if (submitBtn) {
                     submitBtn.disabled = false;
                     submitBtn.innerText = originalBtnText;
                 }
-                this.onAuthSuccess(userIdInput, false);
+                this.onAuthSuccess(userIdInput, true);
             }
             else {
                 if (!snapshot.exists()) {
@@ -240,14 +245,16 @@ class AuthScreen {
                     submitBtn.disabled = false;
                     submitBtn.innerText = originalBtnText;
                 }
-                if (userData.character) {
-                    this.gameState.loadFromSavedCharacter(userData.character);
-                    this.gameState.listenToFirebase();
-                    this.onAuthSuccess(verifiedUserId, true);
+                const savedChar = userData.character || (userData.name ? userData : null);
+                if (savedChar) {
+                    this.gameState.loadFromSavedCharacter(savedChar);
                 }
                 else {
-                    this.onAuthSuccess(verifiedUserId, false);
+                    this.gameState.resetStateToDefault(verifiedUserId);
+                    this.gameState.flushSaveToFirebase();
                 }
+                this.gameState.listenToFirebase();
+                this.onAuthSuccess(verifiedUserId, true);
             }
         }
         catch (err) {

@@ -227,14 +227,14 @@ export class GameStateService {
     level: 1,
     exp: 0,
     maxExp: 100,
-    gold: 500,
-    gems: 20,
-    redGems: 500,
-    purpleGems: 50,
-    skillTomes: 500,
-    ancientBooks: 50,
+    gold: 0,
+    gems: 0,
+    redGems: 0,
+    purpleGems: 0,
+    skillTomes: 0,
+    ancientBooks: 0,
     heroAuraMeter: 0,
-    towerKeys: 3,
+    towerKeys: 0,
     statPoints: 5,
     str: 10,
     int: 5,
@@ -690,14 +690,14 @@ export class GameStateService {
       level: 1,
       exp: 0,
       maxExp: 100,
-      gold: 500,
-      gems: 20,
-      redGems: 500,
-      purpleGems: 50,
-      skillTomes: 500,
-      ancientBooks: 50,
+      gold: 0,
+      gems: 0,
+      redGems: 0,
+      purpleGems: 0,
+      skillTomes: 0,
+      ancientBooks: 0,
       heroAuraMeter: 0,
-      towerKeys: 3,
+      towerKeys: 0,
       statPoints: 5,
       str: 10,
       int: 5,
@@ -760,8 +760,8 @@ export class GameStateService {
       inventory: normalizedInventory
     };
 
-    if (this.state.redGems === undefined) this.state.redGems = 500;
-    if (this.state.purpleGems === undefined) this.state.purpleGems = 50;
+    if (this.state.redGems === undefined) this.state.redGems = 0;
+    if (this.state.purpleGems === undefined) this.state.purpleGems = 0;
 
     // Ensure starter/legacy testing pets are purged so pets can ONLY be obtained via Gacha Shrine
     if (this.state.inventory && Array.isArray(this.state.inventory)) {

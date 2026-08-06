@@ -331,7 +331,7 @@ button:active, .item-slot:active, .tab-btn:active {
    2026 MODERN MOBILE PORTRAIT GAME UI SCALING & RESPONSIVENESS
    ========================================================= */
 
-@media (max-width: 768px) {
+@media (max-width: 768px), (orientation: portrait) {
   /* Hide scrollbar for smooth touch swipe navigation */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
@@ -343,34 +343,49 @@ button:active, .item-slot:active, .tab-btn:active {
 
   /* Screen padding for portrait mobile devices */
   #screen-game-world {
-    padding: 0.5rem !important;
+    padding: 0.35rem !important;
+  }
+
+  /* Compact top navbar elements */
+  header {
+    gap: 0.35rem !important;
   }
 
   /* Mobile Touch-friendly tab buttons */
   .tab-btn {
-    padding: 6px 12px !important;
-    font-size: 0.75rem !important;
-    border-radius: 10px !important;
+    padding: 5px 10px !important;
+    font-size: 0.7rem !important;
+    border-radius: 8px !important;
+  }
+
+  /* Move Floating World Tier Text higher for mobile portrait */
+  #world-tier-floating-container {
+    top: 0.25rem !important;
+  }
+
+  /* Display Touch Virtual Joystick on mobile devices */
+  #mobile-joystick-container {
+    display: block !important;
   }
 
   /* Compact Hero Stats Dock in Mobile Portrait */
   #dungeon-hero-stats-dock {
-    width: 94vw !important;
-    max-width: 340px !important;
-    bottom: 0.5rem !important;
-    padding: 0.6rem 0.85rem !important;
+    width: 92vw !important;
+    max-width: 320px !important;
+    bottom: 0.35rem !important;
+    padding: 0.5rem 0.75rem !important;
   }
 
   /* Game View Screens fit cleanly in portrait viewports */
   .game-view-screen {
-    max-height: calc(100vh - 110px) !important;
+    max-height: calc(100vh - 95px) !important;
     overflow-y: auto !important;
   }
 
   /* Item Slots sizing on mobile screens */
   .item-slot {
-    height: 5.5rem !important;
-    padding: 0.35rem !important;
+    height: 5rem !important;
+    padding: 0.25rem !important;
   }
 }
 

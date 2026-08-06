@@ -14,8 +14,15 @@ export class DungeonScreen implements ScreenLifecycle {
   private audio = AudioService.getInstance();
   private ui = UIService.getInstance();
   public isAutoBattle: boolean = false;
+  public joystickDx: number = 0;
+  public joystickDy: number = 0;
 
   constructor() {}
+
+  public setJoystickDirection(dx: number, dy: number): void {
+    this.joystickDx = dx;
+    this.joystickDy = dy;
+  }
 
   public init(): void {
     const self = this;
@@ -1598,6 +1605,11 @@ export class DungeonScreen implements ScreenLifecycle {
         if (this.cursors.right.isDown || this.wasd.D.isDown) dx -= speed;
         if (this.cursors.up.isDown || this.wasd.W.isDown) dy += speed;
         if (this.cursors.down.isDown || this.wasd.S.isDown) dy -= speed;
+
+        if (self.joystickDx !== 0 || self.joystickDy !== 0) {
+          dx = -self.joystickDx * speed;
+          dy = -self.joystickDy * speed;
+        }
 
         if (dx !== 0 || dy !== 0) {
           this.isHeroMoving = true;

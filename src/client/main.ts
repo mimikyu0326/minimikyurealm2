@@ -40,6 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const dungeonScreen = new DungeonScreen();
+  (window as any).dungeonScreenInstance = dungeonScreen;
+
   const idleGroveScreen = new IdleGroveScreen();
   const towerScreen = new TowerScreen();
   const charStatsScreen = new CharacterStatsScreen();
@@ -67,6 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
   companionScreen.init();
   inventoryScreen.init();
   gachaScreen.init();
+
+  initializeMobileJoystick(dungeonScreen);
 
   // Bind Global Window Methods for Inline HTML Attributes
   (window as any).switchAuthTab = (tab: 'login' | 'register') => authScreen.switchTab(tab);
@@ -630,6 +634,71 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     })
     .catch(() => {});
+
+function initializeMobileJoystick(dungeonScreen: DungeonScreen): void {
+  const joystickBase = document.getElementById('joystick-base');
+  const joystickThumb = document.getElementById('joystick-thumb');
+
+  if (!joystickBase || !joystickThumb) return;
+
+  let activeTouchId: number | null = null;
+  let startX = 0;
+  let startY = 0;
+  const maxRadius = 40;
+
+  const handleTouchStart = (e: TouchEvent) => {
+    if (activeTouchId !== null) return;
+    const touch = e.changedTouches[0];
+    activeTouchId = touch.identifier;
+    const rect = joystickBase.getBoundingClientRect();
+    startX = rect.left + rect.width / 2;
+    startY = rect.top + rect.height / 2;
+    updateJoystickPosition(touch.clientX, touch.clientY);
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    if (activeTouchId === null) return;
+    for (let i = 0; i < e.changedTouches.length; i++) {
+      if (e.changedTouches[i].identifier === activeTouchId) {
+        updateJoystickPosition(e.changedTouches[i].clientX, e.changedTouches[i].clientY);
+        break;
+      }
+    }
+  };
+
+  const handleTouchEnd = (e: TouchEvent) => {
+    if (activeTouchId === null) return;
+    for (let i = 0; i < e.changedTouches.length; i++) {
+      if (e.changedTouches[i].identifier === activeTouchId) {
+        activeTouchId = null;
+        joystickThumb.style.transform = 'translate(-50%, -50%)';
+        dungeonScreen.setJoystickDirection(0, 0);
+        break;
+      }
+    }
+  };
+
+  const updateJoystickPosition = (clientX: number, clientY: number) => {
+    let deltaX = clientX - startX;
+    let deltaY = clientY - startY;
+    const dist = Math.hypot(deltaX, deltaY);
+
+    if (dist > maxRadius) {
+      deltaX = (deltaX / dist) * maxRadius;
+      deltaY = (deltaY / dist) * maxRadius;
+    }
+
+    joystickThumb.style.transform = `translate(calc(-50% + ${deltaX}px), calc(-50% + ${deltaY}px))`;
+    const normX = deltaX / maxRadius;
+    const normY = deltaY / maxRadius;
+    dungeonScreen.setJoystickDirection(normX, normY);
+  };
+
+  joystickBase.addEventListener('touchstart', handleTouchStart, { passive: true });
+  window.addEventListener('touchmove', handleTouchMove, { passive: true });
+  window.addEventListener('touchend', handleTouchEnd, { passive: true });
+  window.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+}
 
 
 

@@ -434,6 +434,13 @@
             <canvas id="minimap-canvas" width="144" height="144" class="w-full h-full"></canvas>
           </div>
         </div>
+
+        <!-- TOUCH VIRTUAL JOYSTICK FOR MOBILE PORTRAIT VIEW -->
+        <div id="mobile-joystick-container" class="hidden fixed bottom-6 left-6 z-40 touch-none select-none pointer-events-auto">
+          <div id="joystick-base" class="w-28 h-28 sm:w-32 sm:h-32 rounded-full bg-slate-950/80 border-2 border-emerald-400/80 shadow-[0_0_30px_rgba(16,185,129,0.6)] backdrop-blur-md relative flex items-center justify-center">
+            <div id="joystick-thumb" class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600 border-2 border-white shadow-2xl absolute transform -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2 transition-transform duration-75"></div>
+          </div>
+        </div>
       </div>
 
 

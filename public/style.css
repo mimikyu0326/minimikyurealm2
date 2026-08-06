@@ -343,49 +343,189 @@ button:active, .item-slot:active, .tab-btn:active {
 
   /* Screen padding for portrait mobile devices */
   #screen-game-world {
-    padding: 0.35rem !important;
+    padding: 0.25rem !important;
   }
 
   /* Compact top navbar elements */
   header {
-    gap: 0.35rem !important;
+    gap: 0.25rem !important;
   }
 
   /* Mobile Touch-friendly tab buttons */
   .tab-btn {
-    padding: 5px 10px !important;
-    font-size: 0.7rem !important;
+    padding: 4px 8px !important;
+    font-size: 0.65rem !important;
     border-radius: 8px !important;
   }
 
   /* Move Floating World Tier Text higher for mobile portrait */
   #world-tier-floating-container {
-    top: 0.25rem !important;
+    top: 0.2rem !important;
+    transform: translateX(-50%) scale(0.85) !important;
   }
 
-  /* Display Touch Virtual Joystick on mobile devices */
+  /* 1. TOUCH VIRTUAL JOYSTICK FOR MOBILE - POSITIONED BELOW CHARACTER */
   #mobile-joystick-container {
     display: block !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    bottom: 64px !important;
+    z-index: 35 !important;
   }
 
-  /* Compact Hero Stats Dock in Mobile Portrait */
+  #joystick-base {
+    width: 80px !important;
+    height: 80px !important;
+    border-width: 1.5px !important;
+  }
+
+  #joystick-thumb {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  /* 2. CIRCULAR ICON-ONLY ACTION BUTTONS FOR MOBILE VIEW */
+  #floating-save-btn-container {
+    left: 8px !important;
+    bottom: 64px !important;
+  }
+
+  #floating-save-btn-container button {
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 9999px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.8) !important;
+  }
+
+  #floating-save-btn-container button span:last-child {
+    display: none !important;
+  }
+
+  #hud-bottom-right-meters {
+    right: 8px !important;
+    bottom: 64px !important;
+    gap: 6px !important;
+  }
+
+  #dungeon-autobattle-container,
+  #hero-aura-meter-container,
+  #pet-squad-meter-container,
+  #soul-killmeter-container {
+    gap: 0 !important;
+  }
+
+  #btn-toggle-autobattle,
+  #hero-aura-meter-btn,
+  #pet-squad-meter-btn,
+  #soul-killmeter-btn {
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 9999px !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  #btn-toggle-autobattle span:first-child,
+  #hero-aura-meter-btn span:first-child,
+  #pet-squad-meter-btn span:first-child,
+  #soul-killmeter-btn span:first-child {
+    font-size: 1.25rem !important;
+    margin: 0 !important;
+  }
+
+  /* Hide subtitle badges and text under buttons on mobile view */
+  #dungeon-autobattle-container > span:last-child,
+  #hero-aura-meter-container > span:last-child,
+  #pet-squad-meter-container > span:last-child,
+  #soul-killmeter-container > span:last-child,
+  #autobattle-status-text,
+  #hero-aura-text,
+  #pet-meter-text,
+  #soul-meter-text {
+    display: none !important;
+  }
+
+  /* 3. INVENTORY VIEW: HIDE EQUIPPED LOADOUTS, SHOW ONLY INVENTORY GRID */
+  #view-inventory > div > div:first-child,
+  #view-inventory > div > div:last-child {
+    display: none !important;
+  }
+
+  #view-inventory > div > div:nth-child(2) {
+    grid-column: span 4 / span 4 !important;
+    width: 100% !important;
+  }
+
+  #inventory-items-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    max-height: 60vh !important;
+  }
+
+  /* 4. CHARACTER VIEW: COMPACT SMALL BUTTONS & SHRINK STATS */
+  #view-character > div {
+    padding: 0.75rem !important;
+    gap: 0.75rem !important;
+  }
+
+  #preview-chibi-avatar {
+    width: 3.5rem !important;
+    height: 3.5rem !important;
+  }
+
+  #char-name {
+    font-size: 1.1rem !important;
+  }
+
+  #btn-manual-save-record,
+  #btn-ascend-mountain,
+  #btn-toggle-autostat,
+  #btn-gender-male,
+  #btn-gender-female {
+    padding: 4px 8px !important;
+    font-size: 0.65rem !important;
+    border-radius: 8px !important;
+  }
+
+  /* 5. SHRINK HERO STATS DOCK & OVERHEAD STATUS FOR MOBILE */
   #dungeon-hero-stats-dock {
-    width: 92vw !important;
-    max-width: 320px !important;
-    bottom: 0.35rem !important;
-    padding: 0.5rem 0.75rem !important;
+    width: 88vw !important;
+    max-width: 270px !important;
+    bottom: 2px !important;
+    padding: 0.35rem 0.6rem !important;
+    transform: translateX(-50%) scale(0.85) !important;
+  }
+
+  #dungeon-minimap-container {
+    scale: 0.7 !important;
+    top: 2px !important;
+    right: 2px !important;
+  }
+
+  /* 6. GAME FEEDBACK LOG BAR FOR MOBILE */
+  #game-feedback-log-bar {
+    bottom: 2px !important;
+    max-width: 94vw !important;
+    padding: 3px 8px !important;
+    font-size: 0.65rem !important;
   }
 
   /* Game View Screens fit cleanly in portrait viewports */
   .game-view-screen {
-    max-height: calc(100vh - 95px) !important;
+    max-height: calc(100vh - 90px) !important;
     overflow-y: auto !important;
   }
 
   /* Item Slots sizing on mobile screens */
   .item-slot {
-    height: 5rem !important;
-    padding: 0.25rem !important;
+    height: 4.5rem !important;
+    padding: 0.2rem !important;
   }
 }
 

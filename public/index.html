@@ -370,6 +370,20 @@
     <!-- Fullscreen Backdrop Layer for Non-Dungeon Places (IDLE, Tower, Character, Companion, Inventory, Gacha) -->
     <div id="place-fullscreen-bg" class="fixed inset-0 w-screen h-screen z-0 pointer-events-none transition-all duration-500 bg-cover bg-center bg-no-repeat hidden"></div>
 
+    <!-- 1-LINE EXPANDABLE & MINIMIZABLE COMBAT FEEDBACK LOG BAR -->
+    <div id="game-feedback-log-bar" class="fixed bottom-1.5 left-1/2 -translate-x-1/2 z-40 w-[94vw] max-w-md glass-panel bg-slate-950/95 border border-emerald-500/60 rounded-xl px-3 py-1 text-[11px] font-mono shadow-2xl pointer-events-auto transition-all duration-300">
+      <div class="flex items-center justify-between gap-2 cursor-pointer" onclick="window.toggleFeedbackLogExpand()">
+        <div class="flex items-center gap-1.5 overflow-hidden flex-1">
+          <span class="text-amber-400 text-xs animate-pulse">📜</span>
+          <span id="feedback-log-latest-text" class="text-emerald-200 truncate font-bold">Welcome to MinimikyuRealm! Realm online.</span>
+        </div>
+        <button id="feedback-log-toggle-btn" class="text-[10px] text-emerald-400 hover:text-white px-1.5 py-0.5 rounded bg-emerald-950 border border-emerald-600/60 font-black shrink-0">▲ Expand</button>
+      </div>
+      <div id="feedback-log-history-list" class="hidden mt-2 pt-2 border-t border-emerald-800/60 max-h-28 overflow-y-auto space-y-1 text-[10px] text-emerald-300/90 text-left no-scrollbar">
+        <div>• [SYSTEM] Welcome to MinimikyuRealm! Realm online.</div>
+      </div>
+    </div>
+
 
     <!-- TOP NAVBAR -->
     <!-- TOP NAVBAR (RESPONSIVE FOR MOBILE & DESKTOP) -->

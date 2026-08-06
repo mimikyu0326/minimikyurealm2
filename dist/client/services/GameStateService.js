@@ -442,7 +442,21 @@ class GameStateService {
     updateCP() {
         this.recalculateCP();
     }
-    logCombat(msg) { }
+    logCombat(msg) {
+        console.log(`[REALM LOG] ${msg}`);
+        const latestEl = document.getElementById('feedback-log-latest-text');
+        const historyEl = document.getElementById('feedback-log-history-list');
+        if (latestEl)
+            latestEl.innerText = msg;
+        if (historyEl) {
+            const item = document.createElement('div');
+            item.innerText = `• ${msg}`;
+            historyEl.prepend(item);
+            while (historyEl.children.length > 10) {
+                historyEl.removeChild(historyEl.lastChild);
+            }
+        }
+    }
     autoAllocateStatPoints() {
         if (!this.state.isAutoAllocateStats || this.state.statPoints <= 0)
             return;

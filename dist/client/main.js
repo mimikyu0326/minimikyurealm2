@@ -69,14 +69,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Bind Global Window Methods for Inline HTML Attributes
     window.switchAuthTab = (tab) => authScreen.switchTab(tab);
     window.handleFirebaseDbAuth = (e, mode) => authScreen.handleSubmit(e, mode);
-    window.toggleExploreRealmsModal = (show) => {
-        const modal = document.getElementById('modal-explore-realms');
-        if (!modal)
+    window.toggleFeedbackLogExpand = () => {
+        const historyEl = document.getElementById('feedback-log-history-list');
+        const toggleBtn = document.getElementById('feedback-log-toggle-btn');
+        if (!historyEl || !toggleBtn)
             return;
-        if (show)
-            modal.classList.remove('hidden');
-        else
-            modal.classList.add('hidden');
+        const isHidden = historyEl.classList.contains('hidden');
+        if (isHidden) {
+            historyEl.classList.remove('hidden');
+            toggleBtn.innerText = '▼ Collapse';
+        }
+        else {
+            historyEl.classList.add('hidden');
+            toggleBtn.innerText = '▲ Expand';
+        }
     };
     let onResourceDownloadDoneCallback = null;
     window.triggerResourceDownloadCheck = (onDone) => {

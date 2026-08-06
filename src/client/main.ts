@@ -28,13 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Instantiate Screens
   const authScreen = new AuthScreen((userId, hasCharacter) => {
-    (window as any).triggerResourceDownloadCheck(() => {
-      if (hasCharacter) {
-        screenManager.showScreen('dungeon');
-      } else {
-        screenManager.showScreen('char-create');
-      }
-    });
+    // 1. Immediately transition away from login screen into target game screen
+    if (hasCharacter) {
+      screenManager.showScreen('dungeon');
+    } else {
+      screenManager.showScreen('char-create');
+    }
+
+    // 2. Trigger resource preloader modal if needed (now fully visible over the game screen!)
+    (window as any).triggerResourceDownloadCheck(() => {});
   });
 
   const charCreateScreen = new CharacterCreateScreen(() => {

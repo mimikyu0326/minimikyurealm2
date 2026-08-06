@@ -147,7 +147,15 @@ class AuthScreen {
             submitBtn.disabled = true;
             submitBtn.innerText = mode === 'register' ? '⏳ CREATING ACCOUNT...' : '⏳ SIGNING IN...';
         }
-        const FirebaseApp = window.FirebaseApp;
+        let FirebaseApp = window.FirebaseApp;
+        if (!FirebaseApp) {
+            for (let i = 0; i < 5; i++) {
+                await new Promise(r => setTimeout(r, 400));
+                FirebaseApp = window.FirebaseApp;
+                if (FirebaseApp)
+                    break;
+            }
+        }
         if (!FirebaseApp) {
             if (errDiv) {
                 errDiv.innerText = 'Connecting to Firebase database... Please try again in 2 seconds.';

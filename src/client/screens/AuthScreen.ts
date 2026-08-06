@@ -156,7 +156,15 @@ export class AuthScreen implements ScreenLifecycle {
       submitBtn.innerText = mode === 'register' ? '⏳ CREATING ACCOUNT...' : '⏳ SIGNING IN...';
     }
 
-    const FirebaseApp = (window as any).FirebaseApp;
+    let FirebaseApp = (window as any).FirebaseApp;
+    if (!FirebaseApp) {
+      for (let i = 0; i < 5; i++) {
+        await new Promise(r => setTimeout(r, 400));
+        FirebaseApp = (window as any).FirebaseApp;
+        if (FirebaseApp) break;
+      }
+    }
+
     if (!FirebaseApp) {
       if (errDiv) {
         errDiv.innerText = 'Connecting to Firebase database... Please try again in 2 seconds.';

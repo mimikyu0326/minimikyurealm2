@@ -370,16 +370,16 @@
     <!-- Fullscreen Backdrop Layer for Non-Dungeon Places (IDLE, Tower, Character, Companion, Inventory, Gacha) -->
     <div id="place-fullscreen-bg" class="fixed inset-0 w-screen h-screen z-0 pointer-events-none transition-all duration-500 bg-cover bg-center bg-no-repeat hidden"></div>
 
-    <!-- 1-LINE EXPANDABLE & MINIMIZABLE COMBAT FEEDBACK LOG BAR -->
-    <div id="game-feedback-log-bar" class="fixed bottom-1.5 left-1/2 -translate-x-1/2 z-40 w-[94vw] max-w-md glass-panel bg-slate-950/95 border border-emerald-500/60 rounded-xl px-3 py-1 text-[11px] font-mono shadow-2xl pointer-events-auto transition-all duration-300">
-      <div class="flex items-center justify-between gap-2 cursor-pointer" onclick="window.toggleFeedbackLogExpand()">
-        <div class="flex items-center gap-1.5 overflow-hidden flex-1">
-          <span class="text-amber-400 text-xs animate-pulse">📜</span>
-          <span id="feedback-log-latest-text" class="text-emerald-200 truncate font-bold">Welcome to MinimikyuRealm! Realm online.</span>
+    <!-- 1-LINE BOTTOM-LEFT EXPANDABLE FEEDBACK LOG BAR -->
+    <div id="game-feedback-log-bar" class="fixed bottom-3 left-3 sm:bottom-4 sm:left-4 z-40 w-[88vw] max-w-[260px] sm:max-w-[300px] glass-panel bg-slate-950/95 border border-emerald-500/70 rounded-xl px-2.5 py-1 text-[10px] font-mono shadow-2xl pointer-events-auto transition-all duration-300">
+      <div class="flex items-center justify-between gap-1.5 cursor-pointer" onclick="window.toggleFeedbackLogExpand()">
+        <div class="flex items-center gap-1 overflow-hidden flex-1">
+          <span class="text-amber-400 text-xs animate-pulse shrink-0">📜</span>
+          <span id="feedback-log-latest-text" class="text-emerald-200 truncate font-bold leading-none">Welcome to MinimikyuRealm! Realm online.</span>
         </div>
-        <button id="feedback-log-toggle-btn" class="text-[10px] text-emerald-400 hover:text-white px-1.5 py-0.5 rounded bg-emerald-950 border border-emerald-600/60 font-black shrink-0">▲ Expand</button>
+        <button id="feedback-log-toggle-btn" class="text-[9px] text-emerald-400 hover:text-white px-1.5 py-0.5 rounded bg-emerald-950 border border-emerald-600/60 font-black shrink-0">▲ Expand</button>
       </div>
-      <div id="feedback-log-history-list" class="hidden mt-2 pt-2 border-t border-emerald-800/60 max-h-28 overflow-y-auto space-y-1 text-[10px] text-emerald-300/90 text-left no-scrollbar">
+      <div id="feedback-log-history-list" class="hidden mt-1.5 pt-1.5 border-t border-emerald-800/60 max-h-24 overflow-y-auto space-y-1 text-[9px] text-emerald-300/90 text-left no-scrollbar">
         <div>• [SYSTEM] Welcome to MinimikyuRealm! Realm online.</div>
       </div>
     </div>
@@ -541,147 +541,147 @@
         <div id="tower-current-floor-container" class="w-full flex justify-center"></div>
       </div>
 
-      <!-- UNIFIED CHARACTER VIEW (WIDER MAX-W-6XL WITH SEPARATED 5 PET COMPANION SQUAD) -->
-      <div id="view-character" class="game-view-screen hidden w-full h-full flex items-center justify-center pointer-events-auto p-4 md:p-6 overflow-y-auto">
-        <div class="glass-panel w-full max-w-6xl p-6 md:p-8 rounded-3xl border-2 border-emerald-500/80 shadow-[0_0_60px_rgba(16,185,129,0.5)] grid grid-cols-1 md:grid-cols-2 gap-8 text-left bg-gradient-to-b from-emerald-950/95 via-slate-950 to-black my-auto relative z-10">
+      <!-- REMODELED CHARACTER VIEW (ULTRA-MODERN DUAL CARD DESIGN FOR MOBILE & DESKTOP) -->
+      <div id="view-character" class="game-view-screen hidden w-full h-full flex items-center justify-center pointer-events-auto p-3 md:p-6 overflow-y-auto">
+        <div class="glass-panel w-full max-w-6xl p-4 md:p-8 rounded-3xl border-2 border-emerald-500/80 shadow-[0_0_60px_rgba(16,185,129,0.5)] grid grid-cols-1 lg:grid-cols-2 gap-6 text-left bg-gradient-to-b from-emerald-950/95 via-slate-950 to-black my-auto relative z-10">
           
-          <!-- Left Column: Character Avatar, Overview & 5 Pet Squad Loadout -->
-          <div class="space-y-6 flex flex-col justify-between">
-            <div class="flex items-center justify-between bg-gradient-to-r from-emerald-950 to-slate-900 p-4 rounded-3xl border border-emerald-700/80 shadow-xl">
-              <div class="flex items-center gap-4">
-                <div id="preview-chibi-avatar" class="w-24 h-24 flex items-center justify-center p-1 bg-slate-950/80 rounded-2xl border border-emerald-500/50 shadow-inner"></div>
+          <!-- Left Column: Character Avatar, Overview & Loadout -->
+          <div class="space-y-4 flex flex-col justify-between">
+            <!-- HERO HEADER PROFILE CARD -->
+            <div class="flex items-center justify-between bg-gradient-to-r from-emerald-950 via-slate-900 to-emerald-950 p-4 rounded-3xl border border-emerald-500/60 shadow-xl relative overflow-hidden">
+              <div class="flex items-center gap-3 md:gap-4 z-10">
+                <div class="relative">
+                  <div id="preview-chibi-avatar" class="w-20 h-20 md:w-24 md:h-24 flex items-center justify-center p-1 bg-slate-950/90 rounded-2xl border-2 border-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.7)]"></div>
+                  <span class="absolute -bottom-1 -right-1 px-2 py-0.5 bg-emerald-700 text-white font-mono font-black text-[9px] rounded-full border border-emerald-300 shadow">HERO</span>
+                </div>
                 <div>
-                  <div id="char-title" class="text-xs font-extrabold text-emerald-400 uppercase tracking-wider">Apprentice Swordsman</div>
-                  <div id="char-name" class="text-2xl font-black text-white my-0.5">KyuHero</div>
-                  <div class="flex items-center gap-2">
-                    <span id="char-class" class="text-xs bg-emerald-700 px-3 py-1 rounded-xl font-black text-white shadow">WARRIOR</span>
-                    <span class="text-xs text-emerald-300 font-extrabold">LVL <span id="char-lvl" class="font-mono text-amber-300 font-black">1</span></span>
+                  <div id="char-title" class="text-[11px] font-black text-emerald-400 uppercase tracking-widest font-mono">Apprentice Swordsman</div>
+                  <div id="char-name" class="text-xl md:text-2xl font-black text-white my-0.5 font-mono drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">KyuHero</div>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span id="char-class" class="text-[10px] md:text-xs bg-emerald-600 px-2.5 py-0.5 rounded-lg font-black text-white shadow uppercase font-mono">WARRIOR</span>
+                    <span class="text-[10px] md:text-xs text-emerald-300 font-extrabold font-mono bg-emerald-950/80 px-2.5 py-0.5 rounded-lg border border-emerald-700">LVL <span id="char-lvl" class="text-amber-300 font-black">1</span></span>
                   </div>
                 </div>
               </div>
-              <div class="flex flex-col items-end gap-1.5">
-                <div class="flex items-center gap-1.5">
-                  <button id="btn-manual-save-record" onclick="window.manualSaveCharacterRecord()" class="px-3 py-1 bg-emerald-950 hover:bg-emerald-800 text-emerald-300 border border-emerald-500/80 font-black rounded-xl text-xs shadow-lg transition flex items-center gap-1 cursor-pointer">
-                    💾 SAVE RECORD
-                  </button>
-                  <button onclick="window.logoutCurrentAccount()" class="px-3 py-1 bg-red-950 hover:bg-red-800 text-red-200 border border-red-500/80 font-black rounded-xl text-xs shadow-lg transition flex items-center gap-1 cursor-pointer">
-                    🚪 LOGOUT
-                  </button>
-                </div>
+              <div class="flex flex-col items-end gap-1.5 z-10">
+                <button onclick="window.logoutCurrentAccount()" class="px-3 py-1 bg-red-950 hover:bg-red-800 text-red-200 border border-red-500/80 font-black rounded-xl text-xs shadow-lg transition flex items-center gap-1 cursor-pointer">
+                  🚪 LOGOUT
+                </button>
                 <div class="flex gap-1.5 mt-0.5">
-                  <button id="btn-gender-male" class="px-3 py-1 bg-emerald-700 hover:bg-emerald-600 text-white font-black rounded-xl text-xs shadow">👨 MALE</button>
-                  <button id="btn-gender-female" class="px-3 py-1 bg-pink-700 hover:bg-pink-600 text-white font-black rounded-xl text-xs shadow">👩 FEMALE</button>
+                  <button id="btn-gender-male" class="px-2.5 py-1 bg-emerald-700 hover:bg-emerald-600 text-white font-black rounded-xl text-[10px] shadow cursor-pointer">👨 MALE</button>
+                  <button id="btn-gender-female" class="px-2.5 py-1 bg-pink-700 hover:bg-pink-600 text-white font-black rounded-xl text-[10px] shadow cursor-pointer">👩 FEMALE</button>
                 </div>
               </div>
             </div>
 
             <!-- SECTION 1: CORE EQUIPMENT & SKILL LOADOUT -->
-            <div class="space-y-2.5 bg-slate-950/80 p-4 rounded-3xl border border-emerald-800/80 shadow-xl">
-              <div class="text-xs font-black text-emerald-300 uppercase tracking-widest flex justify-between items-center">
-                <span>⚔️ MAIN EQUIPMENT, SKILLS & PORTER</span>
-                <span class="text-[10px] text-amber-300 font-mono font-bold">7 Main Loadout Slots</span>
+            <div class="space-y-2.5 bg-slate-950/90 p-4 rounded-3xl border border-emerald-700/80 shadow-xl">
+              <div class="text-[11px] font-black text-emerald-300 uppercase tracking-widest flex justify-between items-center font-mono">
+                <span>⚔️ MAIN LOADOUT SLOTS</span>
+                <span class="text-[9px] text-amber-300 font-bold">7 Slots</span>
               </div>
-              <div class="grid grid-cols-7 gap-2">
-                <div id="slot-preview-weapon" class="p-2 bg-emerald-950/90 rounded-2xl border border-emerald-700 flex flex-col items-center justify-center text-center"></div>
-                <div id="slot-preview-armor" class="p-2 bg-emerald-950/90 rounded-2xl border border-emerald-700 flex flex-col items-center justify-center text-center"></div>
-                <div id="slot-preview-rune" class="p-2 bg-emerald-950/90 rounded-2xl border border-emerald-700 flex flex-col items-center justify-center text-center"></div>
-                <div id="slot-preview-skill" class="p-2 bg-emerald-950/90 rounded-2xl border border-cyan-700 flex flex-col items-center justify-center text-center"></div>
-                <div id="slot-preview-uniquepower" class="p-2 bg-emerald-950/90 rounded-2xl border border-amber-500 flex flex-col items-center justify-center text-center"></div>
-                <div id="slot-preview-cutscene" class="p-2 bg-emerald-950/90 rounded-2xl border border-purple-700 flex flex-col items-center justify-center text-center"></div>
-                <div id="slot-preview-porter" class="p-2 bg-emerald-950/90 rounded-2xl border border-yellow-500 flex flex-col items-center justify-center text-center"></div>
+              <div class="grid grid-cols-7 gap-1.5 md:gap-2">
+                <div id="slot-preview-weapon" class="p-1.5 bg-emerald-950/90 rounded-2xl border border-emerald-700 flex flex-col items-center justify-center text-center"></div>
+                <div id="slot-preview-armor" class="p-1.5 bg-emerald-950/90 rounded-2xl border border-emerald-700 flex flex-col items-center justify-center text-center"></div>
+                <div id="slot-preview-rune" class="p-1.5 bg-emerald-950/90 rounded-2xl border border-emerald-700 flex flex-col items-center justify-center text-center"></div>
+                <div id="slot-preview-skill" class="p-1.5 bg-emerald-950/90 rounded-2xl border border-cyan-700 flex flex-col items-center justify-center text-center"></div>
+                <div id="slot-preview-uniquepower" class="p-1.5 bg-emerald-950/90 rounded-2xl border border-amber-500 flex flex-col items-center justify-center text-center"></div>
+                <div id="slot-preview-cutscene" class="p-1.5 bg-emerald-950/90 rounded-2xl border border-purple-700 flex flex-col items-center justify-center text-center"></div>
+                <div id="slot-preview-porter" class="p-1.5 bg-emerald-950/90 rounded-2xl border border-yellow-500 flex flex-col items-center justify-center text-center"></div>
               </div>
             </div>
 
-
             <!-- SEPARATION DIVIDER WITH GLOWING BADGE -->
-            <div class="relative flex items-center justify-center my-1">
+            <div class="relative flex items-center justify-center my-0.5">
               <div class="w-full border-t-2 border-pink-500/40"></div>
-              <span class="absolute bg-slate-950 px-4 py-0.5 text-[10px] font-black text-pink-300 rounded-full border border-pink-500/60 uppercase tracking-widest shadow-lg">🐾 PET COMPANION SQUAD DIVISION</span>
+              <span class="absolute bg-slate-950 px-3 py-0.5 text-[9px] font-black text-pink-300 rounded-full border border-pink-500/60 uppercase tracking-widest shadow-lg font-mono">🐾 PET SQUAD LOADOUT</span>
             </div>
 
             <!-- SECTION 2: DEDICATED 5 PET COMPANION SQUAD LOADOUT -->
-            <div class="space-y-2.5 bg-gradient-to-b from-pink-950/60 to-slate-950 p-4 rounded-3xl border-2 border-pink-500/60 shadow-xl">
-              <div class="text-xs font-black text-pink-300 uppercase tracking-widest flex justify-between items-center">
+            <div class="space-y-2 bg-gradient-to-b from-pink-950/70 to-slate-950 p-4 rounded-3xl border-2 border-pink-500/60 shadow-xl">
+              <div class="text-[11px] font-black text-pink-300 uppercase tracking-widest flex justify-between items-center font-mono">
                 <span>🐾 ACTIVE BATTLE PET SQUAD</span>
-                <span class="text-[10px] text-amber-300 font-mono font-bold">5 Max Squad Slots</span>
+                <span class="text-[9px] text-amber-300 font-bold">5 Squad Slots</span>
               </div>
-              <div class="grid grid-cols-5 gap-2">
-                <div id="slot-preview-pet" class="p-2 bg-pink-950/90 rounded-2xl border border-pink-500 flex flex-col items-center justify-center text-center"></div>
-                <div id="slot-preview-pet2" class="p-2 bg-pink-950/90 rounded-2xl border border-pink-700 flex flex-col items-center justify-center text-center"></div>
-                <div id="slot-preview-pet3" class="p-2 bg-pink-950/90 rounded-2xl border border-pink-700 flex flex-col items-center justify-center text-center"></div>
-                <div id="slot-preview-pet4" class="p-2 bg-pink-950/90 rounded-2xl border border-pink-700 flex flex-col items-center justify-center text-center"></div>
-                <div id="slot-preview-pet5" class="p-2 bg-pink-950/90 rounded-2xl border border-pink-700 flex flex-col items-center justify-center text-center"></div>
+              <div class="grid grid-cols-5 gap-1.5 md:gap-2">
+                <div id="slot-preview-pet" class="p-1.5 bg-pink-950/90 rounded-2xl border border-pink-500 flex flex-col items-center justify-center text-center"></div>
+                <div id="slot-preview-pet2" class="p-1.5 bg-pink-950/90 rounded-2xl border border-pink-700 flex flex-col items-center justify-center text-center"></div>
+                <div id="slot-preview-pet3" class="p-1.5 bg-pink-950/90 rounded-2xl border border-pink-700 flex flex-col items-center justify-center text-center"></div>
+                <div id="slot-preview-pet4" class="p-1.5 bg-pink-950/90 rounded-2xl border border-pink-700 flex flex-col items-center justify-center text-center"></div>
+                <div id="slot-preview-pet5" class="p-1.5 bg-pink-950/90 rounded-2xl border border-pink-700 flex flex-col items-center justify-center text-center"></div>
               </div>
             </div>
           </div>
 
           <!-- Right Column: Attributes, CP Rank & Mountain Peak Ascension -->
           <div class="space-y-4 flex flex-col justify-between">
-            <div class="bg-gradient-to-r from-emerald-900 via-teal-900 to-emerald-800 p-5 rounded-3xl border border-emerald-400/60 flex justify-between items-center shadow-2xl">
-              <div>
-                <div class="text-xs text-emerald-300 font-black uppercase tracking-wider">TOTAL COMBAT POWER</div>
-                <div id="char-cp" class="text-3xl font-black text-amber-300 drop-shadow-[0_0_15px_rgba(245,158,11,0.8)]">35 CP</div>
+            <!-- COMBAT POWER BANNER CARD -->
+            <div class="bg-gradient-to-r from-emerald-900 via-teal-900 to-emerald-800 p-4 md:p-5 rounded-3xl border border-emerald-400/70 flex justify-between items-center shadow-2xl relative overflow-hidden">
+              <div class="z-10">
+                <div class="text-[10px] md:text-xs text-emerald-300 font-black uppercase tracking-wider font-mono">TOTAL COMBAT POWER</div>
+                <div id="char-cp" class="text-2xl md:text-3xl font-black text-amber-300 font-mono drop-shadow-[0_0_15px_rgba(245,158,11,0.9)]">35 CP</div>
               </div>
-              <div id="char-rank-badge" class="rank-badge px-4 py-2 bg-slate-950/80 border-2 border-gray-400 rounded-2xl text-gray-300 font-black text-sm shadow-xl">
+              <div id="char-rank-badge" class="rank-badge px-3 py-1.5 md:px-4 md:py-2 bg-slate-950/90 border-2 border-gray-400 rounded-2xl text-gray-200 font-black text-xs md:text-sm shadow-xl font-mono z-10">
                 RANK F
               </div>
             </div>
 
             <!-- Reincarnate (Ascension) Section -->
-            <div class="p-4 bg-gradient-to-r from-purple-950 via-slate-900 to-indigo-950 rounded-3xl border-2 border-purple-500/70 shadow-xl flex justify-between items-center">
+            <div class="p-4 bg-gradient-to-r from-purple-950 via-slate-900 to-indigo-950 rounded-3xl border-2 border-purple-500/80 shadow-xl flex items-center justify-between gap-3">
               <div>
-                <div class="text-xs font-black text-purple-300 flex items-center gap-1.5">
-                  <span>✨ REINCARNATION (REIN)</span>
+                <div class="text-xs font-black text-purple-300 flex items-center gap-1.5 font-mono">
+                  <span>✨ REINCARNATION PEAK</span>
                 </div>
-                <div class="text-xs text-purple-200 mt-0.5">Reincarnate: <span id="ascension-lvl-text" class="text-amber-300 font-mono font-black">REIN 0</span> (Req Lvl: <span id="ascension-req-text" class="text-amber-400 font-mono font-black">100</span>)</div>
+                <div class="text-[11px] text-purple-200 mt-0.5 font-mono">Current: <span id="ascension-lvl-text" class="text-amber-300 font-bold">REIN 0</span> (Req Lvl: <span id="ascension-req-text" class="text-amber-400 font-bold">25</span>)</div>
               </div>
-              <button id="btn-ascend-mountain" onclick="window.toggleAscendWarningModal(true)" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 text-white font-black text-xs rounded-2xl shadow-xl border border-purple-400 transition hover:scale-105 cursor-pointer">
+              <button id="btn-ascend-mountain" onclick="window.toggleAscendWarningModal(true)" class="px-4 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 text-white font-black text-xs rounded-2xl shadow-xl border border-purple-400 transition hover:scale-105 cursor-pointer font-mono shrink-0">
                 ✨ REINCARNATE
               </button>
             </div>
 
-            <div class="space-y-2.5 bg-slate-950/90 p-5 rounded-3xl border border-emerald-800/80 shadow-xl">
-              <div class="flex flex-wrap justify-between items-center text-xs font-black text-emerald-300 border-b border-emerald-800/80 pb-2 gap-2">
-                <span>Available Stat Points (<span id="stat-points" class="text-amber-400 font-mono font-black">5 PTS</span>)</span>
+            <!-- MARTIAL STAT ALLOCATION GRID -->
+            <div class="space-y-3 bg-slate-950/90 p-4 md:p-5 rounded-3xl border border-emerald-700/80 shadow-xl">
+              <div class="flex flex-wrap justify-between items-center text-xs font-black text-emerald-300 border-b border-emerald-800/80 pb-2.5 gap-2 font-mono">
+                <span>Available Points: <span id="stat-points" class="text-amber-400 font-mono font-black">5 PTS</span></span>
                 <div class="flex items-center gap-2">
-                  <button id="btn-toggle-autostat" onclick="window.toggleAutoStatAllocation()" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-amber-300 font-black text-[10px] rounded-xl border border-amber-500/60 shadow cursor-pointer transition flex items-center gap-1">
-                    ⚡ AUTO ALLOCATE: <span id="autostat-status-badge" class="text-gray-400 font-extrabold">OFF</span>
+                  <button id="btn-toggle-autostat" onclick="window.toggleAutoStatAllocation()" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-amber-300 font-black text-[10px] rounded-xl border border-amber-500/60 shadow cursor-pointer transition flex items-center gap-1">
+                    ⚡ AUTO: <span id="autostat-status-badge" class="text-gray-400 font-bold">OFF</span>
                   </button>
-                  <span class="text-[10px] text-emerald-400 font-bold uppercase">PER CLICK:</span>
-                  <input type="number" id="input-stat-alloc-amount" value="1" min="1" max="100" class="w-14 px-2 py-1 bg-slate-900 border border-emerald-500 rounded-xl text-center text-amber-300 font-mono font-bold text-xs">
+                  <span class="text-[9px] text-emerald-400 font-bold uppercase">PER CLICK:</span>
+                  <input type="number" id="input-stat-alloc-amount" value="1" min="1" max="100" class="w-12 px-1.5 py-0.5 bg-slate-900 border border-emerald-500 rounded-xl text-center text-amber-300 font-mono font-bold text-xs">
                 </div>
               </div>
 
-              <div class="grid grid-cols-2 gap-3 pt-1">
-                <div class="flex justify-between items-center bg-emerald-950/80 px-4 py-2.5 rounded-2xl border border-emerald-800/80">
-                  <span class="text-xs text-emerald-200 font-black">STR (Strength)</span>
-                  <div class="flex items-center gap-2">
+              <div class="grid grid-cols-2 gap-2.5 pt-1">
+                <div class="flex justify-between items-center bg-emerald-950/80 px-3 py-2 rounded-2xl border border-emerald-800/80">
+                  <span class="text-xs text-emerald-200 font-black font-mono">STR (Power)</span>
+                  <div class="flex items-center gap-1.5">
                     <span id="val-str" class="text-xs font-black text-white font-mono">10</span>
-                    <button onclick="addStatPoint('str')" class="w-7 h-7 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-black text-xs flex items-center justify-center shadow">+</button>
+                    <button onclick="addStatPoint('str')" class="w-6 h-6 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-black text-xs flex items-center justify-center shadow cursor-pointer">+</button>
                   </div>
                 </div>
 
-                <div class="flex justify-between items-center bg-emerald-950/80 px-4 py-2.5 rounded-2xl border border-emerald-800/80">
-                  <span class="text-xs text-emerald-200 font-black">INT (Magic)</span>
-                  <div class="flex items-center gap-2">
+                <div class="flex justify-between items-center bg-emerald-950/80 px-3 py-2 rounded-2xl border border-emerald-800/80">
+                  <span class="text-xs text-emerald-200 font-black font-mono">INT (Magic)</span>
+                  <div class="flex items-center gap-1.5">
                     <span id="val-int" class="text-xs font-black text-white font-mono">5</span>
-                    <button onclick="addStatPoint('int')" class="w-7 h-7 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-black text-xs flex items-center justify-center shadow">+</button>
+                    <button onclick="addStatPoint('int')" class="w-6 h-6 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-black text-xs flex items-center justify-center shadow cursor-pointer">+</button>
                   </div>
                 </div>
 
-                <div class="flex justify-between items-center bg-emerald-950/80 px-4 py-2.5 rounded-2xl border border-emerald-800/80">
-                  <span class="text-xs text-emerald-200 font-black">AGI (Agility)</span>
-                  <div class="flex items-center gap-2">
+                <div class="flex justify-between items-center bg-emerald-950/80 px-3 py-2 rounded-2xl border border-emerald-800/80">
+                  <span class="text-xs text-emerald-200 font-black font-mono">AGI (Agility)</span>
+                  <div class="flex items-center gap-1.5">
                     <span id="val-agi" class="text-xs font-black text-white font-mono">5</span>
-                    <button onclick="addStatPoint('agi')" class="w-7 h-7 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-black text-xs flex items-center justify-center shadow">+</button>
+                    <button onclick="addStatPoint('agi')" class="w-6 h-6 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-black text-xs flex items-center justify-center shadow cursor-pointer">+</button>
                   </div>
                 </div>
 
-                <div class="flex justify-between items-center bg-emerald-950/80 px-4 py-2.5 rounded-2xl border border-emerald-800/80">
-                  <span class="text-xs text-emerald-200 font-black">VIT (Vitality)</span>
-                  <div class="flex items-center gap-2">
+                <div class="flex justify-between items-center bg-emerald-950/80 px-3 py-2 rounded-2xl border border-emerald-800/80">
+                  <span class="text-xs text-emerald-200 font-black font-mono">VIT (Vitality)</span>
+                  <div class="flex items-center gap-1.5">
                     <span id="val-vit" class="text-xs font-black text-white font-mono">5</span>
-                    <button onclick="addStatPoint('vit')" class="w-7 h-7 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-black text-xs flex items-center justify-center shadow">+</button>
+                    <button onclick="addStatPoint('vit')" class="w-6 h-6 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-black text-xs flex items-center justify-center shadow cursor-pointer">+</button>
                   </div>
                 </div>
               </div>
@@ -904,6 +904,23 @@
               <div class="flex justify-between font-bold"><span>Skill Single (1x):</span><span class="text-amber-300 font-mono font-black">100 📜</span></div>
               <div class="flex justify-between font-bold"><span>Skill Multi (10x):</span><span class="text-indigo-300 font-mono font-black">10 📖</span></div>
             </div>
+
+            <!-- GACHA 10x CURRENCY AUTO-CONVERTER EXCHANGE SECTION -->
+            <div class="bg-gradient-to-r from-emerald-950/90 via-slate-950 to-emerald-950 p-3.5 rounded-2xl border-2 border-emerald-500/80 text-left space-y-2 shadow-xl">
+              <div class="flex items-center justify-between">
+                <div class="text-[11px] font-black text-emerald-300 uppercase tracking-wider flex items-center gap-1.5">
+                  <span class="animate-pulse">⚡</span>
+                  <span>10x CURRENCY AUTO-CONVERTER</span>
+                </div>
+                <span class="text-[8px] bg-emerald-700 text-white font-mono px-2 py-0.5 rounded-full font-bold">10x BULK WISH</span>
+              </div>
+              <p class="text-[9px] text-emerald-200/80 font-mono">
+                Auto-converts 100 Gems, 5k Gold, 10 Skill Tomes or 100 Purple Gems into 10x Banner Wish Batches!
+              </p>
+              <button onclick="window.autoConvertGachaCurrencies()" class="w-full py-2 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 text-slate-950 font-black text-xs rounded-xl shadow-lg border border-emerald-300 hover:scale-105 active:scale-95 transition cursor-pointer uppercase tracking-wider font-mono">
+                ⚡ AUTO-CONVERT ALL TO 10x WISHES
+              </button>
+            </div>
           </div>
 
           <!-- Right Column: Banner Model Showcase & Summon Controls (4 Columns) -->
@@ -1112,16 +1129,11 @@
             <span>⚪ COMMON ITEMS</span>
             <span id="badge-autosell-common" class="text-[10px] px-2 py-0.5 rounded bg-gray-800 text-gray-400">OFF</span>
           </button>
-          <button id="toggle-autosell-rare" onclick="toggleRarityAutoSell('rare')" class="w-full py-3 px-4 rounded-xl border flex justify-between items-center text-xs font-black text-blue-200 bg-blue-950 border-blue-600">
+<button id="toggle-autosell-rare" onclick="toggleRarityAutoSell('rare')" class="w-full py-3 px-4 rounded-xl border flex justify-between items-center text-xs font-black text-blue-200 bg-blue-950 border-blue-600">
             <span>🔵 RARE ITEMS</span>
             <span id="badge-autosell-rare" class="text-[10px] px-2 py-0.5 rounded bg-blue-900 text-blue-400">OFF</span>
           </button>
           <button id="toggle-autosell-legendary" onclick="toggleRarityAutoSell('legendary')" class="w-full py-3 px-4 rounded-xl border flex justify-between items-center text-xs font-black text-amber-200 bg-amber-950 border-amber-600">
-            <span>🟠 LEGENDARY ITEMS</span>
-            <span id="badge-autosell-legendary" class="text-[10px] px-2 py-0.5 rounded bg-amber-900 text-amber-400">OFF</span>
-          </button>
-          <button id="toggle-autosell-mythic" onclick="toggleRarityAutoSell('mythic')" class="w-full py-3 px-4 rounded-xl border flex justify-between items-center text-xs font-black text-purple-200 bg-purple-950 border-purple-600">
-            <span>🟣 MYTHIC ITEMS</span>
             <span id="badge-autosell-mythic" class="text-[10px] px-2 py-0.5 rounded bg-purple-900 text-purple-400">OFF</span>
           </button>
         </div>
@@ -1132,103 +1144,98 @@
       </div>
     </div>
 
-    <!-- BOTTOM-MIDDLE FIXED HERO HUD DOCK (MURIM MANGA GAME UI DESIGN) -->
-    <div id="dungeon-hero-stats-dock" class="fixed left-1/2 -translate-x-1/2 bottom-4 z-30 pointer-events-auto murim-manga-dock p-3.5 px-6 rounded-2xl flex flex-col gap-2 min-w-[300px] max-w-[360px] text-center shadow-[0_0_40px_rgba(0,0,0,0.9)]">
-      <!-- Murim Gold Corner Accents -->
-      <span class="murim-corner-tr">☯</span>
-      <span class="murim-corner-bl">☯</span>
+    <!-- BOTTOM-MIDDLE FIXED HERO HUD DOCK (BLACK & WHITE DESIGN WITH EMERALD GREEN GLOW EFFECT) -->
+    <div id="dungeon-hero-stats-dock" class="fixed left-1/2 -translate-x-1/2 bottom-3 z-30 pointer-events-auto monochrome-emerald-dock p-2.5 px-4 rounded-2xl flex flex-col gap-1.5 min-w-[260px] max-w-[320px] text-center shadow-[0_0_35px_rgba(16,185,129,0.8)]">
+      <!-- Emerald Glowing Dragon Corner Emblems -->
+      <span class="emerald-dragon-corner tl">🐉</span>
+      <span class="emerald-dragon-corner tr">🐉</span>
+      <span class="emerald-dragon-corner bl">🐉</span>
+      <span class="emerald-dragon-corner br">🐉</span>
 
-      <!-- HEADER: HERO NAME, CLASS ICON & MURIM SEAL BADGE -->
-      <div class="flex items-center justify-between gap-3 border-b-2 border-amber-500/40 pb-1.5">
-        <div class="flex items-center gap-2">
-          <div class="w-7 h-7 rounded-lg bg-emerald-950/90 border border-amber-400/70 flex items-center justify-center shadow-[0_0_10px_rgba(245,158,11,0.5)]">
-            <span id="hero-hud-class-icon" class="text-sm">🗡️</span>
+      <!-- HEADER: CLASS ICON, HERO NAME, LEVEL & RANK -->
+      <div class="flex items-center justify-between gap-2 border-b border-white/40 pb-1">
+        <div class="flex items-center gap-1.5">
+          <div class="w-6 h-6 rounded-lg bg-black border-2 border-emerald-400 flex items-center justify-center shadow-[0_0_10px_rgba(16,185,129,0.9)] shrink-0">
+            <span id="hero-hud-class-icon" class="text-xs">🗡️</span>
           </div>
-          <span id="hero-hud-name" class="text-sm font-black text-amber-200 tracking-wider font-mono truncate max-w-[120px] drop-shadow-[0_0_8px_rgba(245,158,11,0.6)]">Hero</span>
+          <span id="hero-hud-name" class="text-xs font-black text-white tracking-wider font-mono truncate max-w-[100px] drop-shadow-[0_1px_3px_rgba(0,0,0,1)]">Hero</span>
         </div>
-        <span id="hero-hud-rank" class="murim-seal-badge text-[10px] font-black px-2.5 py-0.5 rounded-lg font-mono uppercase tracking-wider">RANK D</span>
-      </div>
-
-      <!-- MANGA HP GAUGE (QI VITALITY) -->
-      <div class="space-y-1">
-        <div class="flex justify-between items-center text-[10px] font-black tracking-wider">
-          <span class="text-red-400 font-mono flex items-center gap-1">❤️ <span class="text-amber-300">QI HP</span></span>
-          <span id="hero-hud-hp-text" class="text-red-200 font-mono">120 / 120</span>
-        </div>
-        <div class="w-full h-3.5 manga-gauge-bg relative">
-          <div id="hero-hud-hp-bar" class="h-full bg-gradient-to-r from-red-600 via-rose-500 to-amber-400 manga-gauge-fill transition-all duration-300 shadow-[0_0_12px_rgba(239,68,68,0.8)]" style="width: 100%;"></div>
+        <div class="flex items-center gap-1.5">
+          <span id="hero-hud-level-text" class="text-[10px] font-black text-black font-mono bg-white px-2 py-0.5 rounded-md border border-emerald-400 shadow">LVL 1</span>
+          <span id="hero-hud-rank" class="text-[9px] font-black px-2 py-0.5 rounded-md font-mono uppercase tracking-wider bg-black text-emerald-300 border border-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]">RANK D</span>
         </div>
       </div>
 
-      <!-- MANGA EXP GAUGE (MARTIAL CULTIVATION) -->
-      <div class="space-y-1">
-        <div class="flex justify-between items-center text-[10px] font-black tracking-wider">
-          <span class="text-cyan-400 font-mono flex items-center gap-1">⭐ <span class="text-teal-300">CULTIVATION</span></span>
-          <span id="hero-hud-exp-text" class="text-cyan-200 font-mono">0 / 100</span>
+      <!-- HP GAUGE (HIGH-CONTRAST READABLE TEXT & EMERALD GLOW) -->
+      <div class="space-y-0.5">
+        <div class="flex justify-between items-center text-[9px] font-black tracking-wider">
+          <span class="text-white font-mono flex items-center gap-1">❤️ <span class="text-emerald-300">HP</span></span>
+          <span id="hero-hud-hp-text" class="text-white font-mono font-bold drop-shadow">120 / 120</span>
         </div>
-        <div class="w-full h-3 manga-gauge-bg relative">
-          <div id="hero-hud-exp-bar" class="h-full bg-gradient-to-r from-cyan-500 via-teal-400 to-amber-300 manga-gauge-fill transition-all duration-300 shadow-[0_0_12px_rgba(6,182,212,0.8)]" style="width: 0%;"></div>
+        <div class="w-full h-2.5 bg-black border border-white/60 rounded-md overflow-hidden relative shadow-inner">
+          <div id="hero-hud-hp-bar" class="h-full bg-gradient-to-r from-emerald-600 via-emerald-400 to-white transition-all duration-300 shadow-[0_0_12px_rgba(16,185,129,1)]" style="width: 100%;"></div>
         </div>
       </div>
 
-      <!-- FOOTER: CULTIVATION REALM / LEVEL & COMBAT POWER -->
-      <div class="flex items-center justify-between pt-1.5 border-t border-amber-500/40 text-[11px] font-mono font-black">
-        <div class="flex items-center gap-1 text-amber-300 bg-amber-950/70 px-2 py-0.5 rounded-md border border-amber-500/50 shadow-inner">
-          <span>📜</span>
-          <span id="hero-hud-level-text" class="tracking-wide">LVL 1 (ASC 0)</span>
+      <!-- EXP GAUGE (HIGH-CONTRAST READABLE TEXT & EMERALD GLOW) -->
+      <div class="space-y-0.5">
+        <div class="flex justify-between items-center text-[9px] font-black tracking-wider">
+          <span class="text-white font-mono flex items-center gap-1">⭐ <span class="text-emerald-300">EXP</span></span>
+          <span id="hero-hud-exp-text" class="text-white font-mono font-bold drop-shadow">0 / 100</span>
         </div>
-        <div class="flex items-center gap-1 text-emerald-300 bg-emerald-950/70 px-2 py-0.5 rounded-md border border-emerald-500/50 shadow-inner">
-          <span>⚡</span>
-          <span id="hero-hud-cp-text" class="tracking-wide">35 CP</span>
+        <div class="w-full h-2.5 bg-black border border-white/60 rounded-md overflow-hidden relative shadow-inner">
+          <div id="hero-hud-exp-bar" class="h-full bg-gradient-to-r from-teal-400 via-emerald-400 to-white transition-all duration-300 shadow-[0_0_12px_rgba(16,185,129,1)]" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- FOOTER: COMBAT POWER & EMERALD REALM SEAL -->
+      <div class="flex items-center justify-between pt-1 border-t border-white/40 text-[10px] font-mono font-black">
+        <div class="flex items-center gap-1 text-white bg-black px-2 py-0.5 rounded-md border border-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.5)]">
+          <span class="text-emerald-400">⚡</span>
+          <span id="hero-hud-cp-text" class="tracking-wide text-white">35 CP</span>
+        </div>
+        <div class="flex items-center gap-1 text-emerald-400 text-[9px] uppercase tracking-widest font-mono drop-shadow-[0_0_6px_rgba(16,185,129,0.8)]">
+          <span>🐉</span>
+          <span>MINIMIKYU REALM</span>
         </div>
       </div>
     </div>
 
 
-    <!-- FLOATING FIXED SAVE BUTTON IN BOTTOM LEFT OF DUNGEON (DOUBLE SAFETY MEASURE) -->
-    <div id="floating-save-btn-container" class="fixed bottom-6 left-6 z-50 pointer-events-auto">
-      <button onclick="window.manualFloatingSaveProgress()" class="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs border-2 border-emerald-300 shadow-[0_0_30px_rgba(16,185,129,0.85)] hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 cursor-pointer uppercase tracking-wider font-mono">
-        <span class="text-sm animate-bounce">💾</span>
-        <span>SAVE PROGRESS</span>
-      </button>
-    </div>
 
-    <!-- BOTTOM-RIGHT ENLARGED HERO METERS & AUTO-BATTLE DOCK (AUTO BATTLE, BANKAI, PET RUSH, SOUL METER) -->
-    <div id="hud-bottom-right-meters" class="fixed right-4 bottom-4 z-30 flex items-end gap-3 md:gap-4 pointer-events-auto">
-      <!-- AUTO BATTLE BUTTON (MATCHES EXACT METER SIZE & POSITIONED TO THE SIDE OF METERS) -->
-      <div id="dungeon-autobattle-container" class="flex flex-col items-center gap-1">
-        <button id="btn-toggle-autobattle" onclick="window.toggleAutoBattleFromUI()" class="w-20 h-20 md:w-24 md:h-24 rounded-3xl glass-panel border-2 border-emerald-500/80 bg-gradient-to-b from-emerald-950 via-slate-900 to-black flex flex-col items-center justify-center text-emerald-300 shadow-[0_0_30px_rgba(16,185,129,0.5)] transition hover:scale-110 active:scale-95 group relative cursor-pointer">
-          <span class="text-3xl md:text-4xl animate-bounce group-hover:scale-125 transition">⚔️</span>
-          <span id="autobattle-status-text" class="text-xs font-mono font-black text-emerald-200 mt-1">OFF</span>
+
+    <!-- BOTTOM-RIGHT ICON-ONLY COMPACT HERO ACTION METERS (AUTO BATTLE, BANKAI, PET RUSH, SOUL METER) -->
+    <div id="hud-bottom-right-meters" class="fixed right-3 bottom-3 md:right-4 md:bottom-4 z-30 flex items-center gap-2 md:gap-3 pointer-events-auto">
+      <!-- AUTO BATTLE BUTTON (ICON ONLY) -->
+      <div id="dungeon-autobattle-container">
+        <button id="btn-toggle-autobattle" onclick="window.toggleAutoBattleFromUI()" class="w-12 h-12 md:w-14 md:h-14 rounded-2xl glass-panel border-2 border-emerald-500/80 bg-gradient-to-b from-emerald-950 via-slate-900 to-black flex items-center justify-center text-emerald-300 shadow-[0_0_20px_rgba(16,185,129,0.6)] transition hover:scale-110 active:scale-95 group relative cursor-pointer" title="Auto Battle">
+          <span class="text-xl md:text-2xl transition">⚔️</span>
+          <span id="autobattle-status-text" class="hidden">OFF</span>
         </button>
-        <span class="text-[9px] font-black text-emerald-300 tracking-tighter bg-emerald-950/90 px-2.5 py-0.5 rounded-full border border-emerald-500/60 uppercase">AUTO BATTLE</span>
       </div>
 
-      <!-- BANKAI METER BUTTON (BLACK, WHITE & RED MONOCHROME MODE) -->
-      <div id="hero-aura-meter-container" class="flex flex-col items-center gap-1">
-        <button id="hero-aura-meter-btn" onclick="window.triggerHeroTitanAuraModeFromDOM()" class="w-20 h-20 md:w-24 md:h-24 rounded-3xl glass-panel border-2 border-red-500 bg-gradient-to-b from-slate-950 via-black to-red-950 flex flex-col items-center justify-center text-white shadow-[0_0_35px_rgba(239,68,68,0.8)] transition hover:scale-110 active:scale-95 group relative cursor-pointer">
-          <span class="text-3xl md:text-4xl animate-bounce group-hover:scale-125 transition drop-shadow-[0_0_10px_rgba(255,255,255,1)]">🖤</span>
-          <span id="hero-aura-text" class="text-xs font-mono font-black text-red-200 mt-1">0/100</span>
+      <!-- BANKAI METER BUTTON (ICON ONLY) -->
+      <div id="hero-aura-meter-container">
+        <button id="hero-aura-meter-btn" onclick="window.triggerHeroTitanAuraModeFromDOM()" class="w-12 h-12 md:w-14 md:h-14 rounded-2xl glass-panel border-2 border-red-500 bg-gradient-to-b from-slate-950 via-black to-red-950 flex items-center justify-center text-white shadow-[0_0_20px_rgba(239,68,68,0.8)] transition hover:scale-110 active:scale-95 group relative cursor-pointer" title="Bankai Meter">
+          <span class="text-xl md:text-2xl transition drop-shadow-[0_0_8px_rgba(255,255,255,1)]">🖤</span>
+          <span id="hero-aura-text" class="hidden">0/100</span>
         </button>
-        <span class="text-[9px] font-black text-red-400 tracking-tighter bg-black/90 px-2.5 py-0.5 rounded-full border border-red-500/80 uppercase shadow">BANKAI</span>
       </div>
 
-      <!-- PET RUSH METER BUTTON (AUTO AT 100) -->
-      <div id="pet-squad-meter-container" class="flex flex-col items-center gap-1">
-        <button id="pet-squad-meter-btn" class="w-20 h-20 md:w-24 md:h-24 rounded-3xl glass-panel border-2 border-pink-500/80 bg-gradient-to-b from-pink-900 via-rose-950 to-black flex flex-col items-center justify-center text-pink-300 shadow-[0_0_30px_rgba(244,114,182,0.5)] transition group relative cursor-default">
-          <span class="text-3xl md:text-4xl animate-bounce group-hover:scale-125 transition">🐾</span>
-          <span id="pet-meter-text" class="text-xs font-mono font-black text-pink-200 mt-1">0/100</span>
+      <!-- PET RUSH METER BUTTON (ICON ONLY) -->
+      <div id="pet-squad-meter-container">
+        <button id="pet-squad-meter-btn" class="w-12 h-12 md:w-14 md:h-14 rounded-2xl glass-panel border-2 border-pink-500/80 bg-gradient-to-b from-pink-900 via-rose-950 to-black flex items-center justify-center text-pink-300 shadow-[0_0_20px_rgba(244,114,182,0.6)] transition group relative cursor-default" title="Pet Rush">
+          <span class="text-xl md:text-2xl transition">🐾</span>
+          <span id="pet-meter-text" class="hidden">0/100</span>
         </button>
-        <span class="text-[9px] font-black text-pink-300 tracking-tighter bg-pink-950/90 px-2.5 py-0.5 rounded-full border border-pink-600/60 uppercase">PET RUSH</span>
       </div>
 
-      <!-- SOUL KILL METER BUTTON -->
-      <div id="soul-killmeter-container" class="flex flex-col items-center gap-1">
-        <button id="soul-killmeter-btn" onclick="window.triggerSoulCutscene()" class="w-20 h-20 md:w-24 md:h-24 rounded-3xl glass-panel border-2 border-purple-500/80 bg-gradient-to-b from-purple-900 via-indigo-950 to-black flex flex-col items-center justify-center text-purple-300 shadow-[0_0_30px_rgba(168,85,247,0.5)] transition hover:scale-110 active:scale-95 group relative">
-          <span class="text-3xl md:text-4xl animate-pulse group-hover:scale-125 transition">👻</span>
-          <span id="soul-meter-text" class="text-xs font-mono font-black text-purple-200 mt-1">0/100</span>
+      <!-- SOUL KILL METER BUTTON (ICON ONLY) -->
+      <div id="soul-killmeter-container">
+        <button id="soul-killmeter-btn" onclick="window.triggerSoulCutscene()" class="w-12 h-12 md:w-14 md:h-14 rounded-2xl glass-panel border-2 border-purple-500/80 bg-gradient-to-b from-purple-900 via-indigo-950 to-black flex items-center justify-center text-purple-300 shadow-[0_0_20px_rgba(168,85,247,0.6)] transition hover:scale-110 active:scale-95 group relative" title="Soul Meter">
+          <span class="text-xl md:text-2xl transition">👻</span>
+          <span id="soul-meter-text" class="hidden">0/100</span>
         </button>
-        <span class="text-[9px] font-black text-purple-300 tracking-tighter bg-purple-950/90 px-2.5 py-0.5 rounded-full border border-purple-600/60 uppercase">SOUL METER</span>
       </div>
     </div>
 
@@ -1375,6 +1382,19 @@
               <span id="setting-volume-label" class="text-xs font-mono font-bold text-amber-300">80%</span>
             </div>
             <input type="range" id="setting-music-volume" min="0" max="100" value="80" oninput="window.handleVolumeChange(this.value)" class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-emerald-400">
+          </div>
+
+          <!-- SOUND EFFECTS (SFX) ON/OFF TOGGLE BUTTON -->
+          <div class="p-3 bg-emerald-950/80 rounded-2xl border border-emerald-700/80 flex items-center justify-between gap-3">
+            <div>
+              <div class="text-xs font-black text-emerald-300 flex items-center gap-1.5">
+                <span>🔊 SOUND EFFECTS (SFX)</span>
+              </div>
+              <div class="text-[9px] text-emerald-400/80 mt-0.5 font-mono">Toggles combat hits, clicks & skill audio only. BGM stays playing!</div>
+            </div>
+            <button id="btn-toggle-sfx-settings" onclick="window.toggleSFXFromUI()" class="px-3.5 py-2 rounded-xl text-xs font-black transition border shadow-lg shrink-0 cursor-pointer bg-emerald-600 text-white border-emerald-400">
+              SFX: ON ⚡
+            </button>
           </div>
         </div>
 

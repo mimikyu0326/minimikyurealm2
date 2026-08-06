@@ -98,27 +98,28 @@ class UIService {
         return msg;
     }
     showToast(msg, type = 'info') {
-        const container = document.getElementById('rpg-toast-container');
-        if (!container)
-            return;
         const briefMsg = this.shortenToastMsg(msg);
-        const toast = document.createElement('div');
-        toast.className = `glass-panel p-3 px-3.5 rounded-2xl border text-xs font-extrabold shadow-2xl flex items-center gap-2.5 transition-all duration-300 -translate-x-10 opacity-0 pointer-events-auto ${type === 'success' ? 'border-emerald-400 text-emerald-100 bg-emerald-950/95' :
-            type === 'warning' ? 'border-amber-400 text-amber-100 bg-amber-950/95' :
-                'border-cyan-400 text-cyan-100 bg-cyan-950/95'}`;
         const icon = type === 'success' ? '✨' : type === 'warning' ? '⚠️' : '⚡';
-        toast.innerHTML = `
-      <span class="text-base">${icon}</span>
-      <span class="flex-1">${briefMsg}</span>
-    `;
-        container.appendChild(toast);
-        setTimeout(() => {
-            toast.classList.remove('-translate-x-10', 'opacity-0');
-        }, 10);
-        setTimeout(() => {
-            toast.classList.add('-translate-x-10', 'opacity-0');
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
+        const formatted = `${icon} ${briefMsg}`;
+        const latestEl = document.getElementById('feedback-log-latest-text');
+        const historyEl = document.getElementById('feedback-log-history-list');
+        if (latestEl) {
+            latestEl.innerText = formatted;
+            latestEl.className = type === 'success' ? 'text-emerald-300 font-bold truncate' :
+                type === 'warning' ? 'text-amber-300 font-bold truncate' :
+                    'text-cyan-300 font-bold truncate';
+        }
+        if (historyEl) {
+            const item = document.createElement('div');
+            item.className = type === 'success' ? 'text-emerald-200 font-mono' :
+                type === 'warning' ? 'text-amber-200 font-mono' :
+                    'text-cyan-200 font-mono';
+            item.innerText = `• ${formatted}`;
+            historyEl.prepend(item);
+            while (historyEl.children.length > 15) {
+                historyEl.removeChild(historyEl.lastChild);
+            }
+        }
     }
 }
 exports.UIService = UIService;

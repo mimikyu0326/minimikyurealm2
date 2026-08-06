@@ -856,7 +856,34 @@ export class GameStateService {
     this.listeners.push(listener);
   }
 
+  public checkTowerKeyOverflow(): void {
+    if (this.state.towerKeys && this.state.towerKeys > 20) {
+      const excess = this.state.towerKeys - 20;
+      const convertedGold = excess * 500;
+      this.state.towerKeys = 20;
+      this.state.gold += convertedGold;
+
+      const { UIService } = require('./UIService');
+      UIService.getInstance().showToast(`🔑 Tower Keys full (20/20)! Converted ${excess} exceeding Key(s) -> +${convertedGold.toLocaleString()} Gold 🪙`, 'warning');
+    }
+  }
+
+  public addTowerKeys(amount: number): { addedKeys: number; convertedGold: number } {
+    const currentKeys = this.state.towerKeys || 0;
+    this.state.towerKeys = currentKeys + amount;
+    this.checkTowerKeyOverflow();
+    this.notify();
+    this.saveToFirebase();
+
+    const excess = Math.max(0, (currentKeys + amount) - 20);
+    const addedKeys = Math.min(amount, Math.max(0, 20 - currentKeys));
+    const convertedGold = excess * 500;
+
+    return { addedKeys, convertedGold };
+  }
+
   public notify(): void {
+    this.checkTowerKeyOverflow();
     this.recalculateCP();
     this.listeners.forEach(fn => fn());
     this.updateHUDDOM();

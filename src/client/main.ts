@@ -219,6 +219,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (dungeonScreen) dungeonScreen.triggerSoulCutscene();
   };
 
+  (window as any).autoConvertGachaCurrencies = () => {
+    if (gachaScreen) gachaScreen.autoConvertCurrenciesToWishTokens();
+  };
+
   (window as any).handleVolumeChange = (val: string) => {
     const num = parseInt(val, 10);
     const audio = AudioService.getInstance();
@@ -408,10 +412,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('modal-account-settings');
     if (!modal) return;
     if (show) {
+      (window as any).updateSFXButtonUI();
       modal.classList.remove('hidden');
       audio.playSound('potion');
     } else {
       modal.classList.add('hidden');
+    }
+  };
+
+  (window as any).toggleSFXFromUI = () => {
+    const isEnabled = audio.toggleSFX();
+    (window as any).updateSFXButtonUI(isEnabled);
+    const { UIService } = require('./services/UIService');
+    UIService.getInstance().showToast(isEnabled ? '🔊 Sound Effects (SFX) Enabled' : '🔇 Sound Effects (SFX) Muted (BGM Active)', isEnabled ? 'success' : 'warning');
+  };
+
+  (window as any).updateSFXButtonUI = (isEnabled?: boolean) => {
+    const active = typeof isEnabled === 'boolean' ? isEnabled : audio.isSfxActive();
+    const btn = document.getElementById('btn-toggle-sfx-settings');
+    if (btn) {
+      if (active) {
+        btn.className = 'px-3.5 py-2 rounded-xl text-xs font-black transition border shadow-lg shrink-0 cursor-pointer bg-emerald-600 text-white border-emerald-400';
+        btn.innerText = 'SFX: ON ⚡';
+      } else {
+        btn.className = 'px-3.5 py-2 rounded-xl text-xs font-black transition border shadow-lg shrink-0 cursor-pointer bg-red-950 text-red-300 border-red-600';
+        btn.innerText = 'SFX: OFF 🔇';
+      }
     }
   };
 
@@ -716,27 +742,49 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(() => {});
 
 function initializeMobileJoystick(dungeonScreen: DungeonScreen): void {
+  const joystickContainer = document.getElementById('mobile-joystick-container');
   const joystickBase = document.getElementById('joystick-base');
   const joystickThumb = document.getElementById('joystick-thumb');
 
-  if (!joystickBase || !joystickThumb) return;
+  if (!joystickContainer || !joystickBase || !joystickThumb) return;
 
   let activeTouchId: number | null = null;
   let startX = 0;
   let startY = 0;
-  const maxRadius = 40;
+  const maxRadius = 36;
 
-  const handleTouchStart = (e: TouchEvent) => {
+  joystickContainer.style.position = 'fixed';
+  joystickContainer.style.opacity = '0';
+  joystickContainer.style.pointerEvents = 'none';
+  joystickContainer.style.transition = 'opacity 0.12s ease-out';
+
+  const viewDungeon = document.getElementById('view-dungeon') || document.getElementById('game-container');
+
+  const handleGlobalTouchStart = (e: TouchEvent) => {
     if (activeTouchId !== null) return;
+    const target = e.target as HTMLElement;
+
+    if (target.closest('button, nav, header, input, a, select, textarea, .glass-panel:not(#mobile-joystick-container)')) {
+      return;
+    }
+
     const touch = e.changedTouches[0];
     activeTouchId = touch.identifier;
-    const rect = joystickBase.getBoundingClientRect();
-    startX = rect.left + rect.width / 2;
-    startY = rect.top + rect.height / 2;
-    updateJoystickPosition(touch.clientX, touch.clientY);
+
+    startX = touch.clientX;
+    startY = touch.clientY;
+
+    joystickContainer.style.left = `${startX}px`;
+    joystickContainer.style.top = `${startY}px`;
+    joystickContainer.style.transform = 'translate(-50%, -50%)';
+    joystickContainer.style.opacity = '1';
+    joystickContainer.style.display = 'block';
+
+    joystickThumb.style.transform = 'translate(-50%, -50%)';
+    dungeonScreen.setJoystickDirection(0, 0);
   };
 
-  const handleTouchMove = (e: TouchEvent) => {
+  const handleGlobalTouchMove = (e: TouchEvent) => {
     if (activeTouchId === null) return;
     for (let i = 0; i < e.changedTouches.length; i++) {
       if (e.changedTouches[i].identifier === activeTouchId) {
@@ -746,12 +794,13 @@ function initializeMobileJoystick(dungeonScreen: DungeonScreen): void {
     }
   };
 
-  const handleTouchEnd = (e: TouchEvent) => {
+  const handleGlobalTouchEnd = (e: TouchEvent) => {
     if (activeTouchId === null) return;
     for (let i = 0; i < e.changedTouches.length; i++) {
       if (e.changedTouches[i].identifier === activeTouchId) {
         activeTouchId = null;
         joystickThumb.style.transform = 'translate(-50%, -50%)';
+        joystickContainer.style.opacity = '0';
         dungeonScreen.setJoystickDirection(0, 0);
         break;
       }
@@ -774,10 +823,13 @@ function initializeMobileJoystick(dungeonScreen: DungeonScreen): void {
     dungeonScreen.setJoystickDirection(normX, normY);
   };
 
-  joystickBase.addEventListener('touchstart', handleTouchStart, { passive: true });
-  window.addEventListener('touchmove', handleTouchMove, { passive: true });
-  window.addEventListener('touchend', handleTouchEnd, { passive: true });
-  window.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+  if (viewDungeon) {
+    viewDungeon.addEventListener('touchstart', handleGlobalTouchStart, { passive: true });
+  }
+  window.addEventListener('touchstart', handleGlobalTouchStart, { passive: true });
+  window.addEventListener('touchmove', handleGlobalTouchMove, { passive: true });
+  window.addEventListener('touchend', handleGlobalTouchEnd, { passive: true });
+  window.addEventListener('touchcancel', handleGlobalTouchEnd, { passive: true });
 }
 
 

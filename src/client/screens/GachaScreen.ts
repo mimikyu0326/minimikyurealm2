@@ -60,6 +60,52 @@ export class GachaScreen implements ScreenLifecycle {
     { name: 'Leather Armored Robe', type: 'armor', rarity: 'common', icon: '🥋', bonusHp: 30, cpBonus: 15, description: 'Basic leather body armor.' }
   ];
 
+  public autoConvertCurrenciesToWishTokens(): void {
+    const state = this.gameState.state;
+    let totalPulls = 0;
+
+    // 1. Gear Shrine: 10 Gems per 10x Wish Batch
+    if (state.gems >= 10) {
+      const batches = Math.floor(state.gems / 10);
+      state.gems -= batches * 10;
+      totalPulls += batches * 10;
+    }
+
+    // 2. Pet Altar: 10 Purple Gems per 10x Wish Batch
+    if ((state.purpleGems || 0) >= 10) {
+      const batches = Math.floor(state.purpleGems / 10);
+      state.purpleGems -= batches * 10;
+      totalPulls += batches * 10;
+    }
+
+    // 3. Skill Tome Vault: 10 Ancient Books per 10x Wish Batch
+    if ((state.ancientBooks || 0) >= 10) {
+      const batches = Math.floor(state.ancientBooks / 10);
+      state.ancientBooks -= batches * 10;
+      totalPulls += batches * 10;
+    }
+
+    // 4. Gold conversion: 10,000 Gold per 10x Wish Batch
+    if (state.gold >= 10000) {
+      const batches = Math.floor(state.gold / 10000);
+      state.gold -= batches * 10000;
+      totalPulls += batches * 10;
+    }
+
+    if (totalPulls > 0) {
+      const batches = Math.floor(totalPulls / 10);
+      for (let i = 0; i < batches; i++) {
+        this.roll(10);
+      }
+      this.gameState.notify();
+      this.gameState.saveToFirebase();
+      this.audio.playSound('gacha');
+      this.ui.showToast(`⚡ AUTO-CONVERTED ALL BALANCE! Executed ${totalPulls} Wish Pulls (${batches}x 10-Wish Batches)!`, 'success');
+    } else {
+      this.ui.showToast('⚠️ Not enough currencies for 10x Auto-Conversion! Need 10 Gems, 10 Purple Gems, 10 Ancient Books, or 10k Gold.', 'warning');
+    }
+  }
+
   public activeBanner: 'gear' | 'pet' | 'skill' = 'gear';
 
   private skillPool: GachaDrop[] = [

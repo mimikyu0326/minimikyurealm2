@@ -8,16 +8,39 @@ class AudioService {
     static instance;
     audioCtx = null;
     isBgmPlaying = true; // DEFAULT ON AS REQUESTED!
+    isSfxEnabled = true; // DEFAULT ON FOR SOUND EFFECTS
     masterVolume = 0.8; // HIGHER DEFAULT VOLUME (80%)
     bgmAudio = null;
     constructor() {
         this.initAudioElement();
+        if (typeof window !== 'undefined') {
+            const savedSfx = localStorage.getItem('minimikyu_sfx_enabled');
+            if (savedSfx !== null) {
+                this.isSfxEnabled = savedSfx === 'true';
+            }
+        }
     }
     static getInstance() {
         if (!AudioService.instance) {
             AudioService.instance = new AudioService();
         }
         return AudioService.instance;
+    }
+    toggleSFX() {
+        this.isSfxEnabled = !this.isSfxEnabled;
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('minimikyu_sfx_enabled', this.isSfxEnabled ? 'true' : 'false');
+        }
+        return this.isSfxEnabled;
+    }
+    isSfxActive() {
+        return this.isSfxEnabled;
+    }
+    setSFXEnabled(enabled) {
+        this.isSfxEnabled = enabled;
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('minimikyu_sfx_enabled', enabled ? 'true' : 'false');
+        }
     }
     initAudioElement() {
         if (typeof window === 'undefined')
@@ -81,6 +104,8 @@ class AudioService {
         }
     }
     playSound(type) {
+        if (!this.isSfxEnabled)
+            return;
         try {
             const ctx = this.initCtx();
             const osc = ctx.createOscillator();

@@ -6,11 +6,18 @@ export class AudioService {
   private static instance: AudioService;
   private audioCtx: AudioContext | null = null;
   private isBgmPlaying: boolean = true; // DEFAULT ON AS REQUESTED!
+  private isSfxEnabled: boolean = true; // DEFAULT ON FOR SOUND EFFECTS
   private masterVolume: number = 0.8; // HIGHER DEFAULT VOLUME (80%)
   private bgmAudio: HTMLAudioElement | null = null;
 
   private constructor() {
     this.initAudioElement();
+    if (typeof window !== 'undefined') {
+      const savedSfx = localStorage.getItem('minimikyu_sfx_enabled');
+      if (savedSfx !== null) {
+        this.isSfxEnabled = savedSfx === 'true';
+      }
+    }
   }
 
   public static getInstance(): AudioService {
@@ -18,6 +25,25 @@ export class AudioService {
       AudioService.instance = new AudioService();
     }
     return AudioService.instance;
+  }
+
+  public toggleSFX(): boolean {
+    this.isSfxEnabled = !this.isSfxEnabled;
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('minimikyu_sfx_enabled', this.isSfxEnabled ? 'true' : 'false');
+    }
+    return this.isSfxEnabled;
+  }
+
+  public isSfxActive(): boolean {
+    return this.isSfxEnabled;
+  }
+
+  public setSFXEnabled(enabled: boolean): void {
+    this.isSfxEnabled = enabled;
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('minimikyu_sfx_enabled', enabled ? 'true' : 'false');
+    }
   }
 
   private initAudioElement(): void {
@@ -90,6 +116,7 @@ export class AudioService {
 
 
   public playSound(type: 'attack' | 'hit' | 'levelup' | 'potion' | 'click' | 'gacha' | 'victory'): void {
+    if (!this.isSfxEnabled) return;
     try {
       const ctx = this.initCtx();
       const osc = ctx.createOscillator();

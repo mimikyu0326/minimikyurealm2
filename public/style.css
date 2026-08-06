@@ -326,6 +326,32 @@ button:active, .item-slot:active, .tab-btn:active {
   letter-spacing: 0.05em;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
 }
+/* =========================================================
+   BLACK & WHITE HERO STATUS DOCK WITH EMERALD GREEN AURA GLOW
+   ========================================================= */
+
+.monochrome-emerald-dock {
+  position: relative;
+  background: linear-gradient(180deg, #000000 0%, #090d16 50%, #000000 100%);
+  border: 2px solid #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 0 35px rgba(16, 185, 129, 0.8), inset 0 0 20px rgba(16, 185, 129, 0.35);
+  backdrop-filter: blur(12px);
+}
+
+.emerald-dragon-corner {
+  position: absolute;
+  font-size: 14px;
+  line-height: 1;
+  pointer-events: none;
+  filter: drop-shadow(0 0 10px rgba(16, 185, 129, 1));
+  z-index: 20;
+}
+
+.emerald-dragon-corner.tl { top: -10px; left: -10px; transform: scaleX(-1); }
+.emerald-dragon-corner.tr { top: -10px; right: -10px; }
+.emerald-dragon-corner.bl { bottom: -10px; left: -10px; transform: scale(-1); }
+.emerald-dragon-corner.br { bottom: -10px; right: -10px; transform: scaleY(-1); }
 
 /* =========================================================
    2026 MODERN MOBILE PORTRAIT GAME UI SCALING & RESPONSIVENESS
@@ -407,7 +433,7 @@ button:active, .item-slot:active, .tab-btn:active {
 
   #hud-bottom-right-meters {
     right: 8px !important;
-    bottom: 64px !important;
+    bottom: 8px !important;
     gap: 6px !important;
   }
 
@@ -422,12 +448,11 @@ button:active, .item-slot:active, .tab-btn:active {
   #hero-aura-meter-btn,
   #pet-squad-meter-btn,
   #soul-killmeter-btn {
-    width: 42px !important;
-    height: 42px !important;
-    border-radius: 9999px !important;
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 12px !important;
     padding: 0 !important;
     display: flex !important;
-    flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
   }
@@ -508,12 +533,18 @@ button:active, .item-slot:active, .tab-btn:active {
     right: 2px !important;
   }
 
-  /* 6. GAME FEEDBACK LOG BAR FOR MOBILE */
+  /* 6. BOTTOM-LEFT 1-LINE EXPANDABLE GAME FEEDBACK LOG BAR FOR MOBILE */
   #game-feedback-log-bar {
-    bottom: 2px !important;
-    max-width: 94vw !important;
-    padding: 3px 8px !important;
-    font-size: 0.65rem !important;
+    top: auto !important;
+    bottom: 6px !important;
+    left: 6px !important;
+    right: auto !important;
+    transform: none !important;
+    width: 68vw !important;
+    max-width: 220px !important;
+    padding: 2px 6px !important;
+    font-size: 0.62rem !important;
+    z-index: 40 !important;
   }
 
   /* Game View Screens fit cleanly in portrait viewports */
@@ -526,6 +557,32 @@ button:active, .item-slot:active, .tab-btn:active {
   .item-slot {
     height: 4.5rem !important;
     padding: 0.2rem !important;
+  }
+
+  /* 7. MOBILE CHARACTER ZOOM OUT & COMPACT HERO AVATAR */
+  #preview-chibi-avatar {
+    width: 60px !important;
+    height: 60px !important;
+    padding: 0.1rem !important;
+    border-radius: 14px !important;
+  }
+
+  #preview-chibi-avatar #chibi-hero-card {
+    transform: scale(0.68) !important;
+    transform-origin: center center !important;
+  }
+
+  #view-character .glass-panel {
+    padding: 0.75rem !important;
+    gap: 0.75rem !important;
+  }
+
+  #view-character #char-name {
+    font-size: 1.1rem !important;
+  }
+
+  #view-character #char-title {
+    font-size: 0.6rem !important;
   }
 }
 

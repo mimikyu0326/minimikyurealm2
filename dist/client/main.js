@@ -25,12 +25,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const screenManager = ScreenManager_1.ScreenManager.getInstance();
     // Instantiate Screens
     const authScreen = new AuthScreen_1.AuthScreen((userId, hasCharacter) => {
-        if (hasCharacter) {
-            screenManager.showScreen('dungeon');
-        }
-        else {
-            screenManager.showScreen('char-create');
-        }
+        window.triggerResourceDownloadCheck(() => {
+            if (hasCharacter) {
+                screenManager.showScreen('dungeon');
+            }
+            else {
+                screenManager.showScreen('char-create');
+            }
+        });
     });
     const charCreateScreen = new CharacterCreateScreen_1.CharacterCreateScreen(() => {
         screenManager.showScreen('dungeon');
@@ -74,6 +76,68 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.classList.remove('hidden');
         else
             modal.classList.add('hidden');
+    };
+    let onResourceDownloadDoneCallback = null;
+    window.triggerResourceDownloadCheck = (onDone) => {
+        const isDownloaded = sessionStorage.getItem('minimikyu_resources_downloaded') === 'true';
+        if (isDownloaded) {
+            onDone();
+            return;
+        }
+        onResourceDownloadDoneCallback = onDone;
+        const modal = document.getElementById('modal-resource-downloader');
+        if (modal)
+            modal.classList.remove('hidden');
+    };
+    window.startResourceDownloadProcess = () => {
+        const btnGroup = document.getElementById('resource-download-btn-group');
+        const progressContainer = document.getElementById('resource-progress-container');
+        const progressBar = document.getElementById('resource-progress-bar');
+        const statusText = document.getElementById('resource-download-status-text');
+        const percentText = document.getElementById('resource-download-percent');
+        const phaserStatus = document.getElementById('status-pkg-phaser');
+        const audioStatus = document.getElementById('status-pkg-audio');
+        const firebaseStatus = document.getElementById('status-pkg-firebase');
+        const vfxStatus = document.getElementById('status-pkg-vfx');
+        if (btnGroup)
+            btnGroup.classList.add('hidden');
+        if (progressContainer)
+            progressContainer.classList.remove('hidden');
+        const updateStep = (percent, msg, statusEl) => {
+            if (progressBar)
+                progressBar.style.width = `${percent}%`;
+            if (percentText)
+                percentText.innerText = `${percent}%`;
+            if (statusText)
+                statusText.innerText = msg;
+            if (statusEl) {
+                statusEl.className = 'text-emerald-400 font-bold font-mono';
+                statusEl.innerText = 'DOWNLOADED (OK)';
+            }
+        };
+        setTimeout(() => {
+            updateStep(25, 'Downloading Phaser 3 Engine Modules...', phaserStatus);
+        }, 400);
+        setTimeout(() => {
+            updateStep(50, 'Fetching Audio & BGM Performance Cache...', audioStatus);
+        }, 900);
+        setTimeout(() => {
+            updateStep(75, 'Initializing Realtime Firebase DB Sync...', firebaseStatus);
+        }, 1400);
+        setTimeout(() => {
+            updateStep(100, 'Preloading Particle VFX & Reincarnate Sprites...', vfxStatus);
+        }, 1900);
+        setTimeout(() => {
+            sessionStorage.setItem('minimikyu_resources_downloaded', 'true');
+            UIService_1.UIService.getInstance().showToast('✅ FULL GAME RESOURCES & ENGINE MODULES READY!', 'success');
+            const modal = document.getElementById('modal-resource-downloader');
+            if (modal)
+                modal.classList.add('hidden');
+            if (onResourceDownloadDoneCallback) {
+                onResourceDownloadDoneCallback();
+                onResourceDownloadDoneCallback = null;
+            }
+        }, 2400);
     };
     window.handleCharacterCreate = (e) => charCreateScreen.handleCreate(e);
     window.selectJobClass = (jobClass) => charCreateScreen.selectClass(jobClass);

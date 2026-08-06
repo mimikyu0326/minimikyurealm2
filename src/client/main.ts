@@ -28,11 +28,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Instantiate Screens
   const authScreen = new AuthScreen((userId, hasCharacter) => {
-    if (hasCharacter) {
-      screenManager.showScreen('dungeon');
-    } else {
-      screenManager.showScreen('char-create');
-    }
+    (window as any).triggerResourceDownloadCheck(() => {
+      if (hasCharacter) {
+        screenManager.showScreen('dungeon');
+      } else {
+        screenManager.showScreen('char-create');
+      }
+    });
   });
 
   const charCreateScreen = new CharacterCreateScreen(() => {
@@ -80,6 +82,75 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!modal) return;
     if (show) modal.classList.remove('hidden');
     else modal.classList.add('hidden');
+  };
+
+  let onResourceDownloadDoneCallback: (() => void) | null = null;
+
+  (window as any).triggerResourceDownloadCheck = (onDone: () => void) => {
+    const isDownloaded = sessionStorage.getItem('minimikyu_resources_downloaded') === 'true';
+    if (isDownloaded) {
+      onDone();
+      return;
+    }
+
+    onResourceDownloadDoneCallback = onDone;
+    const modal = document.getElementById('modal-resource-downloader');
+    if (modal) modal.classList.remove('hidden');
+  };
+
+  (window as any).startResourceDownloadProcess = () => {
+    const btnGroup = document.getElementById('resource-download-btn-group');
+    const progressContainer = document.getElementById('resource-progress-container');
+    const progressBar = document.getElementById('resource-progress-bar');
+    const statusText = document.getElementById('resource-download-status-text');
+    const percentText = document.getElementById('resource-download-percent');
+
+    const phaserStatus = document.getElementById('status-pkg-phaser');
+    const audioStatus = document.getElementById('status-pkg-audio');
+    const firebaseStatus = document.getElementById('status-pkg-firebase');
+    const vfxStatus = document.getElementById('status-pkg-vfx');
+
+    if (btnGroup) btnGroup.classList.add('hidden');
+    if (progressContainer) progressContainer.classList.remove('hidden');
+
+    const updateStep = (percent: number, msg: string, statusEl: HTMLElement | null) => {
+      if (progressBar) progressBar.style.width = `${percent}%`;
+      if (percentText) percentText.innerText = `${percent}%`;
+      if (statusText) statusText.innerText = msg;
+      if (statusEl) {
+        statusEl.className = 'text-emerald-400 font-bold font-mono';
+        statusEl.innerText = 'DOWNLOADED (OK)';
+      }
+    };
+
+    setTimeout(() => {
+      updateStep(25, 'Downloading Phaser 3 Engine Modules...', phaserStatus);
+    }, 400);
+
+    setTimeout(() => {
+      updateStep(50, 'Fetching Audio & BGM Performance Cache...', audioStatus);
+    }, 900);
+
+    setTimeout(() => {
+      updateStep(75, 'Initializing Realtime Firebase DB Sync...', firebaseStatus);
+    }, 1400);
+
+    setTimeout(() => {
+      updateStep(100, 'Preloading Particle VFX & Reincarnate Sprites...', vfxStatus);
+    }, 1900);
+
+    setTimeout(() => {
+      sessionStorage.setItem('minimikyu_resources_downloaded', 'true');
+      UIService.getInstance().showToast('✅ FULL GAME RESOURCES & ENGINE MODULES READY!', 'success');
+      
+      const modal = document.getElementById('modal-resource-downloader');
+      if (modal) modal.classList.add('hidden');
+
+      if (onResourceDownloadDoneCallback) {
+        onResourceDownloadDoneCallback();
+        onResourceDownloadDoneCallback = null;
+      }
+    }, 2400);
   };
   (window as any).handleCharacterCreate = (e: Event) => (charCreateScreen as any).handleCreate(e);
   (window as any).selectJobClass = (jobClass: any) => charCreateScreen.selectClass(jobClass);

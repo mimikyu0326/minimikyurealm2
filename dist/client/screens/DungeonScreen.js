@@ -631,8 +631,8 @@ class DungeonScreen {
                 this.mountSprite.setVisible(false);
                 this.player = this.add.sprite(width / 2, height / 2, spriteKey).setDepth(10);
                 this.player.setScale(2.0);
-                this.flyingSwordSprite = this.add.sprite((width / 2) + 24, (height / 2) + 4, 'flying_sword_sprite').setDepth(15);
-                this.flyingSwordSprite.setScale(2.5);
+                this.flyingSwordSprite = this.add.sprite((width / 2) + 22, (height / 2) + 4, 'flying_sword_sprite').setDepth(15);
+                this.flyingSwordSprite.setScale(1.7);
                 // OVERHEAD FLOATING HERO TITLE & REIN BANNER (PLAIN, CLEAN & EASY TO READ SANS-SERIF FONT)
                 this.heroOverheadText = this.add.text(width / 2, (height / 2) - 65, '', {
                     fontFamily: "Arial, Helvetica, 'Segoe UI', sans-serif",
@@ -1865,8 +1865,9 @@ class DungeonScreen {
                     coreColor = 0x000000; // Deep Jet Black Core
                 }
                 const numPoints = 32;
-                const baseRadius = this.isHeroTitanMode ? 280 : (isAuto ? 46 : 38);
-                // FULL RANGE BANKAI CONTINUOUS SHOCKWAVE DAMAGE
+                const maxAttackRange = this.getAttackRangeRadius();
+                const baseRadius = this.isHeroTitanMode ? maxAttackRange : (isAuto ? 46 : 38);
+                // FULL RANGE BANKAI CONTINUOUS SHOCKWAVE DAMAGE (AUTO-ADJUSTS TO MAX ATTACK RANGE)
                 if (this.isHeroTitanMode) {
                     const now = this.time.now;
                     if (!this.lastAuraPulse || now - this.lastAuraPulse > 350) {
@@ -1875,7 +1876,7 @@ class DungeonScreen {
                             if (!e || !e.active)
                                 return;
                             const dist = Phaser.Math.Distance.Between(px, py, e.x, e.y);
-                            if (dist <= 280) {
+                            if (dist <= maxAttackRange) {
                                 const titanDmg = Math.floor((self.gameState.state.cp || 35) * 1.6);
                                 e.hp -= titanDmg;
                                 this.showDamageText(titanDmg, e.x, e.y);
@@ -2296,7 +2297,7 @@ class DungeonScreen {
                     }
                     const angle = Phaser.Math.Angle.Between(this.flyingSwordSprite.x, this.flyingSwordSprite.y, currentEnemy.x, currentEnemy.y);
                     this.flyingSwordSprite.setRotation(angle);
-                    this.flyingSwordSprite.setScale(2.8); // EPIC BIGGER FLYING SWORD!
+                    this.flyingSwordSprite.setScale(1.85); // PERFECTLY PROPORTIONED FLYING SWORD!
                     this.tweens.add({
                         targets: this.flyingSwordSprite,
                         x: currentEnemy.x,

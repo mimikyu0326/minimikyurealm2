@@ -211,6 +211,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (gachaScreen)
             gachaScreen.autoConvertCurrenciesToWishTokens();
     };
+    window.toggleFeedbackLogBar = () => {
+        const list = document.getElementById('feedback-log-history-list');
+        const btn = document.getElementById('feedback-log-toggle-btn');
+        if (!list || !btn)
+            return;
+        if (list.classList.contains('hidden')) {
+            list.classList.remove('hidden');
+            btn.innerText = '▼ MINIMIZE';
+        }
+        else {
+            list.classList.add('hidden');
+            btn.innerText = '▲ EXPAND';
+        }
+    };
     window.handleVolumeChange = (val) => {
         const num = parseInt(val, 10);
         const audio = AudioService_1.AudioService.getInstance();

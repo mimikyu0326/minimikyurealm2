@@ -112,12 +112,12 @@ export class UIService {
 
     if (historyEl) {
       const item = document.createElement('div');
-      item.className = type === 'success' ? 'text-emerald-200 font-mono' :
-                       type === 'warning' ? 'text-amber-200 font-mono' :
-                       'text-cyan-200 font-mono';
+      item.className = type === 'success' ? 'text-emerald-200 font-mono transition-all duration-300 transform translate-y-0 opacity-100 animate-fadeIn' :
+                       type === 'warning' ? 'text-amber-200 font-mono transition-all duration-300 transform translate-y-0 opacity-100 animate-fadeIn' :
+                       'text-cyan-200 font-mono transition-all duration-300 transform translate-y-0 opacity-100 animate-fadeIn';
       item.innerText = `• ${formatted}`;
       historyEl.prepend(item);
-      while (historyEl.children.length > 15) {
+      while (historyEl.children.length > 5) {
         historyEl.removeChild(historyEl.lastChild!);
       }
     }

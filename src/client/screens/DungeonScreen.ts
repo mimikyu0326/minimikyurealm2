@@ -1333,14 +1333,14 @@ export class DungeonScreen implements ScreenLifecycle {
         let scaledHp = self.gameState.getScaledMonsterHp(baseHp);
 
         if (isMegaBoss) {
-          scaledHp = Math.floor(scaledHp * 25); // 25x MASSIVE HP FOR WORLD SOVEREIGN MEGA BOSS!
+          scaledHp = Math.floor(scaledHp * 25);
         } else if (isBoss) {
-          scaledHp = Math.floor(scaledHp * 5); // 5x HP for normal Bosses
+          scaledHp = Math.floor(scaledHp * 5);
         }
 
         const enemy = this.add.sprite(x, y, spriteKey);
         enemy.setInteractive();
-        enemy.setScale(isMegaBoss ? 5.2 : (isBoss ? 2.6 : 1.2)); // 5.2x (EXACT 2X SIZE OF REGULAR 2.6x BOSS!)
+        enemy.setScale(isMegaBoss ? 5.2 : (isBoss ? 2.6 : 1.2));
 
         (enemy as any).isEnemy = true;
         (enemy as any).enemyName = name;
@@ -1350,6 +1350,16 @@ export class DungeonScreen implements ScreenLifecycle {
         (enemy as any).element = element;
         (enemy as any).isBoss = isBoss;
         (enemy as any).isMegaBoss = isMegaBoss;
+
+        // CREATE OVERHEAD LVL TEXT ONCE AT SPAWN TIME (ELIMINATES MEMORY LEAKS AND RE-CREATIONS IN UPDATE LOOP)
+        (enemy as any).lvlText = this.add.text(x - 15, y - (isMegaBoss ? 75 : (isBoss ? 45 : 30)), `LVL ${scaledLvl}`, {
+          fontFamily: 'monospace',
+          fontSize: '9px',
+          fontStyle: 'bold',
+          color: isBoss ? '#fbbf24' : '#ffffff',
+          stroke: '#000000',
+          strokeThickness: 2.5
+        }).setDepth(101);
 
         this.enemies.add(enemy);
       }
@@ -1600,7 +1610,7 @@ export class DungeonScreen implements ScreenLifecycle {
         setTimeout(() => el.remove(), 700);
       }
 
-      update() {
+      update(time: number, delta: number) {
         if (!this.player || this.isDead) return;
 
         const activeEl = document.activeElement;
@@ -1692,9 +1702,15 @@ export class DungeonScreen implements ScreenLifecycle {
         this.renderAttackRangeCircle();
         this.renderFadedYellowPickupRangeCircle();
         this.updateEnemyLocators();
-        this.renderRadarMinimap();
         this.updateCompanionPetLogic();
-        this.updateSoulKillMeterDOM();
+
+        // THROTTLE HEAVY 2D CANVAS MINIMAP & DOM UPDATES TO 10 FPS (EVERY 100ms) TO PREVENT CPU THRESHOLD FREEZING
+        const now = time;
+        if (!this.lastUiUpdateTime || now - this.lastUiUpdateTime > 100) {
+          this.lastUiUpdateTime = now;
+          this.renderRadarMinimap();
+          this.updateSoulKillMeterDOM();
+        }
       }
 
       collectLootDrop(item: any) {
@@ -2179,21 +2195,9 @@ export class DungeonScreen implements ScreenLifecycle {
           this.locatorGraphics.fillStyle(0xffffff, 0.45);
           this.locatorGraphics.fillRect(drawX, drawY, barWidth * hpRatio, Math.max(1, Math.floor(barHeight / 3)));
 
-          // 5. Render LVL Text Tag over/beside Health Bar (NO BOSS STRING, ONLY LVL & HP BAR)
-          if (!e.lvlText) {
-            e.lvlText = this.add.text(drawX, drawY - 12, '', {
-              fontFamily: 'monospace',
-              fontSize: '8px',
-              fontStyle: 'bold',
-              color: e.isBoss ? '#fbbf24' : '#ffffff',
-              stroke: '#000000',
-              strokeThickness: 2
-            }).setDepth(101);
-          }
-
+          // 5. Reposition existing LVL Text Tag over/beside Health Bar
           if (e.lvlText && e.lvlText.active) {
             e.lvlText.setPosition(drawX - 2, drawY - 12);
-            e.lvlText.setText(`LVL ${e.lvl}`);
           }
         });
       }
@@ -2601,24 +2605,47 @@ export class DungeonScreen implements ScreenLifecycle {
       }
 
       showDamageText(damage: number, x: number, y: number) {
-        const el = document.createElement('div');
-        el.className = 'damage-popup';
-        el.innerText = `-${damage}`;
-        el.style.left = `${x}px`;
-        el.style.top = `${y - 40}px`;
-        setTimeout(() => el.remove(), 800);
+        const txt = this.add.text(x + (Math.random() * 20 - 10), y - 30, `-${damage}`, {
+          fontFamily: 'monospace',
+          fontSize: '14px',
+          fontStyle: 'bold',
+          color: '#fbbf24',
+          stroke: '#000000',
+          strokeThickness: 3
+        }).setDepth(110);
+
+        this.tweens.add({
+          targets: txt,
+          y: y - 65,
+          alpha: 0,
+          scaleX: 1.3,
+          scaleY: 1.3,
+          duration: 400,
+          ease: 'Power1',
+          onComplete: () => txt.destroy()
+        });
       }
 
       showHeroDamageText(damage: number, x: number, y: number) {
-        const el = document.createElement('div');
-        el.className = 'damage-popup';
-        el.innerText = `💥 -${damage} HP`;
-        el.style.color = '#ef4444';
-        el.style.fontWeight = 'bold';
-        el.style.left = `${x}px`;
-        el.style.top = `${y - 45}px`;
-        document.body.appendChild(el);
-        setTimeout(() => el.remove(), 700);
+        const txt = this.add.text(x, y - 35, `💥 -${damage} HP`, {
+          fontFamily: 'monospace',
+          fontSize: '15px',
+          fontStyle: 'bold',
+          color: '#ef4444',
+          stroke: '#000000',
+          strokeThickness: 3
+        }).setDepth(110);
+
+        this.tweens.add({
+          targets: txt,
+          y: y - 70,
+          alpha: 0,
+          scaleX: 1.4,
+          scaleY: 1.4,
+          duration: 450,
+          ease: 'Power1',
+          onComplete: () => txt.destroy()
+        });
       }
 
       updateSoulKillMeterDOM() {

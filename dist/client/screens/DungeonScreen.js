@@ -1428,14 +1428,14 @@ class DungeonScreen {
                 const scaledLvl = self.gameState.getScaledMonsterLvl(lvl);
                 let scaledHp = self.gameState.getScaledMonsterHp(baseHp);
                 if (isMegaBoss) {
-                    scaledHp = Math.floor(scaledHp * 25); // 25x MASSIVE HP FOR WORLD SOVEREIGN MEGA BOSS!
+                    scaledHp = Math.floor(scaledHp * 25);
                 }
                 else if (isBoss) {
-                    scaledHp = Math.floor(scaledHp * 5); // 5x HP for normal Bosses
+                    scaledHp = Math.floor(scaledHp * 5);
                 }
                 const enemy = this.add.sprite(x, y, spriteKey);
                 enemy.setInteractive();
-                enemy.setScale(isMegaBoss ? 5.2 : (isBoss ? 2.6 : 1.2)); // 5.2x (EXACT 2X SIZE OF REGULAR 2.6x BOSS!)
+                enemy.setScale(isMegaBoss ? 5.2 : (isBoss ? 2.6 : 1.2));
                 enemy.isEnemy = true;
                 enemy.enemyName = name;
                 enemy.lvl = scaledLvl;
@@ -1444,6 +1444,15 @@ class DungeonScreen {
                 enemy.element = element;
                 enemy.isBoss = isBoss;
                 enemy.isMegaBoss = isMegaBoss;
+                // CREATE OVERHEAD LVL TEXT ONCE AT SPAWN TIME (ELIMINATES MEMORY LEAKS AND RE-CREATIONS IN UPDATE LOOP)
+                enemy.lvlText = this.add.text(x - 15, y - (isMegaBoss ? 75 : (isBoss ? 45 : 30)), `LVL ${scaledLvl}`, {
+                    fontFamily: 'monospace',
+                    fontSize: '9px',
+                    fontStyle: 'bold',
+                    color: isBoss ? '#fbbf24' : '#ffffff',
+                    stroke: '#000000',
+                    strokeThickness: 2.5
+                }).setDepth(101);
                 this.enemies.add(enemy);
             }
             spawnElementRuneDrop(x, y, element) {
@@ -1669,7 +1678,7 @@ class DungeonScreen {
                 document.body.appendChild(el);
                 setTimeout(() => el.remove(), 700);
             }
-            update() {
+            update(time, delta) {
                 if (!this.player || this.isDead)
                     return;
                 const activeEl = document.activeElement;
@@ -1755,9 +1764,14 @@ class DungeonScreen {
                 this.renderAttackRangeCircle();
                 this.renderFadedYellowPickupRangeCircle();
                 this.updateEnemyLocators();
-                this.renderRadarMinimap();
                 this.updateCompanionPetLogic();
-                this.updateSoulKillMeterDOM();
+                // THROTTLE HEAVY 2D CANVAS MINIMAP & DOM UPDATES TO 10 FPS (EVERY 100ms) TO PREVENT CPU THRESHOLD FREEZING
+                const now = time;
+                if (!this.lastUiUpdateTime || now - this.lastUiUpdateTime > 100) {
+                    this.lastUiUpdateTime = now;
+                    this.renderRadarMinimap();
+                    this.updateSoulKillMeterDOM();
+                }
             }
             collectLootDrop(item) {
                 if (!item.active)
@@ -2202,20 +2216,9 @@ class DungeonScreen {
                     // 4. Shiny Top Highlight Bar Line
                     this.locatorGraphics.fillStyle(0xffffff, 0.45);
                     this.locatorGraphics.fillRect(drawX, drawY, barWidth * hpRatio, Math.max(1, Math.floor(barHeight / 3)));
-                    // 5. Render LVL Text Tag over/beside Health Bar (NO BOSS STRING, ONLY LVL & HP BAR)
-                    if (!e.lvlText) {
-                        e.lvlText = this.add.text(drawX, drawY - 12, '', {
-                            fontFamily: 'monospace',
-                            fontSize: '8px',
-                            fontStyle: 'bold',
-                            color: e.isBoss ? '#fbbf24' : '#ffffff',
-                            stroke: '#000000',
-                            strokeThickness: 2
-                        }).setDepth(101);
-                    }
+                    // 5. Reposition existing LVL Text Tag over/beside Health Bar
                     if (e.lvlText && e.lvlText.active) {
                         e.lvlText.setPosition(drawX - 2, drawY - 12);
-                        e.lvlText.setText(`LVL ${e.lvl}`);
                     }
                 });
             }
@@ -2568,23 +2571,44 @@ class DungeonScreen {
                 }
             }
             showDamageText(damage, x, y) {
-                const el = document.createElement('div');
-                el.className = 'damage-popup';
-                el.innerText = `-${damage}`;
-                el.style.left = `${x}px`;
-                el.style.top = `${y - 40}px`;
-                setTimeout(() => el.remove(), 800);
+                const txt = this.add.text(x + (Math.random() * 20 - 10), y - 30, `-${damage}`, {
+                    fontFamily: 'monospace',
+                    fontSize: '14px',
+                    fontStyle: 'bold',
+                    color: '#fbbf24',
+                    stroke: '#000000',
+                    strokeThickness: 3
+                }).setDepth(110);
+                this.tweens.add({
+                    targets: txt,
+                    y: y - 65,
+                    alpha: 0,
+                    scaleX: 1.3,
+                    scaleY: 1.3,
+                    duration: 400,
+                    ease: 'Power1',
+                    onComplete: () => txt.destroy()
+                });
             }
             showHeroDamageText(damage, x, y) {
-                const el = document.createElement('div');
-                el.className = 'damage-popup';
-                el.innerText = `💥 -${damage} HP`;
-                el.style.color = '#ef4444';
-                el.style.fontWeight = 'bold';
-                el.style.left = `${x}px`;
-                el.style.top = `${y - 45}px`;
-                document.body.appendChild(el);
-                setTimeout(() => el.remove(), 700);
+                const txt = this.add.text(x, y - 35, `💥 -${damage} HP`, {
+                    fontFamily: 'monospace',
+                    fontSize: '15px',
+                    fontStyle: 'bold',
+                    color: '#ef4444',
+                    stroke: '#000000',
+                    strokeThickness: 3
+                }).setDepth(110);
+                this.tweens.add({
+                    targets: txt,
+                    y: y - 70,
+                    alpha: 0,
+                    scaleX: 1.4,
+                    scaleY: 1.4,
+                    duration: 450,
+                    ease: 'Power1',
+                    onComplete: () => txt.destroy()
+                });
             }
             updateSoulKillMeterDOM() {
                 const equippedCutscene = self.gameState.state.equippedCutscene;

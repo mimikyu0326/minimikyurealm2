@@ -2434,18 +2434,23 @@ export class DungeonScreen implements ScreenLifecycle {
 
         const tier = self.gameState.getWorldTier();
         const isBoss = enemy.isBoss;
+        const isMegaBoss = enemy.isMegaBoss;
         const reinExpMult = self.gameState.getReincarnationExpMultiplier();
 
         // BASE EXP DROP SCALED BY WORLD TIER & REINCARNATION STACKING MULTIPLIER (+50% PER REIN LEVEL)
-        const baseExp = (25 + (tier - 1) * 15) * (isBoss ? 8 : 1);
+        const baseExp = (25 + (tier - 1) * 15) * (isMegaBoss ? 25 : (isBoss ? 8 : 1));
         const expGained = Math.floor(baseExp * reinExpMult);
-        const goldGained = (60 + (tier - 1) * 35) * (isBoss ? 6 : 1);
+        const goldGained = isMegaBoss ? 4500 : ((80 + (tier - 1) * 45) * (isBoss ? 18 : 1));
 
         self.gameState.state.exp += expGained;
         self.gameState.state.gold += goldGained;
-        self.gameState.state.redGems = (self.gameState.state.redGems || 0) + (isBoss ? 25 : 5);
-        if (isBoss) {
-          self.gameState.state.purpleGems = (self.gameState.state.purpleGems || 0) + 2;
+        self.gameState.state.redGems = (self.gameState.state.redGems || 0) + (isMegaBoss ? 1500 : (isBoss ? 500 : 15));
+        self.gameState.state.skillTomes = (self.gameState.state.skillTomes || 0) + (isMegaBoss ? 500 : (isBoss ? 150 : 8));
+
+        if (isBoss || isMegaBoss) {
+          self.gameState.state.purpleGems = (self.gameState.state.purpleGems || 0) + (isMegaBoss ? 150 : 50);
+          self.gameState.state.ancientBooks = (self.gameState.state.ancientBooks || 0) + (isMegaBoss ? 150 : 50);
+          self.gameState.state.gems = (self.gameState.state.gems || 0) + (isMegaBoss ? 500 : 250);
         }
         self.gameState.state.waveKills = (self.gameState.state.waveKills || 0) + (isBoss ? 3 : 1);
 

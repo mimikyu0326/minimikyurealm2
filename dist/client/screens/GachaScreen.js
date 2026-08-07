@@ -40,43 +40,77 @@ class GachaScreen {
     ];
     autoConvertCurrenciesToWishTokens() {
         const state = this.gameState.state;
-        let totalPulls = 0;
-        // 1. Gear Shrine: 10 Gems per 10x Wish Batch
-        if (state.gems >= 10) {
-            const batches = Math.floor(state.gems / 10);
-            state.gems -= batches * 10;
-            totalPulls += batches * 10;
+        let tenPulls = 0;
+        let singlePulls = 0;
+        // 1. Gold: 1500 Gold per 10x, 150 Gold per 1x
+        if (state.gold >= 150) {
+            const tenBatches = Math.floor(state.gold / 1500);
+            const remainingGold = state.gold % 1500;
+            const singleBatches = Math.floor(remainingGold / 150);
+            state.gold -= (tenBatches * 1500 + singleBatches * 150);
+            tenPulls += tenBatches;
+            singlePulls += singleBatches;
         }
-        // 2. Pet Altar: 10 Purple Gems per 10x Wish Batch
-        if ((state.purpleGems || 0) >= 10) {
-            const batches = Math.floor(state.purpleGems / 10);
-            state.purpleGems -= batches * 10;
-            totalPulls += batches * 10;
+        // 2. Red Gems: 500 Red Gems per 10x, 50 Red Gems per 1x
+        if ((state.redGems || 0) >= 50) {
+            const tenBatches = Math.floor((state.redGems || 0) / 500);
+            const remainingRed = (state.redGems || 0) % 500;
+            const singleBatches = Math.floor(remainingRed / 50);
+            state.redGems = (state.redGems || 0) - (tenBatches * 500 + singleBatches * 50);
+            tenPulls += tenBatches;
+            singlePulls += singleBatches;
         }
-        // 3. Skill Tome Vault: 10 Ancient Books per 10x Wish Batch
-        if ((state.ancientBooks || 0) >= 10) {
-            const batches = Math.floor(state.ancientBooks / 10);
-            state.ancientBooks -= batches * 10;
-            totalPulls += batches * 10;
+        // 3. Gems: 500 Gems per 10x, 50 Gems per 1x
+        if ((state.gems || 0) >= 50) {
+            const tenBatches = Math.floor((state.gems || 0) / 500);
+            const remainingGems = (state.gems || 0) % 500;
+            const singleBatches = Math.floor(remainingGems / 50);
+            state.gems -= (tenBatches * 500 + singleBatches * 50);
+            tenPulls += tenBatches;
+            singlePulls += singleBatches;
         }
-        // 4. Gold conversion: 10,000 Gold per 10x Wish Batch
-        if (state.gold >= 10000) {
-            const batches = Math.floor(state.gold / 10000);
-            state.gold -= batches * 10000;
-            totalPulls += batches * 10;
+        // 4. Purple Gems: 50 Purple Gems per 10x, 5 Purple Gems per 1x
+        if ((state.purpleGems || 0) >= 5) {
+            const tenBatches = Math.floor((state.purpleGems || 0) / 50);
+            const remainingPurple = (state.purpleGems || 0) % 50;
+            const singleBatches = Math.floor(remainingPurple / 5);
+            state.purpleGems = (state.purpleGems || 0) - (tenBatches * 50 + singleBatches * 5);
+            tenPulls += tenBatches;
+            singlePulls += singleBatches;
         }
-        if (totalPulls > 0) {
-            const batches = Math.floor(totalPulls / 10);
-            for (let i = 0; i < batches; i++) {
-                this.roll(10);
+        // 5. Skill Tomes: 500 Skill Tomes per 10x, 50 Skill Tomes per 1x
+        if ((state.skillTomes || 0) >= 50) {
+            const tenBatches = Math.floor((state.skillTomes || 0) / 500);
+            const remainingTomes = (state.skillTomes || 0) % 500;
+            const singleBatches = Math.floor(remainingTomes / 50);
+            state.skillTomes = (state.skillTomes || 0) - (tenBatches * 500 + singleBatches * 50);
+            tenPulls += tenBatches;
+            singlePulls += singleBatches;
+        }
+        // 6. Ancient Books: 50 Ancient Books per 10x, 5 Ancient Books per 1x
+        if ((state.ancientBooks || 0) >= 5) {
+            const tenBatches = Math.floor((state.ancientBooks || 0) / 50);
+            const remainingBooks = (state.ancientBooks || 0) % 50;
+            const singleBatches = Math.floor(remainingBooks / 5);
+            state.ancientBooks = (state.ancientBooks || 0) - (tenBatches * 50 + singleBatches * 5);
+            tenPulls += tenBatches;
+            singlePulls += singleBatches;
+        }
+        const totalWishCount = tenPulls * 10 + singlePulls;
+        if (totalWishCount > 0) {
+            for (let i = 0; i < tenPulls; i++) {
+                this.roll(10, true);
+            }
+            if (singlePulls > 0) {
+                this.roll(singlePulls, true);
             }
             this.gameState.notify();
             this.gameState.saveToFirebase();
             this.audio.playSound('gacha');
-            this.ui.showToast(`⚡ AUTO-CONVERTED ALL BALANCE! Executed ${totalPulls} Wish Pulls (${batches}x 10-Wish Batches)!`, 'success');
+            this.ui.showToast(`⚡ AUTO-CONVERTED ALL BALANCE! Executed ${totalWishCount} Total Wish Summons (${tenPulls}x 10-Summons + ${singlePulls}x Single Summons)!`, 'success');
         }
         else {
-            this.ui.showToast('⚠️ Not enough currencies for 10x Auto-Conversion! Need 10 Gems, 10 Purple Gems, 10 Ancient Books, or 10k Gold.', 'warning');
+            this.ui.showToast('⚠️ Not enough currencies for Auto-Conversion! Need at least 150 Gold, 50 Red Gems, 50 Gems, 5 Purple Gems, 50 Skill Tomes, or 5 Ancient Books.', 'warning');
         }
     }
     activeBanner = 'gear';
@@ -149,9 +183,9 @@ class GachaScreen {
             if (multiIcon)
                 multiIcon.innerText = '🎁';
             if (btnSingle)
-                btnSingle.innerText = '100 🪙 Gold';
+                btnSingle.innerText = '150 🪙 Gold';
             if (btnMulti)
-                btnMulti.innerText = '10 💎 Gems';
+                btnMulti.innerText = '1,500 🪙 Gold / 500 💎 Gems';
         }
         else if (banner === 'pet') {
             if (btnGear)
@@ -171,9 +205,9 @@ class GachaScreen {
             if (multiIcon)
                 multiIcon.innerText = '🐉';
             if (btnSingle)
-                btnSingle.innerText = '100 🔴 Red Gems';
+                btnSingle.innerText = '50 🔴 Red Gems';
             if (btnMulti)
-                btnMulti.innerText = '10 🟣 Purple Gems';
+                btnMulti.innerText = '500 🔴 Red Gems / 50 🟣 Purple Gems';
         }
         else {
             if (btnGear)
@@ -193,61 +227,93 @@ class GachaScreen {
             if (multiIcon)
                 multiIcon.innerText = '📖';
             if (btnSingle)
-                btnSingle.innerText = '100 📜 Skill Tomes';
+                btnSingle.innerText = '50 📜 Skill Tomes';
             if (btnMulti)
-                btnMulti.innerText = '10 📖 Ancient Books';
+                btnMulti.innerText = '500 📜 Skill Tomes / 50 📖 Ancient Books';
         }
     }
-    roll(count) {
-        if (this.activeBanner === 'pet') {
+    roll(count, bypassCostCheck = false) {
+        if (!bypassCostCheck) {
             const isMulti = count === 10;
-            const redCost = 100;
-            const purpleCost = 10;
-            if (isMulti && (this.gameState.state.purpleGems || 0) < purpleCost) {
-                this.ui.showAlert('INSUFFICIENT PURPLE GEMS', `Not enough Purple Gems for 10x Pet Summon! Required: ${purpleCost} 🟣 (Earned from Dungeon Bosses)`, '🟣', 'warning');
-                return;
+            if (this.activeBanner === 'pet') {
+                if (isMulti) {
+                    if ((this.gameState.state.redGems || 0) >= 500) {
+                        this.gameState.state.redGems = (this.gameState.state.redGems || 0) - 500;
+                    }
+                    else if ((this.gameState.state.purpleGems || 0) >= 50) {
+                        this.gameState.state.purpleGems = (this.gameState.state.purpleGems || 0) - 50;
+                    }
+                    else {
+                        this.ui.showAlert('INSUFFICIENT RED GEMS / PURPLE GEMS', 'Not enough Red Gems (500 🔴) or Purple Gems (50 🟣) for 10x Pet Summon!', '🔴', 'warning');
+                        return;
+                    }
+                }
+                else {
+                    if ((this.gameState.state.redGems || 0) >= 50) {
+                        this.gameState.state.redGems = (this.gameState.state.redGems || 0) - 50;
+                    }
+                    else if ((this.gameState.state.purpleGems || 0) >= 5) {
+                        this.gameState.state.purpleGems = (this.gameState.state.purpleGems || 0) - 5;
+                    }
+                    else {
+                        this.ui.showAlert('INSUFFICIENT RED GEMS', 'Not enough Red Gems (50 🔴) for 1x Pet Summon!', '🔴', 'warning');
+                        return;
+                    }
+                }
             }
-            if (!isMulti && (this.gameState.state.redGems || 0) < redCost) {
-                this.ui.showAlert('INSUFFICIENT RED GEMS', `Not enough Red Gems for 1x Pet Summon! Required: ${redCost} 🔴 (Earned from Monsters)`, '🔴', 'warning');
-                return;
+            else if (this.activeBanner === 'skill') {
+                if (isMulti) {
+                    if ((this.gameState.state.skillTomes || 0) >= 500) {
+                        this.gameState.state.skillTomes = (this.gameState.state.skillTomes || 0) - 500;
+                    }
+                    else if ((this.gameState.state.ancientBooks || 0) >= 50) {
+                        this.gameState.state.ancientBooks = (this.gameState.state.ancientBooks || 0) - 50;
+                    }
+                    else {
+                        this.ui.showAlert('INSUFFICIENT SKILL TOMES / BOOKS', 'Not enough Skill Tomes (500 📜) or Ancient Books (50 📖) for 10x Skill Summon!', '📜', 'warning');
+                        return;
+                    }
+                }
+                else {
+                    if ((this.gameState.state.skillTomes || 0) >= 50) {
+                        this.gameState.state.skillTomes = (this.gameState.state.skillTomes || 0) - 50;
+                    }
+                    else if ((this.gameState.state.ancientBooks || 0) >= 5) {
+                        this.gameState.state.ancientBooks = (this.gameState.state.ancientBooks || 0) - 5;
+                    }
+                    else {
+                        this.ui.showAlert('INSUFFICIENT SKILL TOMES', 'Not enough Skill Tomes (50 📜) for 1x Skill Summon!', '📜', 'warning');
+                        return;
+                    }
+                }
             }
-            if (isMulti)
-                this.gameState.state.purpleGems -= purpleCost;
-            else
-                this.gameState.state.redGems -= redCost;
-        }
-        else if (this.activeBanner === 'skill') {
-            const isMulti = count === 10;
-            const tomeCost = 100;
-            const bookCost = 10;
-            if (isMulti && (this.gameState.state.ancientBooks || 0) < bookCost) {
-                this.ui.showAlert('INSUFFICIENT ANCIENT BOOKS', `Not enough Ancient Books for 10x Skill Summon! Required: ${bookCost} 📖 (Earned from Dungeon Bosses)`, '📖', 'warning');
-                return;
+            else {
+                // Equipment Banner
+                if (isMulti) {
+                    if (this.gameState.state.gold >= 1500) {
+                        this.gameState.state.gold -= 1500;
+                    }
+                    else if ((this.gameState.state.gems || 0) >= 500) {
+                        this.gameState.state.gems -= 500;
+                    }
+                    else {
+                        this.ui.showAlert('INSUFFICIENT GOLD / GEMS', 'Not enough Gold (1,500 🪙) or Gems (500 💎) for 10x Equipment Summon!', '🪙', 'warning');
+                        return;
+                    }
+                }
+                else {
+                    if (this.gameState.state.gold >= 150) {
+                        this.gameState.state.gold -= 150;
+                    }
+                    else if ((this.gameState.state.gems || 0) >= 50) {
+                        this.gameState.state.gems -= 50;
+                    }
+                    else {
+                        this.ui.showAlert('INSUFFICIENT GOLD', 'Not enough Gold (150 🪙) for 1x Equipment Summon!', '🪙', 'warning');
+                        return;
+                    }
+                }
             }
-            if (!isMulti && (this.gameState.state.skillTomes || 0) < tomeCost) {
-                this.ui.showAlert('INSUFFICIENT SKILL TOMES', `Not enough Skill Tomes for 1x Skill Summon! Required: ${tomeCost} 📜 (Earned from Dungeon Monsters)`, '📜', 'warning');
-                return;
-            }
-            if (isMulti)
-                this.gameState.state.ancientBooks -= bookCost;
-            else
-                this.gameState.state.skillTomes -= tomeCost;
-        }
-        else {
-            const cost = count === 10 ? 10 : 100;
-            const isGems = count === 10;
-            if (isGems && this.gameState.state.gems < cost) {
-                this.ui.showAlert('INSUFFICIENT GEMS', `Not enough Gems for 10x Equipment Summon! Required: ${cost} 💎`, '💎', 'warning');
-                return;
-            }
-            if (!isGems && this.gameState.state.gold < cost) {
-                this.ui.showAlert('INSUFFICIENT GOLD', `Not enough Gold for Single Equipment Summon! Required: ${cost} 🪙`, '🪙', 'warning');
-                return;
-            }
-            if (isGems)
-                this.gameState.state.gems -= cost;
-            else
-                this.gameState.state.gold -= cost;
         }
         const obtained = [];
         for (let i = 0; i < count; i++) {

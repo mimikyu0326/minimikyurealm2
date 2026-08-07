@@ -439,6 +439,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (modal) modal.classList.remove('hidden');
   };
 
+  (window as any).clearAllGameCookiesAndCaches = () => {
+    gameState.clearAllGameCookiesAndCaches();
+    UIService.getInstance().showToast('🧹 All Session Cookies & Caches Cleared!', 'success');
+    setTimeout(() => window.location.reload(), 800);
+  };
+
   (window as any).startResourceDownloadProcess = () => {
     const btnGroup = document.getElementById('resource-download-btn-group');
     const progressContainer = document.getElementById('resource-progress-container');

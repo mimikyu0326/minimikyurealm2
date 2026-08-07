@@ -678,18 +678,35 @@ class GameStateService {
             try {
                 const { db, ref, onValue } = window.FirebaseApp;
                 const userRef = ref(db, `users/${this.state.userId}/character`);
-                onValue(userRef, (snapshot) => {
+                this.listenUnsubscribe = onValue(userRef, (snapshot) => {
                     const val = snapshot.val();
-                    if (val) {
-                        this.loadFromSavedCharacter(val);
-                        if (callback)
-                            callback(val);
+                    if (val && val.lastSavedAt) {
+                        const localSaved = this.state.lastSavedAt || 0;
+                        // PREVENT FIREBASE FEEDBACK LOOP: Only apply remote update if lastSavedAt is strictly newer by 1000ms!
+                        if (val.lastSavedAt > localSaved + 1000) {
+                            console.log('[FIREBASE] 🔄 Syncing remote update from another device/session...');
+                            this.loadFromSavedCharacter(val);
+                            if (callback)
+                                callback(val);
+                        }
                     }
                 });
             }
             catch (err) {
                 console.error('[DB] Firebase listen error:', err);
             }
+        }
+    }
+    clearAllGameCookiesAndCaches() {
+        try {
+            deleteSessionCookie('minimikyu_logged_user');
+            deleteSessionCookie('minimikyurealm_logged_user');
+            localStorage.clear();
+            sessionStorage.clear();
+            console.log('[CLEANUP] 🧹 All cookies, session data, and localStorage caches cleared!');
+        }
+        catch (e) {
+            console.warn('[CLEANUP] Clear error:', e);
         }
     }
     subscribe(listener) {

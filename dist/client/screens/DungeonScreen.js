@@ -781,16 +781,24 @@ class DungeonScreen {
                 const width = this.cameras.main.width;
                 const height = this.cameras.main.height;
                 this.bgGrid.clear();
-                // REAL BACKGROUND IMAGE IS 100% UNCOVERED & VISIBLE (NO SOLID COLOR LAYER!)
                 const centerX = width / 2;
                 const centerY = height / 2;
-                // ELEGANT SPATIAL COSMIC RADIAL ORBITS OVERLAY ON TOP OF BACKGROUND IMAGE
-                for (let r = 160; r <= 850; r += 120) {
-                    const alpha = Math.max(0.04, 0.25 - (r / 1200));
-                    this.bgGrid.lineStyle(1.5, 0x38bdf8, alpha);
-                    const rx = r * 1.4;
-                    const ry = r * 0.75;
+                const time = this.time.now * 0.001;
+                // ELEGANT SPATIAL COSMIC RADIAL ORBITS WITH DYNAMIC QI PULSE
+                for (let r = 160; r <= 880; r += 110) {
+                    const pulseAlpha = Math.max(0.06, 0.22 - (r / 1200) + Math.sin(time + r * 0.01) * 0.04);
+                    const color = (r % 220 === 0) ? 0x06b6d4 : 0x38bdf8;
+                    this.bgGrid.lineStyle(1.8, color, pulseAlpha);
+                    const rx = r * 1.35;
+                    const ry = r * 0.72;
                     this.bgGrid.strokeEllipse(centerX, centerY, rx, ry);
+                }
+                // FLOATING STARDUST QI PARTICLES
+                this.bgGrid.fillStyle(0x38bdf8, 0.6);
+                for (let i = 0; i < 16; i++) {
+                    const px = (centerX + Math.sin(time + i * 1.7) * (180 + i * 25)) % width;
+                    const py = (centerY + Math.cos(time * 0.8 + i * 1.3) * (120 + i * 20)) % height;
+                    this.bgGrid.fillCircle(px, py, 1.8);
                 }
             }
             renderRadarMinimap() {

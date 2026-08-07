@@ -1019,6 +1019,25 @@ class DungeonScreen {
                     } });
                     this.isHeroMoving = true;
                 }
+                else {
+                    // NO ENEMIES IN IMMEDIATE SIGHT: HERO ACTIVELY ROAMS / PATROLS THE MAP TO LOCATE NEW ENEMIES!
+                    this.autoRoamAngle = (this.autoRoamAngle || 0) + 0.08;
+                    const dx = Math.cos(this.autoRoamAngle) * speed;
+                    const dy = Math.sin(this.autoRoamAngle) * speed;
+                    this.spawnAnimeWindTrail();
+                    this.earthRotationAngleX += dx * 0.004;
+                    this.earthRotationAngleY += dy * 0.004;
+                    this.drawGrid();
+                    this.enemies.getChildren().slice().forEach((e) => { if (e && e.active && !e.isDefeated) {
+                        e.x += dx;
+                        e.y += dy;
+                    } });
+                    this.droppedItems.getChildren().slice().forEach((i) => { if (i && i.active) {
+                        i.x += dx;
+                        i.y += dy;
+                    } });
+                    this.isHeroMoving = true;
+                }
             }
             // 5 AUTOMATIC CASTING SKILLS SYSTEM
             runAutomaticSkillLogic() {
@@ -3211,6 +3230,16 @@ class DungeonScreen {
         const btn = document.getElementById('btn-toggle-autobattle');
         const icon = document.getElementById('autobattle-repeat-icon');
         const statusText = document.getElementById('autobattle-status-text');
+        const autoBadges = ['meter-auto-badge-attack', 'meter-auto-badge-aura', 'meter-auto-badge-pet', 'meter-auto-badge-soul'];
+        autoBadges.forEach(id => {
+            const badge = document.getElementById(id);
+            if (badge) {
+                if (this.isAutoBattle)
+                    badge.classList.remove('hidden');
+                else
+                    badge.classList.add('hidden');
+            }
+        });
         if (this.isAutoBattle) {
             if (btn)
                 btn.className = 'px-3.5 py-3 md:px-4 md:py-3.5 rounded-2xl glass-panel border-2 border-amber-400 bg-gradient-to-r from-amber-600 via-amber-700 to-black text-amber-200 font-black text-xs md:text-sm flex flex-col items-center justify-center gap-1 shadow-[0_0_30px_rgba(251,191,36,0.9)] ring-4 ring-amber-400 transition hover:scale-110 active:scale-95 cursor-pointer';
@@ -3218,7 +3247,7 @@ class DungeonScreen {
                 icon.className = 'text-xl md:text-2xl transition inline-block animate-spin text-amber-300';
             if (statusText)
                 statusText.innerText = 'AUTO ⚡';
-            this.ui.showToast('⚡ AUTO Battle & 2-Second Staggered Meter Triggers Activated! 🔄', 'success');
+            this.ui.showToast('⚡ AUTO Battle & Meter Badges Activated! 🔄', 'success');
         }
         else {
             if (btn)

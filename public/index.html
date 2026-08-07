@@ -1216,7 +1216,8 @@
     <!-- BOTTOM-RIGHT HERO ACTION DOCK (ATTACK BUTTON AND ACTION METERS) -->
     <div id="hud-bottom-right-meters" class="fixed right-3 bottom-3 md:right-4 md:bottom-4 z-30 flex items-center gap-2 md:gap-3 pointer-events-auto">
       <!-- ATTACK BUTTON -->
-      <div id="dungeon-attack-container">
+      <div id="dungeon-attack-container" class="relative">
+        <span id="meter-auto-badge-attack" class="hidden absolute -top-2 -right-2 px-1.5 py-0.5 text-[9px] font-black bg-amber-400 text-slate-950 rounded-md shadow border border-white animate-pulse z-10 font-mono">AUTO ⚡</span>
         <button id="btn-hero-attack" onclick="window.triggerAttack()" class="px-4 py-2.5 md:px-5 md:py-3 rounded-2xl glass-panel border-2 border-emerald-400 bg-gradient-to-r from-emerald-600 via-teal-700 to-emerald-900 text-white font-black text-xs md:text-sm flex items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.8)] transition hover:scale-105 active:scale-95 cursor-pointer" title="Manual Attack">
           <span class="text-base md:text-lg">⚔️</span>
           <span class="tracking-wider font-mono">ATTACK</span>
@@ -1225,6 +1226,7 @@
 
       <!-- BANKAI METER BUTTON -->
       <div id="hero-aura-meter-container" class="relative">
+        <span id="meter-auto-badge-aura" class="hidden absolute -top-2 -right-2 px-1.5 py-0.5 text-[9px] font-black bg-amber-400 text-slate-950 rounded-md shadow border border-white animate-pulse z-10 font-mono">AUTO ⚡</span>
         <button id="hero-aura-meter-btn" onclick="window.triggerHeroTitanAuraModeFromDOM()" class="w-11 h-11 md:w-13 md:h-13 rounded-2xl glass-panel border-2 border-red-500 bg-gradient-to-b from-slate-950 via-black to-red-950 flex items-center justify-center text-white shadow-[0_0_20px_rgba(239,68,68,0.8)] transition hover:scale-110 active:scale-95 group relative cursor-pointer" title="Bankai Meter">
           <span class="text-lg md:text-xl transition drop-shadow-[0_0_8px_rgba(255,255,255,1)]">🖤</span>
           <span id="hero-aura-text" class="hidden">0/100</span>
@@ -1233,6 +1235,7 @@
 
       <!-- PET RUSH METER BUTTON -->
       <div id="pet-squad-meter-container" class="relative">
+        <span id="meter-auto-badge-pet" class="hidden absolute -top-2 -right-2 px-1.5 py-0.5 text-[9px] font-black bg-amber-400 text-slate-950 rounded-md shadow border border-white animate-pulse z-10 font-mono">AUTO ⚡</span>
         <button id="pet-squad-meter-btn" class="w-11 h-11 md:w-13 md:h-13 rounded-2xl glass-panel border-2 border-pink-500/80 bg-gradient-to-b from-pink-900 via-rose-950 to-black flex items-center justify-center text-pink-300 shadow-[0_0_20px_rgba(244,114,182,0.6)] transition group relative cursor-default" title="Pet Rush">
           <span class="text-lg md:text-xl transition">🐾</span>
           <span id="pet-meter-text" class="hidden">0/100</span>
@@ -1241,6 +1244,7 @@
 
       <!-- SOUL KILL METER BUTTON -->
       <div id="soul-killmeter-container" class="relative">
+        <span id="meter-auto-badge-soul" class="hidden absolute -top-2 -right-2 px-1.5 py-0.5 text-[9px] font-black bg-amber-400 text-slate-950 rounded-md shadow border border-white animate-pulse z-10 font-mono">AUTO ⚡</span>
         <button id="soul-killmeter-btn" onclick="window.triggerSoulCutscene()" class="w-11 h-11 md:w-13 md:h-13 rounded-2xl glass-panel border-2 border-purple-500/80 bg-gradient-to-b from-purple-900 via-indigo-950 to-black flex items-center justify-center text-purple-300 shadow-[0_0_20px_rgba(168,85,247,0.6)] transition hover:scale-110 active:scale-95 group relative" title="Soul Meter">
           <span class="text-lg md:text-xl transition">👻</span>
           <span id="soul-meter-text" class="hidden">0/100</span>

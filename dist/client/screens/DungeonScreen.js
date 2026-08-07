@@ -14,6 +14,8 @@ class DungeonScreen {
     gameState = GameStateService_1.GameStateService.getInstance();
     audio = AudioService_1.AudioService.getInstance();
     ui = UIService_1.UIService.getInstance();
+    isAutoBattle = false;
+    lastMeterAutoTriggerTime = 0;
     joystickDx = 0;
     joystickDy = 0;
     constructor() { }
@@ -714,6 +716,7 @@ class DungeonScreen {
                 this.spawnTimer = this.time.addEvent({ delay: 3500, callback: () => this.autoSpawnLoop(), loop: true });
                 this.monsterAttackTimer = this.time.addEvent({ delay: 1800, callback: () => this.monsterAttackHeroLoop(), loop: true });
                 this.monsterAbilityTimer = this.time.addEvent({ delay: 3800, callback: () => this.executeMonsterBossAbilities(), loop: true });
+                this.autoBattleTimer = this.time.addEvent({ delay: 300, callback: () => this.runAutoBattleLogic(), loop: true });
                 this.autoSkillTimer = this.time.addEvent({ delay: 200, callback: () => this.runAutomaticSkillLogic(), loop: true });
                 this.porterTimer = this.time.addEvent({ delay: 100, callback: () => this.updatePorterCollector(), loop: true });
                 // HERO AURA BUILD TIMER (+2 PER SECOND UP TO 100/100)
@@ -937,6 +940,72 @@ class DungeonScreen {
                 const mountSpeedMult = equippedMount ? 1.45 : 1.0;
                 const baseSpeed = 4.8 * mountSpeedMult;
                 return this.isHeroTitanMode ? baseSpeed * 1.9 : baseSpeed;
+            }
+            // AUTO BATTLES & 2-SECOND STAGGERED GAP METER ACTIVATIONS
+            runAutoBattleLogic() {
+                if (!this.isAutoBattle || ScreenManager_1.ScreenManager.getInstance().getCurrentScreen() !== 'dungeon' || this.isDead) {
+                    return;
+                }
+                // STAGGERED 2-SECOND GAP BETWEEN METER SKILL ACTIVATIONS
+                const now = this.time.now;
+                if (!this.lastMeterAutoTriggerTime || now - this.lastMeterAutoTriggerTime >= 2000) {
+                    if ((self.gameState.state.killMeter || 0) >= 100 && !this.isCutsceneActive) {
+                        this.lastMeterAutoTriggerTime = now;
+                        this.triggerSoulCutscene();
+                    }
+                    else if ((self.gameState.state.heroAuraMeter || 0) >= 100 && !this.isHeroTitanMode) {
+                        this.lastMeterAutoTriggerTime = now;
+                        this.triggerHeroTitanAuraMode();
+                    }
+                    else if (this.petSquadMeter >= 100 && !this.isSuperPetMode) {
+                        this.lastMeterAutoTriggerTime = now;
+                        this.triggerSuperPetMode();
+                    }
+                    else if (self.gameState.state.equippedUniquePower) {
+                        if (!this.lastUniquePowerTime || now - this.lastUniquePowerTime > 7500) {
+                            this.lastUniquePowerTime = now;
+                            this.lastMeterAutoTriggerTime = now;
+                            this.executeAutomaticUniquePower();
+                        }
+                    }
+                }
+                // PURSUE & ATTACK NEAREST ENEMY
+                const maxRange = this.getAttackRangeRadius();
+                let targetEnemy = null;
+                let minDist = Infinity;
+                this.enemies.getChildren().slice().forEach((e) => {
+                    if (!e || !e.active || e.isDefeated)
+                        return;
+                    const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, e.x, e.y);
+                    if (dist < minDist) {
+                        minDist = dist;
+                        targetEnemy = e;
+                    }
+                });
+                const speed = this.getHeroMoveSpeed() * 1.5;
+                if (targetEnemy) {
+                    if (minDist <= maxRange) {
+                        this.attackEnemy(targetEnemy);
+                    }
+                    else {
+                        const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, targetEnemy.x, targetEnemy.y);
+                        const dx = Math.cos(angle) * speed;
+                        const dy = Math.sin(angle) * speed;
+                        this.spawnAnimeWindTrail();
+                        this.earthRotationAngleX += dx * 0.005;
+                        this.earthRotationAngleY += dy * 0.005;
+                        this.drawGrid();
+                        this.enemies.getChildren().slice().forEach((e) => { if (e && e.active && !e.isDefeated) {
+                            e.x -= dx;
+                            e.y -= dy;
+                        } });
+                        this.droppedItems.getChildren().slice().forEach((i) => { if (i && i.active) {
+                            i.x -= dx;
+                            i.y -= dy;
+                        } });
+                        this.isHeroMoving = true;
+                    }
+                }
             }
             // 5 AUTOMATIC CASTING SKILLS SYSTEM
             runAutomaticSkillLogic() {
@@ -3114,6 +3183,36 @@ class DungeonScreen {
                 this.phaserGame.scale.resize(window.innerWidth, window.innerHeight);
             }
         });
+        const autoBattleBtn = document.getElementById('btn-toggle-autobattle');
+        if (autoBattleBtn) {
+            autoBattleBtn.onclick = () => this.toggleAutoBattle();
+        }
+    }
+    toggleAutoBattle() {
+        this.isAutoBattle = !this.isAutoBattle;
+        const btn = document.getElementById('btn-toggle-autobattle');
+        const icon = document.getElementById('autobattle-repeat-icon');
+        const statusText = document.getElementById('autobattle-status-text');
+        if (this.isAutoBattle) {
+            if (btn)
+                btn.className = 'px-3.5 py-3 md:px-4 md:py-3.5 rounded-2xl glass-panel border-2 border-amber-400 bg-gradient-to-r from-amber-600 via-amber-700 to-black text-amber-200 font-black text-xs md:text-sm flex flex-col items-center justify-center gap-1 shadow-[0_0_30px_rgba(251,191,36,0.9)] ring-4 ring-amber-400 transition hover:scale-110 active:scale-95 cursor-pointer';
+            if (icon)
+                icon.className = 'text-xl md:text-2xl transition inline-block animate-spin text-amber-300';
+            if (statusText)
+                statusText.innerText = 'AUTO ⚡';
+            this.ui.showToast('⚡ AUTO Battle & 2-Second Staggered Meter Triggers Activated! 🔄', 'success');
+        }
+        else {
+            if (btn)
+                btn.className = 'px-3.5 py-3 md:px-4 md:py-3.5 rounded-2xl glass-panel border-2 border-emerald-500/80 bg-gradient-to-r from-slate-950 via-emerald-950 to-black text-emerald-300 font-black text-xs md:text-sm flex flex-col items-center justify-center gap-1 shadow-[0_0_20px_rgba(16,185,129,0.6)] transition hover:scale-110 active:scale-95 cursor-pointer';
+            if (icon)
+                icon.className = 'text-xl md:text-2xl transition inline-block text-emerald-300';
+            if (statusText)
+                statusText.innerText = 'AUTO';
+            this.ui.showToast('⚔️ AUTO Battle Deactivated.', 'info');
+        }
+        ScreenManager_1.ScreenManager.getInstance().resetDungeonAfkTimer();
+        this.audio.playSound('click');
     }
     triggerAttack() {
         ScreenManager_1.ScreenManager.getInstance().resetDungeonAfkTimer();

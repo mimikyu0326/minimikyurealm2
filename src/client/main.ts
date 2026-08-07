@@ -219,6 +219,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (dungeonScreen) dungeonScreen.triggerSoulCutscene();
   };
 
+  (window as any).toggleAutoBattleFromUI = () => {
+    if (dungeonScreen) dungeonScreen.toggleAutoBattle();
+  };
+
+  (window as any).collectGachaWithBagShakeEffect = () => {
+    if (gachaScreen) gachaScreen.collectWithBagShakeEffect();
+  };
+
   (window as any).autoConvertGachaCurrencies = () => {
     if (gachaScreen) gachaScreen.autoConvertCurrenciesToWishTokens();
   };

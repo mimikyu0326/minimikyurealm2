@@ -97,16 +97,22 @@ class GachaScreen {
             singlePulls += singleBatches;
         }
         const totalWishCount = tenPulls * 10 + singlePulls;
+        const allObtained = [];
         if (totalWishCount > 0) {
             for (let i = 0; i < tenPulls; i++) {
-                this.roll(10, true);
+                const drops = this.roll(10, true);
+                if (drops)
+                    allObtained.push(...drops);
             }
             if (singlePulls > 0) {
-                this.roll(singlePulls, true);
+                const drops = this.roll(singlePulls, true);
+                if (drops)
+                    allObtained.push(...drops);
             }
             this.gameState.notify();
             this.gameState.saveToFirebase();
             this.audio.playSound('gacha');
+            this.showAutoWishSummaryModal(allObtained);
             this.ui.showToast(`⚡ AUTO-CONVERTED ALL BALANCE! Executed ${totalWishCount} Total Wish Summons (${tenPulls}x 10-Summons + ${singlePulls}x Single Summons)!`, 'success');
         }
         else {
@@ -245,7 +251,7 @@ class GachaScreen {
                     }
                     else {
                         this.ui.showAlert('INSUFFICIENT RED GEMS / PURPLE GEMS', 'Not enough Red Gems (500 🔴) or Purple Gems (50 🟣) for 10x Pet Summon!', '🔴', 'warning');
-                        return;
+                        return [];
                     }
                 }
                 else {
@@ -257,7 +263,7 @@ class GachaScreen {
                     }
                     else {
                         this.ui.showAlert('INSUFFICIENT RED GEMS', 'Not enough Red Gems (50 🔴) for 1x Pet Summon!', '🔴', 'warning');
-                        return;
+                        return [];
                     }
                 }
             }
@@ -271,7 +277,7 @@ class GachaScreen {
                     }
                     else {
                         this.ui.showAlert('INSUFFICIENT SKILL TOMES / BOOKS', 'Not enough Skill Tomes (500 📜) or Ancient Books (50 📖) for 10x Skill Summon!', '📜', 'warning');
-                        return;
+                        return [];
                     }
                 }
                 else {
@@ -283,7 +289,7 @@ class GachaScreen {
                     }
                     else {
                         this.ui.showAlert('INSUFFICIENT SKILL TOMES', 'Not enough Skill Tomes (50 📜) for 1x Skill Summon!', '📜', 'warning');
-                        return;
+                        return [];
                     }
                 }
             }
@@ -298,7 +304,7 @@ class GachaScreen {
                     }
                     else {
                         this.ui.showAlert('INSUFFICIENT GOLD / GEMS', 'Not enough Gold (1,500 🪙) or Gems (500 💎) for 10x Equipment Summon!', '🪙', 'warning');
-                        return;
+                        return [];
                     }
                 }
                 else {
@@ -310,7 +316,7 @@ class GachaScreen {
                     }
                     else {
                         this.ui.showAlert('INSUFFICIENT GOLD', 'Not enough Gold (150 🪙) for 1x Equipment Summon!', '🪙', 'warning');
-                        return;
+                        return [];
                     }
                 }
             }
@@ -330,12 +336,17 @@ class GachaScreen {
             else if (drop.rarity === 'rare' && !['mythic', 'legendary', 'epic'].includes(highestRarity))
                 highestRarity = 'rare';
         });
+        if (bypassCostCheck) {
+            this.processSummonedItems(obtained);
+            return obtained;
+        }
         this.audio.playSound('gacha');
         // Trigger Black & White Ink Slash Cutscene before opening Modal
         this.playSummonAnimation(highestRarity, () => {
             this.processSummonedItems(obtained);
             this.showAcquiredGridModal(obtained, count);
         });
+        return obtained;
     }
     playSummonAnimation(highestRarity, onComplete) {
         const overlay = document.createElement('div');
@@ -679,6 +690,56 @@ class GachaScreen {
             modal.classList.add('hidden');
             this.ui.showToast('🎒 All items collected into Inventory!', 'success');
         }, 800);
+    }
+    showAutoWishSummaryModal(items) {
+        const modal = document.getElementById('modal-gacha-acquired');
+        if (!modal)
+            return;
+        // Aggregate items by name into total quantities
+        const itemMap = new Map();
+        items.forEach(drop => {
+            if (itemMap.has(drop.name)) {
+                itemMap.get(drop.name).count++;
+            }
+            else {
+                itemMap.set(drop.name, { item: drop, count: 1 });
+            }
+        });
+        const modalBox = modal.querySelector('.spatial-window');
+        const bannerBadge = document.getElementById('gacha-result-banner-title');
+        if (bannerBadge)
+            bannerBadge.innerText = '⚡ AUTO-WISH CONVERSION SUMMARY';
+        if (modalBox) {
+            modalBox.style.backgroundImage = `linear-gradient(rgba(2, 6, 23, 0.85), rgba(2, 6, 23, 0.95)), url('assets/auto_wish_bg.jpg')`;
+            modalBox.style.backgroundSize = 'cover';
+            modalBox.style.backgroundPosition = 'center';
+            modalBox.className = 'glass-panel spatial-window w-full max-w-6xl p-6 md:p-8 rounded-3xl border-2 border-amber-400 shadow-[0_0_60px_rgba(251,191,36,0.8)] relative text-center animate-scaleUp';
+        }
+        const grid = document.getElementById('gacha-result-grid');
+        if (grid) {
+            // 10 MAXIMUM ROWS AND INFINITY COLUMNS TEXT-ONLY SUMMARY LIST
+            grid.className = 'grid grid-rows-10 grid-flow-col auto-cols-max overflow-x-auto gap-2.5 max-h-[60vh] p-4 border-2 border-amber-400/50 rounded-2xl bg-black/80 backdrop-blur-md shadow-inner text-left';
+            grid.innerHTML = '';
+            itemMap.forEach(({ item, count }) => {
+                const row = document.createElement('div');
+                row.className = 'flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-slate-950/90 border border-emerald-400/60 shadow-md text-xs font-mono font-bold whitespace-nowrap hover:scale-105 transition';
+                row.innerHTML = `
+          <span class="text-xl shrink-0">${item.icon}</span>
+          <span class="text-white font-black truncate max-w-[200px]">${item.name}</span>
+          <span class="px-2 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-[11px] shadow">x${count}</span>
+        `;
+                grid.appendChild(row);
+            });
+        }
+        // Hide extra buttons and show ONLY COLLECT ALL button
+        const wishAgainBtn = document.getElementById('btn-gacha-wish-again');
+        const sellAllBtn = document.getElementById('btn-gacha-sell-all');
+        if (wishAgainBtn)
+            wishAgainBtn.classList.add('hidden');
+        if (sellAllBtn)
+            sellAllBtn.classList.add('hidden');
+        modal.classList.remove('hidden');
+        modal.className = 'fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-6 pointer-events-auto animate-scaleUp';
     }
 }
 exports.GachaScreen = GachaScreen;

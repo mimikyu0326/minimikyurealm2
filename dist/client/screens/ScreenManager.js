@@ -94,19 +94,24 @@ class ScreenManager {
                     }
                 }
             });
-            // HIDE/SHOW PHASER GAME CANVAS (CHARACTER & ENEMIES) & FULLSCREEN PLACE BACKDROP BASED ON NAV SELECTION
+            // HIDE/SHOW PHASER GAME CANVAS, AUTO BATTLE BUTTON & BACKDROP BASED ON NAV SELECTION
             const gameContainer = document.getElementById('game-container');
             const placeBg = document.getElementById('place-fullscreen-bg');
+            const autoBtnContainer = document.getElementById('dungeon-autobattle-left-container');
             if (screenId === 'dungeon') {
                 if (gameContainer)
                     gameContainer.style.display = 'block';
                 if (placeBg)
                     placeBg.classList.add('hidden');
+                if (autoBtnContainer)
+                    autoBtnContainer.classList.remove('hidden');
                 this.resetDungeonAfkTimer();
             }
             else {
                 if (gameContainer)
                     gameContainer.style.display = 'none';
+                if (autoBtnContainer)
+                    autoBtnContainer.classList.add('hidden');
                 if (placeBg) {
                     placeBg.classList.remove('hidden');
                     let bgUrl = 'assets/murim_hideout_bg.jpg';

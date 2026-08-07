@@ -827,7 +827,7 @@ export class DungeonScreen implements ScreenLifecycle {
           }
         }
 
-        // PURSUE & ATTACK NEAREST ENEMY
+        // PURSUE, CONTINUOUSLY AUTO-ATTACK, AND MOVE AWAY / EVADE NEAREST ENEMY
         const maxRange = this.getAttackRangeRadius();
         let targetEnemy: any = null;
         let minDist = Infinity;
@@ -844,22 +844,34 @@ export class DungeonScreen implements ScreenLifecycle {
         const speed = this.getHeroMoveSpeed() * 1.5;
 
         if (targetEnemy) {
-          if (minDist <= maxRange) {
-            this.attackEnemy(targetEnemy);
-          } else {
-            const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, targetEnemy.x, targetEnemy.y);
-            const dx = Math.cos(angle) * speed;
-            const dy = Math.sin(angle) * speed;
+          // CONTINUOUSLY AUTO-ATTACK NEAREST ENEMY
+          this.attackEnemy(targetEnemy);
 
-            this.spawnAnimeWindTrail();
-            this.earthRotationAngleX += dx * 0.005;
-            this.earthRotationAngleY += dy * 0.005;
-            this.drawGrid();
+          // DYNAMIC WASD MOVEMENT PHYSICS: MOVE TOWARDS OR MOVE AWAY / DODGE IF TOO CLOSE
+          const targetAngle = Phaser.Math.Angle.Between(this.player.x, this.player.y, targetEnemy.x, targetEnemy.y);
+          let moveAngle = targetAngle;
 
-            this.enemies.getChildren().slice().forEach((e: any) => { if (e && e.active && !e.isDefeated) { e.x -= dx; e.y -= dy; } });
-            this.droppedItems.getChildren().slice().forEach((i: any) => { if (i && i.active) { i.x -= dx; i.y -= dy; } });
-            this.isHeroMoving = true;
+          if (minDist < 60) {
+            // MOVE AWAY FROM ENEMY TO RETREAT / DODGE MELEE HITS
+            moveAngle = targetAngle + Math.PI;
+          } else if (minDist <= maxRange) {
+            // TACTICAL SIDE-STRAFE ORBITING WHILE CONTINUOUSLY ATTACKING
+            const side = Math.sin(this.time.now * 0.006) > 0 ? 1 : -1;
+            moveAngle = targetAngle + (Math.PI / 2.2 * side);
           }
+
+          // APPLY WASD WORLD DISPLACEMENT PHYSICS
+          const dx = -Math.cos(moveAngle) * speed;
+          const dy = -Math.sin(moveAngle) * speed;
+
+          this.spawnAnimeWindTrail();
+          this.earthRotationAngleX += dx * 0.004;
+          this.earthRotationAngleY += dy * 0.004;
+          this.drawGrid();
+
+          this.enemies.getChildren().slice().forEach((e: any) => { if (e && e.active && !e.isDefeated) { e.x += dx; e.y += dy; } });
+          this.droppedItems.getChildren().slice().forEach((i: any) => { if (i && i.active) { i.x += dx; i.y += dy; } });
+          this.isHeroMoving = true;
         }
       }
 

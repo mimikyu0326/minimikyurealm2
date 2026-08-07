@@ -227,6 +227,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (gachaScreen) gachaScreen.collectWithBagShakeEffect();
   };
 
+  (window as any).saveProgressToCloudFromSettings = async () => {
+    try {
+      UIService.getInstance().showToast('💾 Saving progress to Firebase Realtime DB...', 'info');
+      await gameState.saveToFirebase();
+      audio.playSound('levelup');
+      UIService.getInstance().showToast('💾 PROGRESS SAVED SUCCESSFULLY TO FIREBASE REALTIME DB! ✅', 'success');
+    } catch (e: any) {
+      UIService.getInstance().showToast('⚠️ Error saving progress to cloud.', 'warning');
+    }
+  };
+
   (window as any).autoConvertGachaCurrencies = () => {
     if (gachaScreen) gachaScreen.autoConvertCurrenciesToWishTokens();
   };

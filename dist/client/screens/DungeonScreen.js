@@ -947,8 +947,8 @@ class DungeonScreen {
                 const maxRange = this.getAttackRangeRadius();
                 let targetEnemy = null;
                 let minDist = Infinity;
-                this.enemies.getChildren().forEach((e) => {
-                    if (!e.active)
+                this.enemies.getChildren().slice().forEach((e) => {
+                    if (!e || !e.active)
                         return;
                     const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, e.x, e.y);
                     if (dist < minDist) {
@@ -972,8 +972,14 @@ class DungeonScreen {
                         this.earthRotationAngleX += dx * 0.004;
                         this.earthRotationAngleY += dy * 0.004;
                         this.drawGrid();
-                        this.enemies.getChildren().forEach((e) => { e.x -= dx; e.y -= dy; });
-                        this.droppedItems.getChildren().forEach((i) => { i.x -= dx; i.y -= dy; });
+                        this.enemies.getChildren().slice().forEach((e) => { if (e && e.active) {
+                            e.x -= dx;
+                            e.y -= dy;
+                        } });
+                        this.droppedItems.getChildren().slice().forEach((i) => { if (i && i.active) {
+                            i.x -= dx;
+                            i.y -= dy;
+                        } });
                         this.isHeroMoving = true;
                     }
                     else {
@@ -985,8 +991,14 @@ class DungeonScreen {
                         this.earthRotationAngleX += dx * 0.005;
                         this.earthRotationAngleY += dy * 0.005;
                         this.drawGrid();
-                        this.enemies.getChildren().forEach((e) => { e.x -= dx; e.y -= dy; });
-                        this.droppedItems.getChildren().forEach((i) => { i.x -= dx; i.y -= dy; });
+                        this.enemies.getChildren().slice().forEach((e) => { if (e && e.active) {
+                            e.x -= dx;
+                            e.y -= dy;
+                        } });
+                        this.droppedItems.getChildren().slice().forEach((i) => { if (i && i.active) {
+                            i.x -= dx;
+                            i.y -= dy;
+                        } });
                         this.isHeroMoving = true;
                     }
                 }
@@ -1226,8 +1238,8 @@ class DungeonScreen {
                     }
                     // Teleport & Execute Enemies inside blood mist range
                     let executed = false;
-                    this.enemies.getChildren().forEach((e) => {
-                        if (!e.active || executed)
+                    this.enemies.getChildren().slice().forEach((e) => {
+                        if (!e || !e.active || executed)
                             return;
                         const dist = Phaser.Math.Distance.Between(px, py, e.x, e.y);
                         if (dist <= maxRange) {
@@ -1271,8 +1283,8 @@ class DungeonScreen {
                 let targetItem = null;
                 let minDist = Infinity;
                 const radius = porter.porterRadiusPx || 200;
-                this.droppedItems.getChildren().forEach((item) => {
-                    if (!item.active)
+                this.droppedItems.getChildren().slice().forEach((item) => {
+                    if (!item || !item.active)
                         return;
                     const dist = Phaser.Math.Distance.Between(this.porterPos.x, this.porterPos.y, item.x, item.y);
                     if (dist < minDist) {
@@ -1730,8 +1742,8 @@ class DungeonScreen {
                     this.isHeroMoving = false;
                 }
                 // Enemies approach hero
-                this.enemies.getChildren().forEach((e) => {
-                    if (!e.active)
+                this.enemies.getChildren().slice().forEach((e) => {
+                    if (!e || !e.active)
                         return;
                     const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, e.x, e.y);
                     if (dist > 70) {
@@ -1742,8 +1754,8 @@ class DungeonScreen {
                 });
                 // Forceful Magnet Auto-Pickup & AUTO Mode Global Map Auto-Collect
                 const pickupRange = self.isAutoBattle ? 950 : 250;
-                this.droppedItems.getChildren().forEach((item) => {
-                    if (!item.active)
+                this.droppedItems.getChildren().slice().forEach((item) => {
+                    if (!item || !item.active)
                         return;
                     const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, item.x, item.y);
                     if (dist <= pickupRange || item.isBeingCollected) {
@@ -1816,7 +1828,10 @@ class DungeonScreen {
                 }
                 self.gameState.notify();
                 self.gameState.saveToFirebase();
-                item.destroy();
+                this.time.delayedCall(0, () => {
+                    if (item && item.active)
+                        item.destroy();
+                });
             }
             renderSuperSaiyanAura() {
                 this.auraGraphics.clear();
@@ -1852,8 +1867,8 @@ class DungeonScreen {
                     const now = this.time.now;
                     if (!this.lastAuraPulse || now - this.lastAuraPulse > 350) {
                         this.lastAuraPulse = now;
-                        this.enemies.getChildren().forEach((e) => {
-                            if (!e.active)
+                        this.enemies.getChildren().slice().forEach((e) => {
+                            if (!e || !e.active)
                                 return;
                             const dist = Phaser.Math.Distance.Between(px, py, e.x, e.y);
                             if (dist <= 280) {
@@ -2182,9 +2197,9 @@ class DungeonScreen {
             updateEnemyLocators() {
                 this.locatorGraphics.clear();
                 this.renderHeroDungeonHUD();
-                this.enemies.getChildren().forEach((e) => {
-                    if (!e.active) {
-                        if (e.lvlText) {
+                this.enemies.getChildren().slice().forEach((e) => {
+                    if (!e || !e.active) {
+                        if (e && e.lvlText && e.lvlText.active) {
                             e.lvlText.destroy();
                             e.lvlText = null;
                         }
@@ -2230,7 +2245,7 @@ class DungeonScreen {
                 const py = this.player.y;
                 // Collect valid active enemies in range (limit chain up to 4 targets to prevent lag)
                 const targetEnemies = [];
-                this.enemies.getChildren().forEach((e) => {
+                this.enemies.getChildren().slice().forEach((e) => {
                     if (e && e.active && targetEnemies.length < 4) {
                         const dist = Phaser.Math.Distance.Between(px, py, e.x, e.y);
                         if (dist <= maxRange) {
@@ -2310,8 +2325,8 @@ class DungeonScreen {
                 processNextTarget();
             }
             checkRangeImpact(x, y) {
-                this.enemies.getChildren().forEach((e) => {
-                    if (!e.active)
+                this.enemies.getChildren().slice().forEach((e) => {
+                    if (!e || !e.active)
                         return;
                     const dist = Phaser.Math.Distance.Between(x, y, e.x, e.y);
                     if (dist <= 40) {
@@ -2436,7 +2451,12 @@ class DungeonScreen {
                 }
                 self.gameState.notify();
                 self.gameState.saveToFirebase();
-                enemy.destroy();
+                // Safely destroy enemy on next tick to prevent array mutation during forEach iteration
+                this.time.delayedCall(0, () => {
+                    if (enemy && enemy.active) {
+                        enemy.destroy();
+                    }
+                });
                 // Maintain minimum 10 active monsters
                 this.ensureMinimumMonsters(10);
             }
@@ -2550,12 +2570,12 @@ class DungeonScreen {
             attackNearestEnemy() {
                 if (this.isDead)
                     return;
-                const enemies = this.enemies.getChildren();
+                const enemies = this.enemies.getChildren().slice();
                 const maxRange = this.getAttackRangeRadius();
                 let targetEnemy = null;
                 let minDist = Infinity;
                 enemies.forEach((e) => {
-                    if (!e.active)
+                    if (!e || !e.active)
                         return;
                     const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, e.x, e.y);
                     if (dist <= maxRange && dist < minDist) {

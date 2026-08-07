@@ -652,5 +652,109 @@ button:active, .item-slot:active, .tab-btn:active {
   -webkit-overflow-scrolling: touch;
 }
 
+/* =========================================================
+   UNIVERSAL AUTO-ADJUST RESPONSIVE UI ENGINE FOR ALL RESOLUTIONS
+   ========================================================= */
+
+/* 1. Dynamic Viewport Scaling for High-DPI & 4K Displays */
+@media (min-width: 1920px) {
+  html {
+    font-size: 17px;
+  }
+}
+@media (min-width: 2560px) {
+  html {
+    font-size: 19px;
+  }
+}
+
+/* 2. Fluid Height & Viewport Scaling (iOS/Android Dynamic Viewport Heights) */
+.game-view-screen {
+  max-height: calc(100dvh - 70px) !important;
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+
+/* 3. Universal Modal Windows & Glass Panels Auto-Fit */
+.glass-panel.spatial-window {
+  max-height: calc(90dvh - 20px) !important;
+  max-width: min(96vw, 1320px) !important;
+  overflow-y: auto !important;
+  box-sizing: border-box;
+}
+
+/* 4. Navigation & Top Header Bar Responsive Auto-Adjust */
+#game-top-bar {
+  padding-left: clamp(0.5rem, 1.5vw, 1.5rem);
+  padding-right: clamp(0.5rem, 1.5vw, 1.5rem);
+}
+
+#game-top-bar nav button {
+  font-size: clamp(10px, 0.85vw + 0.1rem, 13px);
+  padding: clamp(4px, 0.4vw, 8px) clamp(8px, 0.8vw, 16px);
+}
+
+/* 5. Left-Side AUTO Button Auto-Scaling & Vertical Centering */
+#dungeon-autobattle-left-container {
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  transition: transform 0.2s ease, scale 0.2s ease;
+}
+
+@media (max-width: 768px) {
+  #dungeon-autobattle-left-container {
+    left: 8px !important;
+    scale: 0.9;
+  }
+}
+
+@media (max-width: 480px) {
+  #dungeon-autobattle-left-container {
+    left: 4px !important;
+    scale: 0.82;
+  }
+}
+
+@media (max-height: 500px) {
+  /* Mobile Landscape View */
+  #dungeon-autobattle-left-container {
+    scale: 0.75;
+    left: 4px !important;
+  }
+  #hud-bottom-right-meters {
+    scale: 0.75;
+    right: 4px !important;
+  }
+}
+
+/* 6. Touch-Optimized HUD Dock Auto-Adjustment */
+@media (max-width: 768px) {
+  #hud-bottom-right-meters {
+    top: 50% !important;
+    bottom: auto !important;
+    right: 8px !important;
+    transform: translateY(-50%) !important;
+    flex-direction: column !important;
+    gap: 0.4rem !important;
+    z-index: 45 !important;
+  }
+
+  #btn-hero-attack {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  #hud-bottom-right-meters button {
+    touch-action: manipulation;
+  }
+}
+
+/* 7. Auto-Adjust Settings Button on Mobile Viewports */
+@media (max-width: 480px) {
+  .setting-btn-text {
+    display: none !important;
+  }
+}
+
 
 

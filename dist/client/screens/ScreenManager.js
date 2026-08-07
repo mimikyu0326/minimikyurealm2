@@ -26,7 +26,7 @@ class ScreenManager {
         }
         // Disable 5-second Idle AFK auto-transfer when Auto-Battle is ON or Cutscene is active!
         const dungeonScreen = this.registeredScreens.get('dungeon');
-        if (dungeonScreen && (dungeonScreen.isAutoBattle || dungeonScreen.isCutsceneActive)) {
+        if (dungeonScreen && dungeonScreen.isCutsceneActive) {
             return;
         }
         if (this.currentScreen === 'dungeon') {

@@ -6,7 +6,6 @@ import { ScreenLifecycle, ScreenManager } from './ScreenManager';
 import { GameStateService, ElementType, PetAttackType, RarityType, InventoryItem } from '../services/GameStateService';
 import { AudioService } from '../services/AudioService';
 import { UIService } from '../services/UIService';
-import { AutoBattleService } from '../services/AutoBattleService';
 
 export class DungeonScreen implements ScreenLifecycle {
   private phaserGame: any = null;
@@ -14,7 +13,6 @@ export class DungeonScreen implements ScreenLifecycle {
   private gameState = GameStateService.getInstance();
   private audio = AudioService.getInstance();
   private ui = UIService.getInstance();
-  public isAutoBattle: boolean = false;
   public joystickDx: number = 0;
   public joystickDy: number = 0;
 
@@ -555,7 +553,6 @@ export class DungeonScreen implements ScreenLifecycle {
         this.spawnTimer = this.time.addEvent({ delay: 3500, callback: () => this.autoSpawnLoop(), loop: true });
         this.monsterAttackTimer = this.time.addEvent({ delay: 1800, callback: () => this.monsterAttackHeroLoop(), loop: true });
         this.monsterAbilityTimer = this.time.addEvent({ delay: 3800, callback: () => this.executeMonsterBossAbilities(), loop: true });
-        this.autoBattleTimer = this.time.addEvent({ delay: 300, callback: () => this.runAutoBattleLogic(), loop: true });
         this.autoSkillTimer = this.time.addEvent({ delay: 200, callback: () => this.runAutomaticSkillLogic(), loop: true });
         this.porterTimer = this.time.addEvent({ delay: 100, callback: () => this.updatePorterCollector(), loop: true });
 
@@ -798,108 +795,6 @@ export class DungeonScreen implements ScreenLifecycle {
         const mountSpeedMult = equippedMount ? 1.45 : 1.0;
         const baseSpeed = 4.8 * mountSpeedMult;
         return this.isHeroTitanMode ? baseSpeed * 1.9 : baseSpeed;
-      }
-
-      // AUTOPILOT ULTRA-FAST MOVEMENT SPEED & HYPER-ACTIVE AUTO METERS
-      runAutoBattleLogic() {
-        if (!self.isAutoBattle || ScreenManager.getInstance().getCurrentScreen() !== 'dungeon' || this.isDead) {
-          return;
-        }
-
-        // 1. AUTO-ACTIVATE ALL METERS AS SOON AS THEY HIT 100%
-        // A. SOUL CUTSCENE METER AUTO-TRIGGER (If equipped)
-        const soulCount = self.gameState.state.killMeter || 0;
-        if (soulCount >= 100 && !this.isCutsceneActive) {
-          this.triggerSoulCutscene();
-        }
-
-        // B. BANKAI METER AUTO-TRIGGER
-        const auraCount = self.gameState.state.heroAuraMeter || 0;
-        if (auraCount >= 100 && !this.isHeroTitanMode) {
-          this.triggerHeroTitanAuraMode();
-        }
-
-        // C. PET RUSH METER AUTO-TRIGGER
-        if (this.petSquadMeter >= 100 && !this.isSuperPetMode) {
-          this.triggerSuperPetMode();
-        }
-
-        // D. UNIQUE POWER / ULTIMATE AUTO-TRIGGER
-        const uniquePower = self.gameState.state.equippedUniquePower;
-        if (uniquePower) {
-          const now = this.time.now;
-          if (!this.lastUniquePowerTime || now - this.lastUniquePowerTime > 7500) {
-            this.lastUniquePowerTime = now;
-            this.executeAutomaticUniquePower();
-          }
-        }
-
-        // 2. FIND NEAREST ENEMY / BOSS TO PURSUE AND ANNIHILATE
-        const maxRange = this.getAttackRangeRadius();
-        let targetEnemy: any = null;
-        let minDist = Infinity;
-
-        this.enemies.getChildren().slice().forEach((e: any) => {
-          if (!e || !e.active) return;
-          const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, e.x, e.y);
-          if (dist < minDist) {
-            minDist = dist;
-            targetEnemy = e;
-          }
-        });
-
-        // AUTOPILOT ULTRA-FAST MOVEMENT SPEED (1.65X USER SPEED MULTIPLIER!)
-        const speed = this.getHeroMoveSpeed() * 1.65;
-
-        if (targetEnemy) {
-          if (minDist <= maxRange) {
-            this.attackEnemy(targetEnemy);
-
-            // TACTICAL EVASIVE DODGING & ORBITING WHEN ENEMIES MOVE CLOSER
-            const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, targetEnemy.x, targetEnemy.y);
-            const dodgeSide = Math.sin(this.time.now * 0.008) > 0 ? 1 : -1;
-            const dodgeAngle = angle + (Math.PI / 2 * dodgeSide) + (minDist < 60 ? Math.PI : 0);
-            const dodgeSpeed = speed * 1.15;
-
-            const dx = Math.cos(dodgeAngle) * dodgeSpeed;
-            const dy = Math.sin(dodgeAngle) * dodgeSpeed;
-
-            this.spawnAnimeWindTrail();
-            this.earthRotationAngleX += dx * 0.004;
-            this.earthRotationAngleY += dy * 0.004;
-            this.drawGrid();
-
-            this.enemies.getChildren().slice().forEach((e: any) => { if (e && e.active) { e.x -= dx; e.y -= dy; } });
-            this.droppedItems.getChildren().slice().forEach((i: any) => { if (i && i.active) { i.x -= dx; i.y -= dy; } });
-            this.isHeroMoving = true;
-          } else {
-            // AUTOPILOT HIGH SPEED PURSUIT STRAIGHT TO TARGET ENEMY / BOSS
-            const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, targetEnemy.x, targetEnemy.y);
-            const dx = Math.cos(angle) * speed;
-            const dy = Math.sin(angle) * speed;
-
-            this.spawnAnimeWindTrail();
-            this.earthRotationAngleX += dx * 0.005;
-            this.earthRotationAngleY += dy * 0.005;
-            this.drawGrid();
-
-            this.enemies.getChildren().slice().forEach((e: any) => { if (e && e.active) { e.x -= dx; e.y -= dy; } });
-            this.droppedItems.getChildren().slice().forEach((i: any) => { if (i && i.active) { i.x -= dx; i.y -= dy; } });
-            this.isHeroMoving = true;
-          }
-        } else {
-          this.autoRoamAngle += 0.08;
-          const dx = Math.cos(this.autoRoamAngle) * speed;
-          const dy = Math.sin(this.autoRoamAngle) * speed;
-
-          this.spawnAnimeWindTrail();
-          this.earthRotationAngleX += dx * 0.005;
-          this.earthRotationAngleY += dy * 0.005;
-          this.drawGrid();
-
-          this.droppedItems.getChildren().forEach((i: any) => { i.x -= dx; i.y -= dy; });
-          this.isHeroMoving = true;
-        }
       }
 
       // 5 AUTOMATIC CASTING SKILLS SYSTEM
@@ -1695,7 +1590,7 @@ export class DungeonScreen implements ScreenLifecycle {
 
           this.enemies.getChildren().forEach((e: any) => { e.x += dx; e.y += dy; });
           this.droppedItems.getChildren().forEach((i: any) => { i.x += dx; i.y += dy; });
-        } else if (!self.isAutoBattle) {
+        } else {
           this.isHeroMoving = false;
         }
 
@@ -1710,8 +1605,8 @@ export class DungeonScreen implements ScreenLifecycle {
           }
         });
 
-        // Forceful Magnet Auto-Pickup & AUTO Mode Global Map Auto-Collect
-        const pickupRange = self.isAutoBattle ? 950 : 250;
+        // Magnet Auto-Pickup
+        const pickupRange = 250;
         this.droppedItems.getChildren().slice().forEach((item: any) => {
           if (!item || !item.active) return;
           const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, item.x, item.y);
@@ -1803,7 +1698,7 @@ export class DungeonScreen implements ScreenLifecycle {
         const time = this.time.now * 0.008;
         const jobClass = self.gameState.state.jobClass || 'WARRIOR';
         const rune = self.gameState.state.equippedRune;
-        const isAuto = self.isAutoBattle;
+        const isAuto = false;
 
         // Custom Class / Element Color Palettes
         let flameColor = jobClass === 'WARRIOR' ? 0xef4444 : jobClass === 'MAGE' ? 0x8b5cf6 : 0x10b981;
@@ -3082,11 +2977,6 @@ export class DungeonScreen implements ScreenLifecycle {
         if (this.isCutsceneActive) return;
         this.isCutsceneActive = true;
 
-        // Automatically turn ON Auto Battle when cutscene is triggered!
-        if (!self.isAutoBattle) {
-          self.toggleAutoBattle();
-        }
-
         // Disable IDLE AFK Timer during cutscene!
         ScreenManager.getInstance().resetDungeonAfkTimer();
 
@@ -3266,25 +3156,6 @@ export class DungeonScreen implements ScreenLifecycle {
         this.phaserGame.scale.resize(window.innerWidth, window.innerHeight);
       }
     });
-
-    const autoBattleBtn = document.getElementById('btn-toggle-autobattle');
-    if (autoBattleBtn) {
-      autoBattleBtn.onclick = () => this.toggleAutoBattle();
-    }
-  }
-
-  public toggleAutoBattle(): void {
-    const autoService = AutoBattleService.getInstance();
-    this.isAutoBattle = autoService.toggle();
-
-    if (this.isAutoBattle) {
-      this.ui.showToast('⚡ AUTO Battles & Auto Meters Activated! 🔄', 'success');
-    } else {
-      this.ui.showToast('⚔️ AUTO Battle Deactivated.', 'info');
-    }
-
-    ScreenManager.getInstance().resetDungeonAfkTimer();
-    this.audio.playSound('click');
   }
 
   public triggerAttack(): void {

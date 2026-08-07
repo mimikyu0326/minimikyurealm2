@@ -6,6 +6,7 @@ import { ScreenLifecycle, ScreenManager } from './ScreenManager';
 import { GameStateService, ElementType, PetAttackType, RarityType, InventoryItem } from '../services/GameStateService';
 import { AudioService } from '../services/AudioService';
 import { UIService } from '../services/UIService';
+import { AutoBattleService } from '../services/AutoBattleService';
 
 export class DungeonScreen implements ScreenLifecycle {
   private phaserGame: any = null;
@@ -3268,21 +3269,15 @@ export class DungeonScreen implements ScreenLifecycle {
   }
 
   public toggleAutoBattle(): void {
-    this.isAutoBattle = !this.isAutoBattle;
-    const btn = document.getElementById('btn-toggle-autobattle');
-    const statusText = document.getElementById('autobattle-status-text');
+    const autoService = AutoBattleService.getInstance();
+    this.isAutoBattle = autoService.toggle();
 
-    if (btn) {
-      if (this.isAutoBattle) {
-        btn.className = 'w-20 h-20 md:w-24 md:h-24 rounded-3xl glass-panel border-2 border-emerald-400 bg-gradient-to-b from-emerald-600 via-emerald-800 to-black flex flex-col items-center justify-center text-emerald-200 shadow-[0_0_35px_rgba(16,185,129,1)] ring-4 ring-emerald-400 animate-pulse transition hover:scale-110 active:scale-95 group relative cursor-pointer';
-        if (statusText) statusText.innerText = 'ON 🔥';
-        this.ui.showToast('⚔️ AUTO Mode (Battle & Loot Collect) Activated!', 'success');
-      } else {
-        btn.className = 'w-20 h-20 md:w-24 md:h-24 rounded-3xl glass-panel border-2 border-emerald-500/80 bg-gradient-to-b from-emerald-950 via-slate-900 to-black flex flex-col items-center justify-center text-emerald-300 shadow-[0_0_30px_rgba(16,185,129,0.5)] transition hover:scale-110 active:scale-95 group relative cursor-pointer';
-        if (statusText) statusText.innerText = 'OFF';
-        this.ui.showToast('⚔️ AUTO Mode Deactivated.', 'info');
-      }
+    if (this.isAutoBattle) {
+      this.ui.showToast('⚡ AUTO Battles & Auto Meters Activated! 🔄', 'success');
+    } else {
+      this.ui.showToast('⚔️ AUTO Battle Deactivated.', 'info');
     }
+
     ScreenManager.getInstance().resetDungeonAfkTimer();
     this.audio.playSound('click');
   }

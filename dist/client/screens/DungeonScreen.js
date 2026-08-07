@@ -850,9 +850,9 @@ class DungeonScreen {
             }
             getAttackRangeRadius() {
                 const level = self.gameState.state.level || 1;
-                // UNLIMITED ATTACK RANGE SCALING: Base Lvl 1 = 260px, +25px per Level up! Resets on Reincarnation!
-                const baseRange = 260;
-                const levelBonus = (level - 1) * 25;
+                // SMOOTH & BALANCED RANGE SCALING: Base Lvl 1 = 240px, +1px per Level up! Resets on Reincarnation!
+                const baseRange = 240;
+                const levelBonus = (level - 1) * 1;
                 return baseRange + levelBonus;
             }
             spawnAnimeWindTrail() {

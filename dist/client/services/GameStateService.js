@@ -1059,39 +1059,18 @@ class GameStateService {
         return '🏹 Apprentice Bow Scout';
     }
     getChibiHeroHTML(scaleClass = 'scale-125') {
-        const isFemale = this.state.gender === 'FEMALE';
         const cls = this.state.jobClass || 'WARRIOR';
         const rein = this.state.ascensionLevel || 0;
-        let head = '🥷';
-        let robe = '🥋';
-        let hat = '🐉';
+        let head = '👧';
+        let robe = '👘';
+        let hat = rein >= 3 ? '👑' : '🌸';
         let weapon = this.state.equippedWeapon?.icon || '🗡️';
-        if (isFemale) {
-            head = '👸';
-            robe = '🥋';
-        }
-        else {
-            head = '🥷';
-            robe = '🥋';
-        }
-        if (cls === 'WARRIOR' || cls === 'SAMURAI') {
-            hat = rein >= 3 ? '👑' : '🗡️';
-            weapon = this.state.equippedWeapon?.icon || '🗡️';
-        }
-        else if (cls === 'MAGE') {
-            hat = '🔮';
-            weapon = this.state.equippedWeapon?.icon || '🔮';
-        }
-        else {
-            hat = '🏹';
-            weapon = this.state.equippedWeapon?.icon || '🏹';
-        }
         const runeElem = this.state.equippedRune?.element;
-        let auraGlow = 'drop-shadow-[0_0_35px_rgba(16,185,129,1)]';
+        let auraGlow = 'drop-shadow-[0_0_35px_rgba(244,114,182,1)]';
         let auraHTML = `
       <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
-        <div class="w-32 h-32 rounded-full bg-gradient-to-t from-emerald-600/40 via-teal-500/30 to-transparent animate-pulse border-2 border-emerald-400/80 shadow-[0_0_40px_rgba(16,185,129,1)]"></div>
-        <div class="absolute -top-4 text-emerald-300 text-xs font-bold animate-bounce font-mono">🐉 Murim Qi Aura</div>
+        <div class="w-32 h-32 rounded-full bg-gradient-to-t from-pink-600/40 via-rose-500/30 to-transparent animate-pulse border-2 border-pink-400/80 shadow-[0_0_40px_rgba(244,114,182,1)]"></div>
+        <div class="absolute -top-4 text-pink-300 text-xs font-bold animate-bounce font-mono">🌸 Murim Goddess Qi</div>
       </div>
     `;
         if (runeElem === 'fire') {
@@ -1121,9 +1100,9 @@ class GameStateService {
           ${head}
           <span class="absolute -bottom-2 -left-2 text-3xl">${robe}</span>
         </div>
-        <div class="text-4xl -mt-4 drop-shadow-[0_0_20px_rgba(16,185,129,0.9)] z-10 flex items-center gap-1">
+        <div class="text-4xl -mt-4 drop-shadow-[0_0_20px_rgba(244,114,182,0.9)] z-10 flex items-center gap-1">
           <span class="animate-bounce">${weapon}</span>
-          <span class="text-xs text-cyan-300 font-mono font-bold">✨ Qi Blade</span>
+          <span class="text-xs text-pink-300 font-mono font-bold">✨ Flying Blade</span>
         </div>
       </div>
     `;

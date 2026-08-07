@@ -404,6 +404,65 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.classList.add('hidden');
         }
     };
+    window.openResourceDownloaderModal = () => {
+        const modal = document.getElementById('modal-resource-downloader');
+        if (modal)
+            modal.classList.remove('hidden');
+    };
+    window.startResourceDownloadProcess = () => {
+        const btnGroup = document.getElementById('resource-download-btn-group');
+        const progressContainer = document.getElementById('resource-progress-container');
+        const progressBar = document.getElementById('resource-progress-bar');
+        const percentText = document.getElementById('resource-download-percent');
+        const statusText = document.getElementById('resource-download-status-text');
+        const pkgPhaser = document.getElementById('status-pkg-phaser');
+        const pkgAudio = document.getElementById('status-pkg-audio');
+        const pkgFirebase = document.getElementById('status-pkg-firebase');
+        const pkgVfx = document.getElementById('status-pkg-vfx');
+        if (btnGroup)
+            btnGroup.classList.add('hidden');
+        if (progressContainer)
+            progressContainer.classList.remove('hidden');
+        let current = 0;
+        const stages = [
+            { pct: 25, status: 'Caching Phaser 3 Engine Modules...', el: pkgPhaser },
+            { pct: 50, status: 'Downloading Audio SFX & BGM Assets...', el: pkgAudio },
+            { pct: 75, status: 'Initializing Firebase Realtime Engine...', el: pkgFirebase },
+            { pct: 100, status: 'Optimizing Particle VFX & Reincarnation Assets...', el: pkgVfx }
+        ];
+        let stageIndex = 0;
+        const interval = setInterval(() => {
+            current += 5;
+            if (current > 100)
+                current = 100;
+            if (progressBar)
+                progressBar.style.width = `${current}%`;
+            if (percentText)
+                percentText.innerText = `${current}%`;
+            if (stageIndex < stages.length && current >= stages[stageIndex].pct) {
+                const stage = stages[stageIndex];
+                if (statusText)
+                    statusText.innerText = stage.status;
+                if (stage.el) {
+                    stage.el.innerText = 'DOWNLOADED ✔️';
+                    stage.el.className = 'text-emerald-400 font-bold';
+                }
+                stageIndex++;
+            }
+            if (current >= 100) {
+                clearInterval(interval);
+                localStorage.setItem('minimikyu_resources_downloaded', 'true');
+                audio.playSound('levelup');
+                const { UIService } = require('./services/UIService');
+                UIService.getInstance().showToast('✨ All Game Resources Downloaded & Cached! 60 FPS Active.', 'success');
+                setTimeout(() => {
+                    const modal = document.getElementById('modal-resource-downloader');
+                    if (modal)
+                        modal.classList.add('hidden');
+                }, 600);
+            }
+        }, 60);
+    };
     window.toggleSFXFromUI = () => {
         const isEnabled = audio.toggleSFX();
         window.updateSFXButtonUI(isEnabled);

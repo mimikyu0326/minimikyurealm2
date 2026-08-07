@@ -2324,31 +2324,33 @@ class DungeonScreen {
             applyAttackImpact(enemy, x, y) {
                 if (!enemy || !enemy.active)
                     return;
-                self.audio.playSound('hit');
-                this.cameras.main.shake(120, 0.006);
+                const now = this.time.now;
+                // THROTTLE AUDIO & CAMERA SHAKE TO PREVENT CANVAS STUTTER & FREEZING
+                if (!this.lastHitAudioTime || now - this.lastHitAudioTime > 150) {
+                    this.lastHitAudioTime = now;
+                    self.audio.playSound('hit');
+                }
+                if (enemy.isBoss && (!this.lastShakeTime || now - this.lastShakeTime > 700)) {
+                    this.lastShakeTime = now;
+                    if (this.cameras && this.cameras.main) {
+                        this.cameras.main.shake(100, 0.004);
+                    }
+                }
                 // ENEMY DAMAGE TAKEN RED TINT FLASH
                 enemy.setTint(0xef4444);
-                this.time.delayedCall(120, () => {
+                this.time.delayedCall(100, () => {
                     if (enemy && enemy.active)
                         enemy.clearTint();
                 });
                 // Crimson Slash Spark Graphic Impact
                 const spark = this.add.graphics().setDepth(20);
-                spark.lineStyle(5, 0xef4444, 1);
-                spark.lineBetween(x - 18, y - 18, x + 18, y + 18);
-                spark.lineBetween(x + 18, y - 18, x - 18, y + 18);
-                this.tweens.add({ targets: spark, alpha: 0, scaleX: 1.6, scaleY: 1.6, duration: 160, onComplete: () => spark.destroy() });
-                const jobClass = self.gameState.state.jobClass || 'WARRIOR';
+                spark.lineStyle(4, 0xef4444, 1);
+                spark.lineBetween(x - 16, y - 16, x + 16, y + 16);
+                spark.lineBetween(x + 16, y - 16, x - 16, y + 16);
+                this.tweens.add({ targets: spark, alpha: 0, scaleX: 1.4, scaleY: 1.4, duration: 140, onComplete: () => spark.destroy() });
                 const cp = self.gameState.state.cp || 35;
-                let baseDamage = Math.floor(cp * 1.5) + Math.floor(Math.random() * (cp * 0.5));
-                if (jobClass === 'WARRIOR')
-                    baseDamage = Math.floor(baseDamage * 1.3);
+                const baseDamage = Math.floor(cp * 1.5) + Math.floor(Math.random() * (cp * 0.5));
                 enemy.hp -= baseDamage;
-                const fx = this.add.graphics();
-                fx.fillStyle(0xfbbf24, 0.95);
-                fx.fillCircle(x, y, 24);
-                this.tweens.add({ targets: fx, alpha: 0, scaleX: 1.8, scaleY: 1.8, duration: 220, onComplete: () => fx.destroy() });
-                this.tweens.add({ targets: enemy, x: enemy.x + 8, duration: 40, yoyo: true, repeat: 3 });
                 this.showDamageText(baseDamage, x, y);
                 if (enemy.hp <= 0) {
                     this.onEnemyDefeated(enemy, x, y);

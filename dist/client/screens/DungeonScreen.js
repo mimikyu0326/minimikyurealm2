@@ -56,6 +56,9 @@ class DungeonScreen {
             earthRotationAngleY = 0;
             autoRoamAngle = 0;
             radarSweepAngle = 0;
+            petLastAttackTimes = [];
+            activeDamageTextCount = 0;
+            activeExpPopupCount = 0;
             // Roll Dash Q Key variables
             lastDashTime = 0;
             lastUniquePowerTime = 0;
@@ -713,8 +716,8 @@ class DungeonScreen {
                 this.monsterAttackTimer = this.time.addEvent({ delay: 1800, callback: () => this.monsterAttackHeroLoop(), loop: true });
                 this.monsterAbilityTimer = this.time.addEvent({ delay: 3800, callback: () => this.executeMonsterBossAbilities(), loop: true });
                 this.autoBattleTimer = this.time.addEvent({ delay: 300, callback: () => this.runAutoBattleLogic(), loop: true });
-                this.autoSkillTimer = this.time.addEvent({ delay: 60, callback: () => this.runAutomaticSkillLogic(), loop: true });
-                this.porterTimer = this.time.addEvent({ delay: 60, callback: () => this.updatePorterCollector(), loop: true });
+                this.autoSkillTimer = this.time.addEvent({ delay: 200, callback: () => this.runAutomaticSkillLogic(), loop: true });
+                this.porterTimer = this.time.addEvent({ delay: 100, callback: () => this.updatePorterCollector(), loop: true });
                 // HERO AURA BUILD TIMER (+2 PER SECOND UP TO 100/100)
                 this.time.addEvent({
                     delay: 1000,
@@ -869,26 +872,33 @@ class DungeonScreen {
                 return baseRange + levelBonus;
             }
             spawnAnimeWindTrail() {
-                const px = this.player.x + (Math.random() * 20 - 10);
-                const py = this.player.y + 24;
-                const wind = this.add.sprite(px, py, 'wind_gust');
-                wind.setAlpha(0.8);
-                wind.setScale(0.8);
-                this.tweens.add({
-                    targets: wind,
-                    y: py + 15,
-                    alpha: 0,
-                    scaleX: 1.4,
-                    scaleY: 1.4,
-                    duration: 350,
-                    onComplete: () => wind.destroy()
-                });
+                const now = this.time.now;
+                if (!this.lastWindTrailTime || now - this.lastWindTrailTime > 150) {
+                    this.lastWindTrailTime = now;
+                    const px = this.player.x + (Math.random() * 20 - 10);
+                    const py = this.player.y + 24;
+                    const wind = this.add.sprite(px, py, 'wind_gust');
+                    wind.setAlpha(0.8);
+                    wind.setScale(0.8);
+                    this.tweens.add({
+                        targets: wind,
+                        y: py + 15,
+                        alpha: 0,
+                        scaleX: 1.4,
+                        scaleY: 1.4,
+                        duration: 350,
+                        onComplete: () => {
+                            if (wind && wind.destroy)
+                                wind.destroy();
+                        }
+                    });
+                }
             }
             executeMonsterBossAbilities() {
                 if (ScreenManager_1.ScreenManager.getInstance().getCurrentScreen() !== 'dungeon' || this.isDead)
                     return;
                 this.enemies.getChildren().forEach((e) => {
-                    if (!e.active || Math.random() > 0.35)
+                    if (!e || !e.active || e.isDefeated || Math.random() > 0.35)
                         return;
                     const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, e.x, e.y);
                     if (dist <= 260) {
@@ -905,7 +915,11 @@ class DungeonScreen {
                             });
                         }
                         else if (randAbility < 0.7) {
-                            this.cameras.main.shake(140, 0.008);
+                            const now = this.time.now;
+                            if (!this.lastShakeTime || now - this.lastShakeTime > 500) {
+                                this.lastShakeTime = now;
+                                this.cameras.main.shake(140, 0.005);
+                            }
                             const slamRing = this.add.graphics();
                             slamRing.lineStyle(4, 0xef4444, 0.9);
                             slamRing.strokeCircle(e.x, e.y, 40);
@@ -1083,14 +1097,14 @@ class DungeonScreen {
                     }
                     // Fast continuous burn tick damage to ALL enemies inside max attack range
                     this.enemies.getChildren().forEach((e) => {
-                        if (!e.active)
+                        if (!e || !e.active || e.isDefeated)
                             return;
                         const dist = Phaser.Math.Distance.Between(px, py, e.x, e.y);
                         if (dist <= maxRange) {
                             const tickDamage = Math.max(6, Math.floor(cpDamage * 0.15));
                             e.hp -= tickDamage;
                             this.showDamageText(tickDamage, e.x, e.y);
-                            if (e.hp <= 0)
+                            if (e.hp <= 0 && !e.isDefeated)
                                 this.onEnemyDefeated(e, e.x, e.y);
                         }
                     });
@@ -1184,14 +1198,14 @@ class DungeonScreen {
                     }
                     // 4. CORRODE ENEMIES INSIDE TOXIC ACID RAIN ZONE
                     this.enemies.getChildren().forEach((e) => {
-                        if (!e.active)
+                        if (!e || !e.active || e.isDefeated)
                             return;
                         const dist = Phaser.Math.Distance.Between(px, py, e.x, e.y);
                         if (dist <= maxRange) {
                             const acidDamage = Math.max(6, Math.floor(cpDamage * 0.16));
                             e.hp -= acidDamage;
                             this.showDamageText(acidDamage, e.x, e.y);
-                            if (e.hp <= 0)
+                            if (e.hp <= 0 && !e.isDefeated)
                                 this.onEnemyDefeated(e, e.x, e.y);
                         }
                     });
@@ -1206,7 +1220,7 @@ class DungeonScreen {
                     // Shoot 3 ultra thick & wide lasers at once
                     let laserCount = 0;
                     this.enemies.getChildren().forEach((e) => {
-                        if (!e.active || laserCount >= 3)
+                        if (!e || !e.active || e.isDefeated || laserCount >= 3)
                             return;
                         const dist = Phaser.Math.Distance.Between(px, py, e.x, e.y);
                         if (dist <= maxRange) {
@@ -1251,7 +1265,7 @@ class DungeonScreen {
                     // Teleport & Execute Enemies inside blood mist range
                     let executed = false;
                     this.enemies.getChildren().slice().forEach((e) => {
-                        if (!e || !e.active || executed)
+                        if (!e || !e.active || e.isDefeated || executed)
                             return;
                         const dist = Phaser.Math.Distance.Between(px, py, e.x, e.y);
                         if (dist <= maxRange) {
@@ -1271,7 +1285,7 @@ class DungeonScreen {
                             const execDamage = Math.max(15, Math.floor(cpDamage * 2.2));
                             e.hp -= execDamage;
                             this.showDamageText(execDamage, e.x, e.y);
-                            if (e.hp <= 0)
+                            if (e.hp <= 0 && !e.isDefeated)
                                 this.onEnemyDefeated(e, e.x, e.y);
                         }
                     });
@@ -1331,7 +1345,7 @@ class DungeonScreen {
                 }
                 // Magnetically pull items near player
                 this.droppedItems.getChildren().forEach((item) => {
-                    if (!item.active)
+                    if (!item || !item.active)
                         return;
                     const pDist = Phaser.Math.Distance.Between(px, py, item.x, item.y);
                     if (pDist <= (radius * 0.75)) {
@@ -1339,6 +1353,7 @@ class DungeonScreen {
                         item.x += Math.cos(pAngle) * 7.5;
                         item.y += Math.sin(pAngle) * 7.5;
                         if (pDist <= 35) {
+                            item.setActive(false).setVisible(false);
                             this.collectDroppedItem(item);
                         }
                     }
@@ -1365,8 +1380,9 @@ class DungeonScreen {
                 }
             }
             collectDroppedItem(item) {
-                if (!item || !item.active)
+                if (!item)
                     return;
+                item.setActive(false).setVisible(false);
                 if (item.isKey) {
                     self.gameState.state.towerKeys = Math.min(20, (self.gameState.state.towerKeys || 0) + 1);
                     self.ui.showToast('🔑 Tower Key Collected by Porter!', 'info');
@@ -1382,7 +1398,10 @@ class DungeonScreen {
                 else {
                     self.gameState.state.gold += 80;
                 }
-                item.destroy();
+                this.time.delayedCall(0, () => {
+                    if (item && item.destroy)
+                        item.destroy();
+                });
                 self.gameState.notify();
             }
             showAutosaveBadgeOverhead() {
@@ -1407,7 +1426,7 @@ class DungeonScreen {
                 });
             }
             ensureMinimumMonsters(minCount = 10) {
-                const activeEnemies = this.enemies.getChildren().filter((e) => e.active);
+                const activeEnemies = this.enemies.getChildren().filter((e) => e && e.active && !e.isDefeated);
                 const activeCount = activeEnemies.length;
                 const needed = minCount - activeCount;
                 const currentTier = self.gameState.getWorldTier();
@@ -1461,6 +1480,7 @@ class DungeonScreen {
                 enemy.setInteractive();
                 enemy.setScale(isMegaBoss ? 5.2 : (isBoss ? 2.6 : 1.2));
                 enemy.isEnemy = true;
+                enemy.isDefeated = false;
                 enemy.enemyName = name;
                 enemy.lvl = scaledLvl;
                 enemy.hp = scaledHp;
@@ -1510,7 +1530,7 @@ class DungeonScreen {
                 if (ScreenManager_1.ScreenManager.getInstance().getCurrentScreen() !== 'dungeon' || this.isDead)
                     return;
                 this.enemies.getChildren().forEach((e) => {
-                    if (!e.active || this.isDead)
+                    if (!e || !e.active || e.isDefeated || this.isDead)
                         return;
                     const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, e.x, e.y);
                     if (dist <= 85) {
@@ -1518,8 +1538,12 @@ class DungeonScreen {
                         self.gameState.state.hp = Math.max(0, self.gameState.state.hp - damage);
                         self.gameState.notify();
                         self.audio.playSound('hit');
-                        // HERO DAMAGE TAKEN VISUAL EFFECTS (RED CAMERA FLASH & RED TINT & POPUP)
-                        this.cameras.main.flash(180, 239, 68, 68);
+                        // HERO DAMAGE TAKEN VISUAL EFFECTS (THROTTLED CAMERA FLASH & TINT)
+                        const now = this.time.now;
+                        if (!this.lastHitAudioTime || now - this.lastHitAudioTime > 400) {
+                            this.cameras.main.flash(180, 239, 68, 68);
+                            this.cameras.main.shake(100, 0.004);
+                        }
                         if (this.player) {
                             this.player.setTint(0xef4444);
                             this.time.delayedCall(120, () => {
@@ -1528,7 +1552,6 @@ class DungeonScreen {
                             });
                         }
                         this.showHeroDamageText(damage, this.player.x, this.player.y);
-                        this.cameras.main.shake(100, 0.005);
                         if (self.gameState.state.hp <= 0) {
                             this.handleHeroDeath();
                         }
@@ -1609,13 +1632,13 @@ class DungeonScreen {
                 });
                 // Damage enemies in radius
                 this.enemies.getChildren().forEach((e) => {
-                    if (!e.active)
+                    if (!e || !e.active || e.isDefeated)
                         return;
                     const dist = Phaser.Math.Distance.Between(px, py, e.x, e.y);
                     if (dist <= 380) {
                         e.hp -= damage;
                         this.showDamageText(damage, e.x, e.y);
-                        if (e.hp <= 0) {
+                        if (e.hp <= 0 && !e.isDefeated) {
                             this.onEnemyDefeated(e, e.x, e.y);
                         }
                     }
@@ -1798,8 +1821,9 @@ class DungeonScreen {
                 }
             }
             collectLootDrop(item) {
-                if (!item.active)
+                if (!item || !item.active)
                     return;
+                item.setActive(false).setVisible(false);
                 self.audio.playSound('potion');
                 if (item.isKey) {
                     const currentKeys = self.gameState.state.towerKeys || 0;
@@ -1881,7 +1905,7 @@ class DungeonScreen {
                     if (!this.lastAuraPulse || now - this.lastAuraPulse > 350) {
                         this.lastAuraPulse = now;
                         this.enemies.getChildren().slice().forEach((e) => {
-                            if (!e || !e.active)
+                            if (!e || !e.active || e.isDefeated)
                                 return;
                             const dist = Phaser.Math.Distance.Between(px, py, e.x, e.y);
                             if (dist <= maxAttackRange) {
@@ -1892,7 +1916,7 @@ class DungeonScreen {
                                 shock.lineStyle(4, 0xffffff, 0.95);
                                 shock.lineBetween(px, py, e.x, e.y);
                                 this.tweens.add({ targets: shock, alpha: 0, duration: 150, onComplete: () => shock.destroy() });
-                                if (e.hp <= 0) {
+                                if (e.hp <= 0 && !e.isDefeated) {
                                     this.onEnemyDefeated(e, e.x, e.y);
                                 }
                             }
@@ -2049,7 +2073,7 @@ class DungeonScreen {
                 this.renderAngryEntitiesAndHoppingAnimation();
                 const time = this.time.now * 0.008;
                 this.enemies.getChildren().forEach((e) => {
-                    if (!e.active)
+                    if (!e || !e.active || e.isDefeated)
                         return;
                     // AURA GRAPHICS EXCLUSIVELY ON BOSSES ONLY!
                     if (e.isBoss || e.isMegaBoss) {
@@ -2211,7 +2235,7 @@ class DungeonScreen {
                 this.locatorGraphics.clear();
                 this.renderHeroDungeonHUD();
                 this.enemies.getChildren().slice().forEach((e) => {
-                    if (!e || !e.active) {
+                    if (!e || !e.active || e.isDefeated) {
                         if (e && e.lvlText && e.lvlText.active) {
                             e.lvlText.destroy();
                             e.lvlText = null;
@@ -2374,7 +2398,7 @@ class DungeonScreen {
                 this.attackTowardsPointer(enemy.x, enemy.y);
             }
             applyAttackImpact(enemy, x, y) {
-                if (!enemy || !enemy.active)
+                if (!enemy || !enemy.active || enemy.isDefeated)
                     return;
                 const now = this.time.now;
                 // THROTTLE AUDIO & CAMERA SHAKE TO PREVENT CANVAS STUTTER & FREEZING
@@ -2404,14 +2428,17 @@ class DungeonScreen {
                 const baseDamage = Math.floor(cp * 1.5) + Math.floor(Math.random() * (cp * 0.5));
                 enemy.hp -= baseDamage;
                 this.showDamageText(baseDamage, x, y);
-                if (enemy.hp <= 0) {
+                if (enemy.hp <= 0 && !enemy.isDefeated) {
                     this.onEnemyDefeated(enemy, x, y);
                 }
             }
             // WAVE SYSTEM & WORLD TIER INCREASE NOTICE
             onEnemyDefeated(enemy, x, y) {
-                if (!enemy || !enemy.active)
+                if (!enemy || !enemy.active || enemy.isDefeated)
                     return;
+                enemy.isDefeated = true;
+                enemy.setActive(false);
+                enemy.setVisible(false);
                 if (enemy.lvlText) {
                     enemy.lvlText.destroy();
                     enemy.lvlText = null;
@@ -2455,8 +2482,10 @@ class DungeonScreen {
                 else if (Math.random() <= 0.08) {
                     this.spawnElementRuneDrop(x, y, 'fire');
                 }
-                // EXP SCALING PER LEVEL WITH EXP CARRY-OVER
-                while (self.gameState.state.exp >= self.gameState.state.maxExp) {
+                // EXP SCALING PER LEVEL WITH EXP CARRY-OVER (PREVENT INFINITE LOOPS)
+                let levelUpSafety = 0;
+                while (self.gameState.state.exp >= self.gameState.state.maxExp && levelUpSafety < 100) {
+                    levelUpSafety++;
                     self.gameState.state.level++;
                     self.gameState.state.exp -= self.gameState.state.maxExp;
                     self.gameState.state.maxExp = self.gameState.getNextLevelMaxExp(self.gameState.state.level);
@@ -2584,13 +2613,20 @@ class DungeonScreen {
                 }
             }
             showFloatingExpText(expAmount, x, y) {
+                if (this.activeExpPopupCount >= 8)
+                    return;
+                this.activeExpPopupCount++;
                 const el = document.createElement('div');
                 el.className = 'exp-popup-text';
                 el.innerText = `+${expAmount} EXP`;
                 el.style.left = `${x}px`;
                 el.style.top = `${y - 45}px`;
                 document.body.appendChild(el);
-                setTimeout(() => el.remove(), 1000);
+                setTimeout(() => {
+                    this.activeExpPopupCount = Math.max(0, this.activeExpPopupCount - 1);
+                    if (el && el.parentNode)
+                        el.remove();
+                }, 1000);
             }
             showFloatingLevelUpText(level) {
                 const el = document.createElement('div');
@@ -2625,6 +2661,9 @@ class DungeonScreen {
                 }
             }
             showDamageText(damage, x, y) {
+                if (this.activeDamageTextCount >= 20)
+                    return;
+                this.activeDamageTextCount++;
                 const txt = this.add.text(x + (Math.random() * 20 - 10), y - 30, `-${damage}`, {
                     fontFamily: 'monospace',
                     fontSize: '14px',
@@ -2641,7 +2680,11 @@ class DungeonScreen {
                     scaleY: 1.3,
                     duration: 400,
                     ease: 'Power1',
-                    onComplete: () => txt.destroy()
+                    onComplete: () => {
+                        this.activeDamageTextCount = Math.max(0, this.activeDamageTextCount - 1);
+                        if (txt && txt.destroy)
+                            txt.destroy();
+                    }
                 });
             }
             showHeroDamageText(damage, x, y) {
@@ -2803,6 +2846,8 @@ class DungeonScreen {
                     this.petStates = [];
                 if (!this.petKillCounts)
                     this.petKillCounts = [];
+                if (!this.petLastAttackTimes)
+                    this.petLastAttackTimes = [];
                 // Clean up extra sprites if equipped pets count decreased
                 while (this.petSprites.length > activePets.length) {
                     const sprite = this.petSprites.pop();
@@ -2810,6 +2855,7 @@ class DungeonScreen {
                         sprite.destroy();
                     this.petStates.pop();
                     this.petKillCounts.pop();
+                    this.petLastAttackTimes.pop();
                 }
                 const px = this.player.x;
                 const py = this.player.y;
@@ -2845,6 +2891,7 @@ class DungeonScreen {
                         this.petSprites[index] = sprite;
                         this.petStates[index] = 'hunting';
                         this.petKillCounts[index] = 0;
+                        this.petLastAttackTimes[index] = 0;
                     }
                     const pet = this.petSprites[index];
                     const atkType = petData.petAttackType || 'slash';
@@ -2902,7 +2949,7 @@ class DungeonScreen {
                     }
                     else {
                         // 2. SEPARATED TARGET SELECTION (DISTRIBUTE PETS ACROSS DIFFERENT ENEMIES)
-                        const activeEnemies = this.enemies.getChildren().filter((e) => e.active);
+                        const activeEnemies = this.enemies.getChildren().filter((e) => e.active && !e.isDefeated);
                         let targetEnemy = null;
                         if (activeEnemies.length > 0) {
                             // Assign distinct enemy per pet index so pets attack separated enemies!
@@ -2917,11 +2964,14 @@ class DungeonScreen {
                             const angle = Phaser.Math.Angle.Between(pet.x, pet.y, destX, destY);
                             pet.x += Math.cos(angle) * currentSpeed;
                             pet.y += Math.sin(angle) * currentSpeed;
-                            // EXECUTE UNIQUE ATTACK PATTERN FOR EACH PET VARIANT
-                            if (distToEnemy <= (atkType === 'sniper' || atkType === 'laser' ? 240 : 65)) {
+                            // EXECUTE UNIQUE ATTACK PATTERN FOR EACH PET VARIANT (WITH ATTACK COOLDOWN)
+                            const now = this.time.now;
+                            const lastAtk = this.petLastAttackTimes[index] || 0;
+                            const petAtkCooldown = isSuper ? 300 : 600;
+                            if (distToEnemy <= (atkType === 'sniper' || atkType === 'laser' ? 240 : 65) && (now - lastAtk >= petAtkCooldown)) {
+                                this.petLastAttackTimes[index] = now;
                                 const petDamage = Math.floor((petData.cpBonus || 45) * (petData.level || 1) * 1.6 * currentDmgMult);
                                 targetEnemy.hp -= petDamage;
-                                this.showDamageText(petDamage, targetEnemy.x, targetEnemy.y);
                                 this.showDamageText(petDamage, targetEnemy.x, targetEnemy.y);
                                 if (atkType === 'sniper') {
                                     const bolt = this.add.graphics().setDepth(20);
@@ -2954,7 +3004,7 @@ class DungeonScreen {
                                     clawFx.lineBetween(targetEnemy.x - 10, targetEnemy.y - 25, targetEnemy.x + 25, targetEnemy.y + 10);
                                     this.tweens.add({ targets: clawFx, alpha: 0, scaleX: 1.5, scaleY: 1.5, duration: 180, onComplete: () => clawFx.destroy() });
                                 }
-                                if (targetEnemy.hp <= 0) {
+                                if (targetEnemy.hp <= 0 && !targetEnemy.isDefeated) {
                                     this.petKillCounts[index] = (this.petKillCounts[index] || 0) + 1;
                                     this.onEnemyDefeated(targetEnemy, targetEnemy.x, targetEnemy.y);
                                 }
@@ -3193,6 +3243,7 @@ class DungeonScreen {
         this.audio.playSound('click');
     }
     triggerAttack() {
+        ScreenManager_1.ScreenManager.getInstance().resetDungeonAfkTimer();
         if (this.phaserScene) {
             this.phaserScene.attackNearestEnemy();
         }

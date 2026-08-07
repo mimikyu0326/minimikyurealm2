@@ -729,29 +729,35 @@ export class DungeonScreen implements ScreenLifecycle {
       }
 
       spawnAnimeWindTrail() {
-        const px = this.player.x + (Math.random() * 20 - 10);
-        const py = this.player.y + 24;
+        const now = this.time.now;
+        if (!this.lastWindTrailTime || now - this.lastWindTrailTime > 150) {
+          this.lastWindTrailTime = now;
+          const px = this.player.x + (Math.random() * 20 - 10);
+          const py = this.player.y + 24;
 
-        const wind = this.add.sprite(px, py, 'wind_gust');
-        wind.setAlpha(0.8);
-        wind.setScale(0.8);
+          const wind = this.add.sprite(px, py, 'wind_gust');
+          wind.setAlpha(0.8);
+          wind.setScale(0.8);
 
-        this.tweens.add({
-          targets: wind,
-          y: py + 15,
-          alpha: 0,
-          scaleX: 1.4,
-          scaleY: 1.4,
-          duration: 350,
-          onComplete: () => wind.destroy()
-        });
+          this.tweens.add({
+            targets: wind,
+            y: py + 15,
+            alpha: 0,
+            scaleX: 1.4,
+            scaleY: 1.4,
+            duration: 350,
+            onComplete: () => {
+              if (wind && wind.destroy) wind.destroy();
+            }
+          });
+        }
       }
 
       executeMonsterBossAbilities() {
         if (ScreenManager.getInstance().getCurrentScreen() !== 'dungeon' || this.isDead) return;
 
         this.enemies.getChildren().forEach((e: any) => {
-          if (!e.active || Math.random() > 0.35) return;
+          if (!e || !e.active || e.isDefeated || Math.random() > 0.35) return;
 
           const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, e.x, e.y);
           if (dist <= 260) {
@@ -767,7 +773,11 @@ export class DungeonScreen implements ScreenLifecycle {
                 yoyo: true
               });
             } else if (randAbility < 0.7) {
-              this.cameras.main.shake(140, 0.008);
+              const now = this.time.now;
+              if (!this.lastShakeTime || now - this.lastShakeTime > 500) {
+                this.lastShakeTime = now;
+                this.cameras.main.shake(140, 0.005);
+              }
               const slamRing = this.add.graphics();
               slamRing.lineStyle(4, 0xef4444, 0.9);
               slamRing.strokeCircle(e.x, e.y, 40);
@@ -1417,7 +1427,7 @@ export class DungeonScreen implements ScreenLifecycle {
         if (ScreenManager.getInstance().getCurrentScreen() !== 'dungeon' || this.isDead) return;
 
         this.enemies.getChildren().forEach((e: any) => {
-          if (!e.active || this.isDead) return;
+          if (!e || !e.active || e.isDefeated || this.isDead) return;
 
           const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, e.x, e.y);
           if (dist <= 85) {
@@ -1426,8 +1436,13 @@ export class DungeonScreen implements ScreenLifecycle {
             self.gameState.notify();
             self.audio.playSound('hit');
 
-            // HERO DAMAGE TAKEN VISUAL EFFECTS (RED CAMERA FLASH & RED TINT & POPUP)
-            this.cameras.main.flash(180, 239, 68, 68);
+            // HERO DAMAGE TAKEN VISUAL EFFECTS (THROTTLED CAMERA FLASH & TINT)
+            const now = this.time.now;
+            if (!this.lastHitAudioTime || now - this.lastHitAudioTime > 400) {
+              this.cameras.main.flash(180, 239, 68, 68);
+              this.cameras.main.shake(100, 0.004);
+            }
+
             if (this.player) {
               this.player.setTint(0xef4444);
               this.time.delayedCall(120, () => {
@@ -1435,8 +1450,6 @@ export class DungeonScreen implements ScreenLifecycle {
               });
             }
             this.showHeroDamageText(damage, this.player.x, this.player.y);
-
-            this.cameras.main.shake(100, 0.005);
 
             if (self.gameState.state.hp <= 0) {
               this.handleHeroDeath();
@@ -1531,12 +1544,12 @@ export class DungeonScreen implements ScreenLifecycle {
 
         // Damage enemies in radius
         this.enemies.getChildren().forEach((e: any) => {
-          if (!e.active) return;
+          if (!e || !e.active || e.isDefeated) return;
           const dist = Phaser.Math.Distance.Between(px, py, e.x, e.y);
           if (dist <= 380) {
             e.hp -= damage;
             this.showDamageText(damage, e.x, e.y);
-            if (e.hp <= 0) {
+            if (e.hp <= 0 && !e.isDefeated) {
               this.onEnemyDefeated(e, e.x, e.y);
             }
           }
@@ -1733,7 +1746,8 @@ export class DungeonScreen implements ScreenLifecycle {
       }
 
       collectLootDrop(item: any) {
-        if (!item.active) return;
+        if (!item || !item.active) return;
+        item.setActive(false).setVisible(false);
 
         self.audio.playSound('potion');
 

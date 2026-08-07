@@ -103,9 +103,16 @@ class AudioService {
             this.bgmAudio.pause();
         }
     }
+    lastSoundTimes = {};
     playSound(type) {
         if (!this.isSfxEnabled)
             return;
+        const nowTime = Date.now();
+        const minInterval = (type === 'attack' || type === 'hit') ? 80 : 120;
+        if (this.lastSoundTimes[type] && nowTime - this.lastSoundTimes[type] < minInterval) {
+            return;
+        }
+        this.lastSoundTimes[type] = nowTime;
         try {
             const ctx = this.initCtx();
             const osc = ctx.createOscillator();

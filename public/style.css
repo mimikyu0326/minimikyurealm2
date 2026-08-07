@@ -756,5 +756,55 @@ button:active, .item-slot:active, .tab-btn:active {
   }
 }
 
+/* =========================================================
+   DESKTOP FIT-SCREEN & COMPACT MOBILE UI SCALING SYSTEM
+   ========================================================= */
+
+/* 8. Desktop Zero Screen-Level Scrollbar Rules (Screens >= 1024px) */
+@media (min-width: 1024px) {
+  html, body {
+    overflow: hidden !important; /* Prevents full page scrollbars on desktop */
+  }
+
+  .game-view-screen {
+    max-height: calc(100vh - 60px) !important;
+    height: calc(100vh - 60px) !important;
+    overflow: hidden !important; /* Prevents outer screen-level scrollbar */
+    padding: 0.5rem 1rem !important;
+  }
+
+  /* Retain internal scrolling ONLY for inner section grids & result lists */
+  .result-scroll-container,
+  #gacha-result-grid,
+  #inventory-items-grid,
+  #companion-inventory-grid,
+  #feedback-log-history-list {
+    overflow-y: auto !important;
+  }
+
+  /* Compact section glass panels on desktop to guarantee zero screen scrolling */
+  .game-view-screen > .glass-panel,
+  .game-view-screen > div > .glass-panel {
+    max-height: calc(100vh - 76px) !important;
+    padding: 0.85rem 1.15rem !important;
+  }
+}
+
+/* 9. Mobile View Ultra-Clean Compact Scaling System (< 768px) */
+@media (max-width: 767px) {
+  .game-view-screen {
+    padding: 0.35rem 0.5rem !important;
+  }
+
+  .glass-panel {
+    padding: 0.75rem 0.9rem !important;
+    border-radius: 1.25rem !important;
+  }
+
+  .title-font {
+    font-size: 1.25rem !important;
+  }
+}
+
 
 

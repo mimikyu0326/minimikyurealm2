@@ -44,7 +44,7 @@
   <!-- ========================================================= -->
   <!-- SCREEN 1: REMODELED LOGIN & REGISTER HUB WITH GAME SHOWCASE -->
   <!-- ========================================================= -->
-  <section id="screen-auth" class="fixed inset-0 z-50 bg-gradient-to-br from-slate-950 via-emerald-950 to-black flex items-center justify-center p-4 md:p-8 overflow-y-auto">
+  <section id="screen-auth" class="fixed inset-0 z-50 bg-gradient-to-br from-slate-950 via-emerald-950 to-black flex items-center justify-center p-3 md:p-6 overflow-hidden">
     <!-- Dynamic Interactive Cosmic Starfield & Particle Background Canvas -->
     <canvas id="auth-bg-canvas" class="absolute inset-0 z-0 pointer-events-none w-full h-full"></canvas>
 
@@ -61,18 +61,18 @@
 
 
     <!-- MAIN CONTAINER: CLEAN CENTERED LOGIN CARD -->
-    <div class="glass-panel spatial-window w-[92vw] max-w-sm sm:max-w-md p-4 sm:p-6 md:p-8 rounded-3xl border-2 border-emerald-500/70 shadow-[0_0_80px_rgba(16,185,129,0.4)] relative z-10 my-auto bg-slate-950/90 text-center space-y-4 sm:space-y-5">
+    <div class="glass-panel spatial-window w-[92vw] max-w-sm sm:max-w-md p-4 sm:p-5 md:p-6 rounded-3xl border-2 border-emerald-500/70 shadow-[0_0_80px_rgba(16,185,129,0.4)] relative z-10 my-auto bg-slate-950/90 text-center space-y-3 sm:space-y-4">
 
       
       <div class="text-center relative">
         <!-- Game Icon Emblem with Spinning Aura Ring -->
-        <div class="relative w-20 h-20 md:w-24 md:h-24 mx-auto mb-3">
+        <div class="relative w-16 h-16 md:w-20 md:h-20 mx-auto mb-2">
           <div class="aura-ring-spin"></div>
-          <img src="assets/minimikyurealm_game_icon.jpg" alt="MinimikyuRealm Emblem" class="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover game-icon-glow border-2 border-emerald-400 p-0.5 bg-black">
+          <img src="assets/minimikyurealm_game_icon.jpg" alt="MinimikyuRealm Emblem" class="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover game-icon-glow border-2 border-emerald-400 p-0.5 bg-black">
         </div>
 
-        <h1 class="text-2xl md:text-4xl font-black text-white title-font tracking-wide emerald-glow-text">MinimikyuRealm</h1>
-        <p class="text-[11px] md:text-xs font-bold text-emerald-300 tracking-wider uppercase mt-1">Realtime RPG Realm</p>
+        <h1 class="text-xl md:text-3xl font-black text-white title-font tracking-wide emerald-glow-text">MinimikyuRealm</h1>
+        <p class="text-[10px] md:text-xs font-bold text-emerald-300 tracking-wider uppercase mt-0.5">Realtime RPG Realm</p>
 
         <!-- Auth Tab Switcher -->
         <div class="flex rounded-2xl bg-slate-900/90 p-1.5 mt-4 border border-emerald-800/80 shadow-inner">
@@ -307,52 +307,52 @@
   <!-- ========================================================= -->
   <!-- SCREEN 2: CHARACTER CREATION SCREEN -->
   <!-- ========================================================= -->
-  <section id="screen-char-create" class="hidden fixed inset-0 z-40 bg-black/95 flex items-center justify-center p-6">
-    <div class="glass-panel w-full max-w-xl p-10 rounded-3xl border border-emerald-500/60 shadow-2xl text-center">
-      <h2 class="text-3xl font-black text-white tracking-wider mb-2">CREATE YOUR HERO</h2>
-      <p class="text-sm text-emerald-300 mb-6">Choose your hero name, gender, and job class</p>
+  <section id="screen-char-create" class="hidden fixed inset-0 z-40 bg-black/95 flex items-center justify-center p-4">
+    <div class="glass-panel w-full max-w-lg p-5 md:p-7 rounded-3xl border border-emerald-500/60 shadow-2xl text-center space-y-3">
+      <h2 class="text-2xl font-black text-white tracking-wider">CREATE YOUR HERO</h2>
+      <p class="text-xs text-emerald-300">Choose your hero name, gender, and job class</p>
 
-      <form onsubmit="handleCharacterCreate(event)" class="space-y-6 text-left">
+      <form onsubmit="handleCharacterCreate(event)" class="space-y-4 text-left">
         <div>
           <label class="block text-xs font-extrabold text-emerald-300 mb-1">HERO NAME</label>
-          <input type="text" id="create-char-name" required placeholder="e.g. KyuMaster" class="w-full px-4 py-3 bg-emerald-950/90 border border-emerald-600/70 rounded-xl text-white text-base font-bold font-mono focus:outline-none focus:border-emerald-400">
+          <input type="text" id="create-char-name" required placeholder="e.g. KyuMaster" class="w-full px-3.5 py-2.5 bg-emerald-950/90 border border-emerald-600/70 rounded-xl text-white text-sm font-bold font-mono focus:outline-none focus:border-emerald-400">
         </div>
 
         <div>
-          <label class="block text-xs font-extrabold text-emerald-300 mb-2">GENDER</label>
-          <div class="flex gap-4">
-            <button type="button" id="create-gender-male" class="flex-1 py-2.5 rounded-xl text-xs font-black text-white bg-emerald-600 border border-emerald-400">👨 MALE</button>
-            <button type="button" id="create-gender-female" class="flex-1 py-2.5 rounded-xl text-xs font-bold text-emerald-300 bg-emerald-950/80 border border-emerald-800">👩 FEMALE</button>
+          <label class="block text-xs font-extrabold text-emerald-300 mb-1.5">GENDER</label>
+          <div class="flex gap-3">
+            <button type="button" id="create-gender-male" class="flex-1 py-2 rounded-xl text-xs font-black text-white bg-emerald-600 border border-emerald-400">👨 MALE</button>
+            <button type="button" id="create-gender-female" class="flex-1 py-2 rounded-xl text-xs font-bold text-emerald-300 bg-emerald-950/80 border border-emerald-800">👩 FEMALE</button>
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-extrabold text-emerald-300 mb-2">JOB CLASS</label>
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div id="card-class-samurai" onclick="selectJobClass('SAMURAI')" class="p-4 rounded-2xl bg-emerald-900/80 border-2 border-emerald-400 cursor-pointer text-center hover:bg-emerald-800 transition">
-              <div class="text-3xl mb-1">🥷</div>
-              <div class="text-xs font-black text-white">SAMURAI</div>
-              <div class="text-[10px] text-emerald-300 mt-0.5">Iaijutsu Katana Dash</div>
+          <label class="block text-xs font-extrabold text-emerald-300 mb-1.5">JOB CLASS</label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <div id="card-class-samurai" onclick="selectJobClass('SAMURAI')" class="p-3 rounded-2xl bg-emerald-900/80 border-2 border-emerald-400 cursor-pointer text-center hover:bg-emerald-800 transition">
+              <div class="text-2xl mb-0.5">🥷</div>
+              <div class="text-[11px] font-black text-white">SAMURAI</div>
+              <div class="text-[9px] text-emerald-300 mt-0.5">Iaijutsu Dash</div>
             </div>
-            <div id="card-class-warrior" onclick="selectJobClass('WARRIOR')" class="p-4 rounded-2xl bg-emerald-950/60 border-2 border-emerald-800/40 cursor-pointer text-center hover:bg-emerald-800 transition">
-              <div class="text-3xl mb-1">🗡️</div>
-              <div class="text-xs font-black text-white">WARRIOR</div>
-              <div class="text-[10px] text-emerald-300 mt-0.5">Heavy Damage & DEF</div>
+            <div id="card-class-warrior" onclick="selectJobClass('WARRIOR')" class="p-3 rounded-2xl bg-emerald-950/60 border-2 border-emerald-800/40 cursor-pointer text-center hover:bg-emerald-800 transition">
+              <div class="text-2xl mb-0.5">🗡️</div>
+              <div class="text-[11px] font-black text-white">WARRIOR</div>
+              <div class="text-[9px] text-emerald-300 mt-0.5">Heavy DEF</div>
             </div>
-            <div id="card-class-mage" onclick="selectJobClass('MAGE')" class="p-4 rounded-2xl bg-emerald-950/60 border-2 border-emerald-800/40 cursor-pointer text-center hover:bg-emerald-800 transition">
-              <div class="text-3xl mb-1">🔮</div>
-              <div class="text-xs font-black text-white">MAGE</div>
-              <div class="text-[10px] text-emerald-300 mt-0.5">Arcane Burst AOE</div>
+            <div id="card-class-mage" onclick="selectJobClass('MAGE')" class="p-3 rounded-2xl bg-emerald-950/60 border-2 border-emerald-800/40 cursor-pointer text-center hover:bg-emerald-800 transition">
+              <div class="text-2xl mb-0.5">🔮</div>
+              <div class="text-[11px] font-black text-white">MAGE</div>
+              <div class="text-[9px] text-emerald-300 mt-0.5">Arcane Burst</div>
             </div>
-            <div id="card-class-archer" onclick="selectJobClass('ARCHER')" class="p-4 rounded-2xl bg-emerald-950/60 border-2 border-emerald-800/40 cursor-pointer text-center hover:bg-emerald-800 transition">
-              <div class="text-3xl mb-1">🏹</div>
-              <div class="text-xs font-black text-white">ARCHER</div>
-              <div class="text-[10px] text-emerald-300 mt-0.5">Long Range Speed</div>
+            <div id="card-class-archer" onclick="selectJobClass('ARCHER')" class="p-3 rounded-2xl bg-emerald-950/60 border-2 border-emerald-800/40 cursor-pointer text-center hover:bg-emerald-800 transition">
+              <div class="text-2xl mb-0.5">🏹</div>
+              <div class="text-[11px] font-black text-white">ARCHER</div>
+              <div class="text-[9px] text-emerald-300 mt-0.5">Speed Range</div>
             </div>
           </div>
         </div>
 
-        <button type="submit" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-emerald-700 hover:from-emerald-400 hover:to-emerald-600 text-sm font-black text-white rounded-xl shadow-xl border border-emerald-300/40">
+        <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-700 hover:from-emerald-400 hover:to-emerald-600 text-xs font-black text-white rounded-xl shadow-xl border border-emerald-300/40 uppercase tracking-widest">
           BEGIN ADVENTURE
         </button>
       </form>
@@ -480,54 +480,54 @@
 
 
       <!-- IDLE GROVE VIEW (FANCY & COOLER REMODELED STORAGE VAULT SANCTUARY) -->
-      <div id="view-idle" class="game-view-screen hidden w-full h-full flex items-center justify-center pointer-events-auto p-4 md:p-6">
-        <div class="glass-panel spatial-window w-full max-w-4xl p-6 md:p-8 rounded-3xl border-2 border-emerald-500/80 shadow-[0_0_50px_rgba(16,185,129,0.4)] bg-gradient-to-b from-emerald-950/95 via-slate-950 to-black space-y-6">
-          <div class="flex justify-between items-center border-b border-emerald-800/80 pb-4">
+      <div id="view-idle" class="game-view-screen hidden w-full h-full flex items-center justify-center pointer-events-auto p-2 md:p-4 overflow-hidden">
+        <div class="glass-panel spatial-window w-full max-w-4xl p-4 md:p-6 rounded-3xl border-2 border-emerald-500/80 shadow-[0_0_50px_rgba(16,185,129,0.4)] bg-gradient-to-b from-emerald-950/95 via-slate-950 to-black space-y-4">
+          <div class="flex justify-between items-center border-b border-emerald-800/80 pb-3">
             <div>
-              <h2 class="text-2xl md:text-3xl font-black text-white flex items-center gap-2">
+              <h2 class="text-xl md:text-2xl font-black text-white flex items-center gap-2">
                 <span>🍃 SANCTUARY GROVE</span>
-                <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40">IDLE REST</span>
+                <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40">IDLE REST</span>
               </h2>
-              <p class="text-xs text-emerald-300 mt-1">Resting peacefully! EXP & Gold automatically accumulate into your Storage Vault in real-time.</p>
+              <p class="text-xs text-emerald-300 mt-0.5">Resting peacefully! EXP & Gold automatically accumulate into your Storage Vault in real-time.</p>
             </div>
-            <div class="px-4 py-2 bg-gradient-to-r from-emerald-950 to-slate-900 rounded-2xl border border-emerald-500/60 text-xs font-black text-emerald-300 shadow-xl flex items-center gap-2">
+            <div class="px-3.5 py-1.5 bg-gradient-to-r from-emerald-950 to-slate-900 rounded-2xl border border-emerald-500/60 text-xs font-black text-emerald-300 shadow-xl flex items-center gap-2">
               <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
               <span>VAULT ONLINE</span>
             </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
             <!-- Left Side: Fancy Campfire Resting Scene -->
-            <div id="idle-campfire-container" class="bg-gradient-to-b from-emerald-950/80 to-slate-950/90 p-5 rounded-3xl border border-emerald-800/80 shadow-2xl relative overflow-hidden"></div>
+            <div id="idle-campfire-container" class="bg-gradient-to-b from-emerald-950/80 to-slate-950/90 p-4 rounded-3xl border border-emerald-800/80 shadow-2xl relative overflow-hidden"></div>
 
             <!-- Right Side: Storage Vault Claim Interface & Realtime Rates -->
-            <div class="p-6 bg-slate-950/95 rounded-3xl border border-emerald-700/80 space-y-5 text-left shadow-2xl relative">
-              <div class="text-xs font-black text-amber-300 uppercase tracking-widest border-b border-emerald-800/80 pb-3 flex justify-between items-center">
+            <div class="p-4 md:p-5 bg-slate-950/95 rounded-3xl border border-emerald-700/80 space-y-3.5 text-left shadow-2xl relative">
+              <div class="text-xs font-black text-amber-300 uppercase tracking-widest border-b border-emerald-800/80 pb-2.5 flex justify-between items-center">
                 <span class="flex items-center gap-2">📦 IDLE STORAGE VAULT</span>
                 <span class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-md border border-amber-400/40 font-mono">24h AFK Cap</span>
               </div>
               
-              <div id="idle-vault-time-text" class="text-xs font-mono font-black text-emerald-300 bg-emerald-950/80 p-3 rounded-xl border border-emerald-800/60">
+              <div id="idle-vault-time-text" class="text-xs font-mono font-black text-emerald-300 bg-emerald-950/80 p-2.5 rounded-xl border border-emerald-800/60">
                 ⏱️ Accumulated: 0 seconds worth of rewards
               </div>
 
-              <div class="grid grid-cols-2 gap-4 text-xs font-extrabold">
-                <div class="bg-gradient-to-b from-cyan-950/90 to-slate-950 p-4 rounded-2xl border border-cyan-500/60 text-center shadow-lg">
-                  <span class="text-[10px] text-cyan-400 block uppercase mb-1 font-bold">STORED EXP</span>
-                  <span id="idle-stored-exp" class="text-xl font-black text-cyan-200 drop-shadow-[0_0_10px_rgba(6,182,212,0.8)]">+0 EXP</span>
+              <div class="grid grid-cols-2 gap-3 text-xs font-extrabold">
+                <div class="bg-gradient-to-b from-cyan-950/90 to-slate-950 p-3 rounded-2xl border border-cyan-500/60 text-center shadow-lg">
+                  <span class="text-[10px] text-cyan-400 block uppercase mb-0.5 font-bold">STORED EXP</span>
+                  <span id="idle-stored-exp" class="text-lg font-black text-cyan-200 drop-shadow-[0_0_10px_rgba(6,182,212,0.8)]">+0 EXP</span>
                 </div>
-                <div class="bg-gradient-to-b from-amber-950/90 to-slate-950 p-4 rounded-2xl border border-amber-500/60 text-center shadow-lg">
-                  <span class="text-[10px] text-amber-400 block uppercase mb-1 font-bold">STORED GOLD</span>
-                  <span id="idle-stored-gold" class="text-xl font-black text-amber-200 drop-shadow-[0_0_10px_rgba(245,158,11,0.8)]">+0 🪙</span>
+                <div class="bg-gradient-to-b from-amber-950/90 to-slate-950 p-3 rounded-2xl border border-amber-500/60 text-center shadow-lg">
+                  <span class="text-[10px] text-amber-400 block uppercase mb-0.5 font-bold">STORED GOLD</span>
+                  <span id="idle-stored-gold" class="text-lg font-black text-amber-200 drop-shadow-[0_0_10px_rgba(245,158,11,0.8)]">+0 🪙</span>
                 </div>
               </div>
 
-              <div class="p-3.5 bg-slate-900/90 rounded-2xl border border-emerald-800/80 text-[11px] font-extrabold space-y-2 text-emerald-200">
+              <div class="p-2.5 bg-slate-900/90 rounded-2xl border border-emerald-800/80 text-[11px] font-extrabold space-y-1.5 text-emerald-200">
                 <div class="flex justify-between"><span>Passive Rate:</span><span class="text-cyan-300 font-mono">+10 EXP & +20 🪙 / 2s</span></div>
                 <div class="flex justify-between"><span>Storage Status:</span><span class="text-emerald-400 font-bold">Ready to Claim</span></div>
               </div>
 
-              <button id="btn-claim-idle-vault" onclick="window.handleClaimIdleVault()" class="w-full py-3.5 bg-slate-800 text-slate-500 font-black text-xs rounded-2xl border border-slate-700 cursor-not-allowed opacity-60 shadow-none">
+              <button id="btn-claim-idle-vault" onclick="window.handleClaimIdleVault()" class="w-full py-3 bg-slate-800 text-slate-500 font-black text-xs rounded-2xl border border-slate-700 cursor-not-allowed opacity-60 shadow-none">
                 ⏳ CLAIM COOLDOWN (5s)
               </button>
             </div>
@@ -542,8 +542,8 @@
       </div>
 
       <!-- REMODELED CHARACTER VIEW (ULTRA-MODERN DUAL CARD DESIGN FOR MOBILE & DESKTOP) -->
-      <div id="view-character" class="game-view-screen hidden w-full h-full flex items-center justify-center pointer-events-auto p-3 md:p-6 overflow-y-auto">
-        <div class="glass-panel w-full max-w-6xl p-4 md:p-8 rounded-3xl border-2 border-emerald-500/80 shadow-[0_0_60px_rgba(16,185,129,0.5)] grid grid-cols-1 lg:grid-cols-2 gap-6 text-left bg-gradient-to-b from-emerald-950/95 via-slate-950 to-black my-auto relative z-10">
+      <div id="view-character" class="game-view-screen hidden w-full h-full flex items-center justify-center pointer-events-auto p-2 md:p-4 overflow-hidden">
+        <div class="glass-panel w-full max-w-6xl p-3 md:p-5 rounded-3xl border-2 border-emerald-500/80 shadow-[0_0_60px_rgba(16,185,129,0.5)] grid grid-cols-1 lg:grid-cols-2 gap-4 text-left bg-gradient-to-b from-emerald-950/95 via-slate-950 to-black my-auto relative z-10">
           
           <!-- Left Column: Character Avatar, Overview & Loadout -->
           <div class="space-y-4 flex flex-col justify-between">
@@ -689,37 +689,37 @@
 
       <!-- COMPANION PET DOCKER VIEW -->
       <!-- COMPANION PET DOCKER VIEW (GRID WITH EQUIPPED PET SQUAD DISPLAY ON LEFT SIDE & PET INVENTORY ON RIGHT SIDE) -->
-      <div id="view-companion" class="game-view-screen hidden w-full h-full flex items-center justify-center pointer-events-auto p-4 md:p-6">
-        <div class="glass-panel spatial-window w-full max-w-6xl p-6 md:p-8 rounded-3xl border border-pink-500/60 shadow-2xl bg-gradient-to-b from-pink-950/90 via-slate-950 to-black space-y-6 max-h-[85vh] overflow-y-auto">
-          <div class="flex items-center justify-between border-b border-pink-800/60 pb-4">
+      <div id="view-companion" class="game-view-screen hidden w-full h-full flex items-center justify-center pointer-events-auto p-2 md:p-4 overflow-hidden">
+        <div class="glass-panel spatial-window w-full max-w-6xl p-4 md:p-6 rounded-3xl border border-pink-500/60 shadow-2xl bg-gradient-to-b from-pink-950/90 via-slate-950 to-black space-y-4 max-h-[85vh]">
+          <div class="flex items-center justify-between border-b border-pink-800/60 pb-3">
             <div>
-              <h2 class="text-2xl font-black text-white flex items-center gap-2">🐾 COMPANION DOCKER</h2>
+              <h2 class="text-xl md:text-2xl font-black text-white flex items-center gap-2">🐾 COMPANION DOCKER</h2>
               <p class="text-xs text-pink-300">Equip loyal pets [Type: COMPANION] that charge out to attack enemies!</p>
             </div>
-            <button id="btn-auto-equip-pet" class="px-4 py-2 bg-pink-600 hover:bg-pink-500 text-white font-black text-xs rounded-xl shadow-lg border border-pink-400 cursor-pointer">
+            <button id="btn-auto-equip-pet" class="px-3.5 py-1.5 bg-pink-600 hover:bg-pink-500 text-white font-black text-xs rounded-xl shadow-lg border border-pink-400 cursor-pointer">
               ⚡ AUTO EQUIP BEST PET
             </button>
           </div>
 
           <!-- 2-COLUMN LAYOUT: EQUIPPED SQUAD DISPLAY ON LEFT SIDE, PET INVENTORY ON RIGHT SIDE -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <!-- Left Side: Equipped Companion Squad Display -->
-            <div id="companion-equipped-card" class="col-span-1 bg-pink-950/80 p-4 rounded-3xl border border-pink-800/80 shadow-xl flex flex-col space-y-3"></div>
+            <div id="companion-equipped-card" class="col-span-1 bg-pink-950/80 p-3.5 rounded-3xl border border-pink-800/80 shadow-xl flex flex-col space-y-2.5"></div>
 
             <!-- Right Side: Pet Companions Inventory Grid -->
-            <div class="col-span-1 md:col-span-2 space-y-3">
-              <h3 class="text-sm font-black text-pink-300 uppercase tracking-wider flex justify-between items-center">
+            <div class="col-span-1 md:col-span-2 space-y-2.5">
+              <h3 class="text-xs font-black text-pink-300 uppercase tracking-wider flex justify-between items-center">
                 <span>🐾 YOUR PET COMPANIONS [TYPE: COMPANION]</span>
               </h3>
-              <div id="companion-inventory-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-[60vh] overflow-y-auto pr-2"></div>
+              <div id="companion-inventory-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 max-h-[50vh] overflow-y-auto pr-1"></div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- INVENTORY VIEW (3-SECTION LAYOUT: LEFT EQUIPPED GEAR | MIDDLE INVENTORY GRID | RIGHT PET SQUAD) -->
-      <div id="view-inventory" class="game-view-screen hidden w-full h-full flex items-center justify-center pointer-events-auto p-3 md:p-6">
-        <div class="glass-panel spatial-window w-full max-w-6xl p-5 md:p-6 rounded-3xl border border-emerald-500/60 shadow-2xl bg-gradient-to-b from-emerald-950/95 via-slate-950 to-black grid grid-cols-1 lg:grid-cols-4 gap-4 max-h-[85vh] overflow-y-auto">
+      <div id="view-inventory" class="game-view-screen hidden w-full h-full flex items-center justify-center pointer-events-auto p-2 md:p-4 overflow-hidden">
+        <div class="glass-panel spatial-window w-full max-w-6xl p-4 md:p-5 rounded-3xl border border-emerald-500/60 shadow-2xl bg-gradient-to-b from-emerald-950/95 via-slate-950 to-black grid grid-cols-1 lg:grid-cols-4 gap-3 max-h-[85vh]">
           
           <!-- SECTION 1 (LEFT SIDEBAR): EQUIPPED GEAR (FIXED STICKY) -->
           <div class="lg:col-span-1 bg-emerald-950/90 p-4 rounded-2xl border border-emerald-800/80 flex flex-col justify-between space-y-2.5 h-fit sticky top-0">
@@ -850,66 +850,66 @@
       </div>
 
       <!-- EPIC GACHA SHRINE VIEW WITH TOP AUTO-WISH BANNER & 3D MODEL PREVIEWS -->
-      <div id="view-gacha" class="game-view-screen hidden w-full h-full flex items-center justify-center pointer-events-auto p-4 md:p-6">
-        <div class="glass-panel w-full max-w-7xl p-5 md:p-6 rounded-3xl border-2 border-purple-500/60 shadow-[0_0_60px_rgba(168,85,247,0.25)] grid grid-cols-1 md:grid-cols-5 gap-3.5 bg-slate-950/30 backdrop-blur-md relative overflow-hidden">
+      <div id="view-gacha" class="game-view-screen hidden w-full h-full flex items-center justify-center pointer-events-auto p-2 md:p-4 overflow-hidden">
+        <div class="glass-panel w-full max-w-7xl p-3 md:p-4 rounded-3xl border-2 border-purple-500/60 shadow-[0_0_60px_rgba(168,85,247,0.25)] grid grid-cols-1 md:grid-cols-5 gap-3 bg-slate-950/30 backdrop-blur-md relative overflow-hidden max-h-[85vh]">
           
           <!-- TOP PROMINENT AUTO-WISH EVERYTHING BANNER (PROMINENT & COMPACT) -->
-          <div class="col-span-1 md:col-span-5 bg-gradient-to-r from-amber-950 via-emerald-950 to-amber-950 p-2.5 md:p-3 rounded-2xl border-2 border-amber-400/90 flex flex-wrap items-center justify-between gap-3 shadow-[0_0_30px_rgba(251,191,36,0.7)]">
-            <div class="flex items-center gap-2.5">
-              <span class="text-2xl md:text-3xl animate-spin text-amber-300">⚡</span>
+          <div class="col-span-1 md:col-span-5 bg-gradient-to-r from-amber-950 via-emerald-950 to-amber-950 p-2 md:p-2.5 rounded-2xl border-2 border-amber-400/90 flex flex-wrap items-center justify-between gap-2 shadow-[0_0_30px_rgba(251,191,36,0.7)]">
+            <div class="flex items-center gap-2">
+              <span class="text-xl md:text-2xl animate-spin text-amber-300">⚡</span>
               <div class="text-left">
-                <div class="text-xs md:text-sm font-black text-amber-300 font-mono tracking-wider flex items-center gap-2">
+                <div class="text-xs font-black text-amber-300 font-mono tracking-wider flex items-center gap-2">
                   <span>AUTO-WISH EVERYTHING</span>
-                  <span class="text-[9px] bg-amber-400 text-slate-950 font-black px-2 py-0.5 rounded shadow-md uppercase tracking-wider">1-CLICK CONVERT</span>
+                  <span class="text-[8px] bg-amber-400 text-slate-950 font-black px-1.5 py-0.5 rounded shadow-md uppercase tracking-wider">1-CLICK CONVERT</span>
                 </div>
-                <div class="text-[10px] text-emerald-200/90 font-mono hidden sm:block">
+                <div class="text-[9px] text-emerald-200/90 font-mono hidden sm:block">
                   Auto-converts Gold (1.5k=10x), Red Gems (500=10x), Gems, Purple Gems, Skill Tomes & Books into Wishes!
                 </div>
               </div>
             </div>
 
-            <button onclick="window.autoConvertGachaCurrencies()" class="px-5 py-2.5 md:px-7 md:py-2.5 bg-gradient-to-r from-amber-400 via-emerald-400 to-amber-300 hover:from-amber-300 hover:to-emerald-300 text-slate-950 font-black text-xs md:text-sm rounded-xl shadow-[0_0_25px_rgba(251,191,36,0.9)] border border-white hover:scale-105 active:scale-95 transition cursor-pointer uppercase tracking-wider font-mono shrink-0 flex items-center gap-2 ring-4 ring-amber-400/80 animate-pulse">
-              <span class="text-base">🔮</span>
+            <button onclick="window.autoConvertGachaCurrencies()" class="px-4 py-2 md:px-5 md:py-2 bg-gradient-to-r from-amber-400 via-emerald-400 to-amber-300 hover:from-amber-300 hover:to-emerald-300 text-slate-950 font-black text-xs rounded-xl shadow-[0_0_25px_rgba(251,191,36,0.9)] border border-white hover:scale-105 active:scale-95 transition cursor-pointer uppercase tracking-wider font-mono shrink-0 flex items-center gap-1.5 ring-4 ring-amber-400/80 animate-pulse">
+              <span class="text-sm">🔮</span>
               <span>AUTO-WISH ALL BALANCES</span>
             </button>
           </div>
 
           <!-- Left Column: Banner Type Selector (1 Column) -->
-          <div class="col-span-1 bg-slate-950/40 backdrop-blur-md p-3 rounded-3xl border border-purple-500/30 flex flex-col justify-between space-y-3 shadow-xl">
+          <div class="col-span-1 bg-slate-950/40 backdrop-blur-md p-2.5 rounded-3xl border border-purple-500/30 flex flex-col justify-between space-y-2 shadow-xl">
             <div>
-              <div class="text-[10px] font-black text-amber-300 uppercase tracking-widest text-center border-b border-purple-800/60 pb-1.5 mb-2.5">
+              <div class="text-[9px] font-black text-amber-300 uppercase tracking-widest text-center border-b border-purple-800/60 pb-1 mb-2">
                 🎴 SELECT SUMMON BANNER
               </div>
-              <div class="space-y-2">
+              <div class="space-y-1.5">
                 <!-- Equipment Banner Button -->
-                <button id="btn-gacha-tab-gear" onclick="window.switchGachaBanner('gear')" class="w-full p-2.5 rounded-2xl text-left border transition relative overflow-hidden bg-purple-900/40 backdrop-blur-sm border-purple-400 shadow-xl group">
-                  <div class="flex items-center gap-2.5">
-                    <span class="text-2xl animate-bounce">⚔️</span>
+                <button id="btn-gacha-tab-gear" onclick="window.switchGachaBanner('gear')" class="w-full p-2 rounded-2xl text-left border transition relative overflow-hidden bg-purple-900/40 backdrop-blur-sm border-purple-400 shadow-xl group">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xl animate-bounce">⚔️</span>
                     <div>
-                      <div class="text-xs font-black text-white group-hover:text-amber-300">EQUIPMENT BANNER</div>
-                      <div class="text-[9px] text-purple-300">Weapons, Armor & Runes</div>
+                      <div class="text-[11px] font-black text-white group-hover:text-amber-300">EQUIPMENT BANNER</div>
+                      <div class="text-[8px] text-purple-300">Weapons, Armor & Runes</div>
                     </div>
                   </div>
                 </button>
 
                 <!-- Companion Pet Banner Button -->
-                <button id="btn-gacha-tab-pet" onclick="window.switchGachaBanner('pet')" class="w-full p-2.5 rounded-2xl text-left border transition relative overflow-hidden bg-slate-950/40 backdrop-blur-sm border-pink-500/40 hover:bg-pink-950/50 group">
-                  <div class="flex items-center gap-2.5">
-                    <span class="text-2xl animate-pulse">🐾</span>
+                <button id="btn-gacha-tab-pet" onclick="window.switchGachaBanner('pet')" class="w-full p-2 rounded-2xl text-left border transition relative overflow-hidden bg-slate-950/40 backdrop-blur-sm border-pink-500/40 hover:bg-pink-950/50 group">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xl animate-pulse">🐾</span>
                     <div>
-                      <div class="text-xs font-black text-pink-300 group-hover:text-white">COMPANION BANNER</div>
-                      <div class="text-[9px] text-pink-200/70">Animals, Demons, Elves & Dwarves</div>
+                      <div class="text-[11px] font-black text-pink-300 group-hover:text-white">COMPANION BANNER</div>
+                      <div class="text-[8px] text-pink-200/70">Pets, Demons, Elves & Dwarves</div>
                     </div>
                   </div>
                 </button>
 
                 <!-- Skills Banner Button -->
-                <button id="btn-gacha-tab-skill" onclick="window.switchGachaBanner('skill')" class="w-full p-2.5 rounded-2xl text-left border transition relative overflow-hidden bg-slate-950/40 backdrop-blur-sm border-amber-500/40 hover:bg-amber-950/50 group">
-                  <div class="flex items-center gap-2.5">
-                    <span class="text-2xl animate-bounce">📜</span>
+                <button id="btn-gacha-tab-skill" onclick="window.switchGachaBanner('skill')" class="w-full p-2 rounded-2xl text-left border transition relative overflow-hidden bg-slate-950/40 backdrop-blur-sm border-amber-500/40 hover:bg-amber-950/50 group">
+                  <div class="flex items-center gap-2">
+                    <span class="text-xl animate-bounce">📜</span>
                     <div>
-                      <div class="text-xs font-black text-amber-300 group-hover:text-white">SKILLS BANNER</div>
-                      <div class="text-[9px] text-amber-200/70">Castable Magic & Attack Skills</div>
+                      <div class="text-[11px] font-black text-amber-300 group-hover:text-white">SKILLS BANNER</div>
+                      <div class="text-[8px] text-amber-200/70">Magic & Attack Skills</div>
                     </div>
                   </div>
                 </button>
@@ -917,7 +917,7 @@
             </div>
 
             <!-- Currency Rate Display (Compact) -->
-            <div class="bg-slate-950/60 backdrop-blur-sm p-2.5 rounded-2xl border border-purple-500/30 text-[9px] space-y-1 text-purple-200">
+            <div class="bg-slate-950/60 backdrop-blur-sm p-2 rounded-2xl border border-purple-500/30 text-[8px] space-y-0.5 text-purple-200">
               <div class="flex justify-between font-bold"><span>Equipment Single / 10x:</span><span class="text-amber-300 font-mono">150 / 1.5k 🪙</span></div>
               <div class="flex justify-between font-bold"><span>Pet Single / 10x:</span><span class="text-red-400 font-mono font-black">50 / 500 🔴</span></div>
               <div class="flex justify-between font-bold"><span>Skill Single / 10x:</span><span class="text-amber-300 font-mono font-black">50 / 500 📜</span></div>
@@ -925,45 +925,45 @@
           </div>
 
           <!-- Right Column: Banner Model Showcase & Summon Controls (4 Columns) -->
-          <div class="col-span-1 md:col-span-4 space-y-5 text-center flex flex-col justify-between">
-            <div id="gacha-banner-spotlight" class="p-6 bg-purple-950/20 backdrop-blur-sm rounded-3xl border border-purple-500/40 shadow-2xl relative overflow-hidden">
+          <div class="col-span-1 md:col-span-4 space-y-3 text-center flex flex-col justify-between">
+            <div id="gacha-banner-spotlight" class="p-3.5 bg-purple-950/20 backdrop-blur-sm rounded-3xl border border-purple-500/40 shadow-2xl relative overflow-hidden">
               
               <!-- 3D Glowing Banner Model Preview Altar -->
-              <div class="relative flex justify-center items-center my-4">
-                <div id="gacha-model-ring" class="w-40 h-40 rounded-full border-4 border-purple-500/60 animate-spinFast opacity-60"></div>
+              <div class="relative flex justify-center items-center my-2">
+                <div id="gacha-model-ring" class="w-28 h-28 rounded-full border-4 border-purple-500/60 animate-spinFast opacity-60"></div>
                 
                 <!-- Model Asset Representation -->
-                <div id="gacha-banner-icon" class="absolute text-7xl animate-bounce drop-shadow-[0_0_40px_rgba(168,85,247,1)]">🔮</div>
-                <div id="gacha-model-badge" class="absolute -bottom-4 px-4 py-1 bg-purple-950/80 backdrop-blur-sm border border-purple-400 rounded-full text-[10px] font-black text-amber-300 uppercase tracking-widest shadow-xl">
+                <div id="gacha-banner-icon" class="absolute text-5xl animate-bounce drop-shadow-[0_0_30px_rgba(168,85,247,1)]">🔮</div>
+                <div id="gacha-model-badge" class="absolute -bottom-3 px-3 py-0.5 bg-purple-950/80 backdrop-blur-sm border border-purple-400 rounded-full text-[9px] font-black text-amber-300 uppercase tracking-widest shadow-xl">
                   ✨ 3D MODEL PREVIEW ALTAR
                 </div>
               </div>
 
-              <h2 id="gacha-banner-title" class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-amber-300 to-cyan-300 tracking-wider mt-2">
+              <h2 id="gacha-banner-title" class="text-xl md:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-amber-300 to-cyan-300 tracking-wider mt-1">
                 MYSTICAL EQUIPMENT SHRINE
               </h2>
-              <p id="gacha-banner-desc" class="text-xs text-purple-200 mt-1 max-w-lg mx-auto">Summon Mythic Asura Blades, Celestial Shields, and Super Saiyan Elemental Runes!</p>
+              <p id="gacha-banner-desc" class="text-[11px] text-purple-200 mt-0.5 max-w-lg mx-auto">Summon Mythic Asura Blades, Celestial Shields, and Super Saiyan Elemental Runes!</p>
             </div>
 
             <div class="flex justify-between items-center px-2">
-              <span class="text-xs text-purple-300 font-extrabold flex items-center gap-1.5">
+              <span class="text-[11px] text-purple-300 font-extrabold flex items-center gap-1">
                 <span>🌟</span> <span>1-Second Fast Shooting Star Cutscene Wish FX</span>
               </span>
-              <button onclick="toggleAutoSellSettings(true)" class="px-4 py-2 bg-purple-900/60 backdrop-blur-sm hover:bg-purple-800/80 text-xs font-black text-purple-200 rounded-xl border border-purple-600/50 inline-flex items-center gap-1.5 shadow-lg">
+              <button onclick="toggleAutoSellSettings(true)" class="px-3 py-1.5 bg-purple-900/60 backdrop-blur-sm hover:bg-purple-800/80 text-[11px] font-black text-purple-200 rounded-xl border border-purple-600/50 inline-flex items-center gap-1 shadow-lg">
                 ⚙️ Auto-Sell Rules
               </button>
             </div>
 
             <!-- Summon Buttons (1x Single & 10x Multi) -->
-            <div class="grid grid-cols-2 gap-4">
-              <div class="bg-slate-950/40 backdrop-blur-md p-5 rounded-2xl border border-purple-500/30 shadow-xl hover:border-amber-400 transition">
-                <div id="btn-icon-single" class="text-4xl mb-1">🗡️</div>
-                <div class="text-xs font-black text-white mb-2">Single Wish (1x)</div>
-                <button id="btn-summon-single" onclick="rollGacha(1)" class="w-full py-3 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 text-xs font-black text-white rounded-xl shadow-lg border border-amber-300/40">100 🪙</button>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="bg-slate-950/40 backdrop-blur-md p-3 rounded-2xl border border-purple-500/30 shadow-xl hover:border-amber-400 transition">
+                <div id="btn-icon-single" class="text-2xl md:text-3xl mb-0.5">🗡️</div>
+                <div class="text-[11px] font-black text-white mb-1">Single Wish (1x)</div>
+                <button id="btn-summon-single" onclick="rollGacha(1)" class="w-full py-2 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 text-xs font-black text-white rounded-xl shadow-lg border border-amber-300/40">100 🪙</button>
               </div>
-              <div class="bg-slate-950/40 backdrop-blur-md p-5 rounded-2xl border border-purple-500/30 shadow-xl hover:border-cyan-400 transition">
-                <div id="btn-icon-multi" class="text-4xl mb-1">🎁</div>
-                <div class="text-xs font-black text-white mb-2">Multi Wish (10x)</div>
+              <div class="bg-slate-950/40 backdrop-blur-md p-3 rounded-2xl border border-purple-500/30 shadow-xl hover:border-cyan-400 transition">
+                <div id="btn-icon-multi" class="text-2xl md:text-3xl mb-0.5">🎁</div>
+                <div class="text-[11px] font-black text-white mb-1">Multi Wish (10x)</div>
                 <button id="btn-summon-multi" onclick="rollGacha(10)" class="w-full py-3 bg-gradient-to-r from-cyan-600 to-cyan-700 hover:from-cyan-500 text-xs font-black text-white rounded-xl shadow-lg border border-cyan-300/40">10 💎</button>
               </div>
             </div>

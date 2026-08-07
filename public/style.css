@@ -584,6 +584,45 @@ button:active, .item-slot:active, .tab-btn:active {
   #view-character #char-title {
     font-size: 0.6rem !important;
   }
+
+  /* 8. ACTION METERS VERTICAL MIDDLE-RIGHT SIDE POSITIONING FOR MOBILE VIEW */
+  #hud-bottom-right-meters {
+    top: 50% !important;
+    bottom: auto !important;
+    right: 8px !important;
+    transform: translateY(-50%) !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    z-index: 45 !important;
+  }
+
+  #hud-bottom-right-meters button {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 16px !important;
+  }
+}
+
+/* =========================================================
+   GLOBAL MOBILE PERFORMANCE GPU HARWARE ACCELERATION & ZERO-LAG OVERFLOW
+   ========================================================= */
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+#phaser-game-container canvas {
+  touch-action: none;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.game-view-screen, .glass-panel {
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  -webkit-overflow-scrolling: touch;
 }
 
 

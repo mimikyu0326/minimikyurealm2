@@ -753,9 +753,8 @@ export class DungeonScreen implements ScreenLifecycle {
         // 1. AUTO-ACTIVATE ALL METERS AS SOON AS THEY HIT 100%
         // A. SOUL CUTSCENE METER AUTO-TRIGGER (If equipped)
         const soulCount = self.gameState.state.killMeter || 0;
-        const equippedCutscene = self.gameState.state.equippedCutscene;
-        if (soulCount >= 100 && equippedCutscene && !this.isCutsceneActive) {
-          this.triggerCutscene();
+        if (soulCount >= 100 && !this.isCutsceneActive) {
+          this.triggerSoulCutscene();
         }
 
         // B. BANKAI METER AUTO-TRIGGER

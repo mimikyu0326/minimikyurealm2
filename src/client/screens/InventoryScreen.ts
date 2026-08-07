@@ -74,6 +74,8 @@ export class InventoryScreen implements ScreenLifecycle {
       this.renderInventory();
     };
 
+    (window as any).autoEquipHighestCPFromUI = () => this.autoEquipHighestCP();
+
     // Bind Filter Tabs
     ['all', 'weapon', 'armor', 'rune', 'skill', 'unique_power', 'mount', 'porter', 'companion'].forEach(filter => {
       const btn = document.getElementById(`inv-filter-${filter}`);

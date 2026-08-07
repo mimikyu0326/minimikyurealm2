@@ -967,25 +967,28 @@ class GameStateService {
         const ascBonus = (this.state.ascensionLevel || 0) * 500;
         this.state.cp = cp + ascBonus;
     }
-    getRankTitle() {
-        const cp = this.state.cp;
-        if (cp >= 1500)
-            return 'RANK SSS';
-        if (cp >= 1000)
-            return 'RANK SS';
-        if (cp >= 700)
-            return 'RANK S';
-        if (cp >= 450)
-            return 'RANK A';
-        if (cp >= 250)
-            return 'RANK B';
-        if (cp >= 120)
-            return 'RANK C';
-        if (cp >= 55)
-            return 'RANK D';
-        if (cp >= 35)
-            return 'RANK E';
-        return 'RANK F';
+    getHeroRank(level) {
+        const cp = this.state.cp || 35;
+        const rein = this.state.ascensionLevel || 0;
+        if (rein >= 7 || cp >= 50000)
+            return { rank: 'SSS GOD', color: '#f59e0b' };
+        if (rein >= 5 || cp >= 25000)
+            return { rank: 'SSS', color: '#fbbf24' };
+        if (rein >= 4 || cp >= 10000)
+            return { rank: 'SS', color: '#a855f7' };
+        if (rein >= 3 || cp >= 5000)
+            return { rank: 'S', color: '#ec4899' };
+        if (rein >= 2 || cp >= 2500)
+            return { rank: 'A', color: '#3b82f6' };
+        if (rein >= 1 || cp >= 1000)
+            return { rank: 'B', color: '#10b981' };
+        if (cp >= 500)
+            return { rank: 'C', color: '#06b6d4' };
+        if (cp >= 150)
+            return { rank: 'D', color: '#a855f7' };
+        if (cp >= 50)
+            return { rank: 'E', color: '#64748b' };
+        return { rank: 'F', color: '#94a3b8' };
     }
     getWorldTier() {
         return Math.max(1, this.state.worldTier || 1);
@@ -1014,58 +1017,89 @@ class GameStateService {
         return base * level;
     }
     getClassTitle() {
-        const cls = this.state.jobClass || 'WARRIOR';
+        const rein = this.state.ascensionLevel || 0;
         const lvl = this.state.level;
-        if (cls === 'WARRIOR') {
+        const cls = this.state.jobClass || 'WARRIOR';
+        // DYNAMIC MURIM REINCARNATION TITLE SYSTEM
+        if (rein >= 8)
+            return '🐉 Celestial Murim Sword Sovereign God';
+        if (rein === 7)
+            return '✨ Heavenly Void Swordmaster Emperor';
+        if (rein === 6)
+            return '👑 Grand Qi Ancestor Sword God';
+        if (rein === 5)
+            return '🌌 Supreme Void Swordmaster Elder';
+        if (rein === 4)
+            return '🔥 Sunfire Dragon Sect Elder';
+        if (rein === 3)
+            return '⚡ Thunder Blade Sovereign Disciple';
+        if (rein === 2)
+            return '🌊 Cloud Swordmaster Adept';
+        if (rein === 1)
+            return '⚔️ Iron Sword Murim Champion';
+        // BASE REIN 0 INITIATE TITLES
+        if (cls === 'WARRIOR' || cls === 'SAMURAI') {
             if (lvl >= 30)
-                return 'Grand Swordmaster';
+                return '⚔️ Grand Murim Swordmaster';
             if (lvl >= 15)
-                return 'Knight Templar';
-            return 'Apprentice Swordsman';
+                return '🗡️ Murim Sword Initiate';
+            return '🥉 Wandering Sword Novice';
         }
         if (cls === 'MAGE') {
             if (lvl >= 30)
-                return 'Archmage Supreme';
+                return '🔮 Supreme Arcane Sovereign';
             if (lvl >= 15)
-                return 'Elemental Sorcerer';
-            return 'Novice Wizard';
+                return '✨ Elemental Magic Adept';
+            return '🧪 Apprentice Spellcaster';
         }
         if (lvl >= 30)
-            return 'Phantom Ranger';
+            return '🎯 Divine Windrunner Bowmaster';
         if (lvl >= 15)
-            return 'Deadeye Marksman';
-        return 'Apprentice Scout';
+            return '🏹 Murim Deadeye Archer';
+        return '🏹 Apprentice Bow Scout';
     }
     getChibiHeroHTML(scaleClass = 'scale-125') {
         const isFemale = this.state.gender === 'FEMALE';
         const cls = this.state.jobClass || 'WARRIOR';
-        let head = '🧔🏻‍♂️';
-        let hat = '🪖';
-        let weapon = '🗡️';
-        if (cls === 'WARRIOR') {
-            head = isFemale ? '👧' : '🧔🏻‍♂️';
-            hat = isFemale ? '👑' : '🛡️';
+        const rein = this.state.ascensionLevel || 0;
+        let head = '🥷';
+        let robe = '🥋';
+        let hat = '🐉';
+        let weapon = this.state.equippedWeapon?.icon || '🗡️';
+        if (isFemale) {
+            head = '👸';
+            robe = '🥋';
+        }
+        else {
+            head = '🥷';
+            robe = '🥋';
+        }
+        if (cls === 'WARRIOR' || cls === 'SAMURAI') {
+            hat = rein >= 3 ? '👑' : '🗡️';
             weapon = this.state.equippedWeapon?.icon || '🗡️';
         }
         else if (cls === 'MAGE') {
-            head = isFemale ? '👧' : '🧙‍♂️';
             hat = '🔮';
             weapon = this.state.equippedWeapon?.icon || '🔮';
         }
         else {
-            head = isFemale ? '👧' : '👨🏻‍🦰';
             hat = '🏹';
             weapon = this.state.equippedWeapon?.icon || '🏹';
         }
         const runeElem = this.state.equippedRune?.element;
-        let auraGlow = '';
-        let auraHTML = '';
+        let auraGlow = 'drop-shadow-[0_0_35px_rgba(16,185,129,1)]';
+        let auraHTML = `
+      <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
+        <div class="w-32 h-32 rounded-full bg-gradient-to-t from-emerald-600/40 via-teal-500/30 to-transparent animate-pulse border-2 border-emerald-400/80 shadow-[0_0_40px_rgba(16,185,129,1)]"></div>
+        <div class="absolute -top-4 text-emerald-300 text-xs font-bold animate-bounce font-mono">🐉 Murim Qi Aura</div>
+      </div>
+    `;
         if (runeElem === 'fire') {
             auraGlow = 'drop-shadow-[0_0_35px_rgba(239,68,68,1)]';
             auraHTML = `
         <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
           <div class="w-32 h-32 rounded-full bg-gradient-to-t from-red-600/40 via-amber-500/30 to-transparent animate-pulse border-2 border-red-500/80 shadow-[0_0_40px_rgba(239,68,68,1)]"></div>
-          <div class="absolute -top-4 text-red-500 text-xs font-bold animate-bounce">🔥 Fire Aura</div>
+          <div class="absolute -top-4 text-red-500 text-xs font-bold animate-bounce font-mono">🔥 Sunfire Sword Qi</div>
         </div>
       `;
         }
@@ -1074,25 +1108,23 @@ class GameStateService {
             auraHTML = `
         <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
           <div class="w-32 h-32 rounded-full bg-gradient-to-t from-cyan-600/40 via-blue-500/30 to-transparent animate-pulse border-2 border-cyan-400/80 shadow-[0_0_40px_rgba(56,189,248,1)]"></div>
-          <div class="absolute -top-4 text-cyan-300 text-xs font-bold animate-bounce">⚡ Lightning Aura</div>
+          <div class="absolute -top-4 text-cyan-300 text-xs font-bold animate-bounce font-mono">⚡ Thunder Sword Qi</div>
         </div>
       `;
         }
-        else if (runeElem === 'nature') {
-            auraGlow = 'drop-shadow-[0_0_35px_rgba(52,211,153,1)]';
-            auraHTML = `
-        <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
-          <div class="w-32 h-32 rounded-full bg-gradient-to-t from-emerald-600/40 via-teal-500/30 to-transparent animate-pulse border-2 border-emerald-400/80 shadow-[0_0_40px_rgba(52,211,153,1)]"></div>
-          <div class="absolute -top-4 text-emerald-300 text-xs font-bold animate-bounce">🌿 Nature Aura</div>
-        </div>
-      `;
-        }
+        const titleStr = this.getClassTitle();
         return `
       <div id="chibi-hero-card" class="relative flex flex-col items-center justify-center p-2 transition transform ${scaleClass}">
         ${auraHTML}
-        <div class="text-[10px] text-amber-300 font-extrabold uppercase mb-1 flex items-center gap-1 z-10">${hat} ${cls}</div>
-        <div class="text-7xl ${auraGlow} animate-pulse my-1 z-10">${head}</div>
-        <div class="text-4xl -mt-4 drop-shadow-lg z-10">${weapon}</div>
+        <div class="text-[9px] text-amber-300 font-black uppercase mb-1 flex items-center gap-1 z-10 font-mono tracking-wider">${hat} ${titleStr}</div>
+        <div class="text-7xl ${auraGlow} animate-pulse my-1 z-10 relative">
+          ${head}
+          <span class="absolute -bottom-2 -left-2 text-3xl">${robe}</span>
+        </div>
+        <div class="text-4xl -mt-4 drop-shadow-[0_0_20px_rgba(16,185,129,0.9)] z-10 flex items-center gap-1">
+          <span class="animate-bounce">${weapon}</span>
+          <span class="text-xs text-cyan-300 font-mono font-bold">✨ Qi Blade</span>
+        </div>
       </div>
     `;
     }
@@ -1285,30 +1317,9 @@ class GameStateService {
             this.updateSlotPreview(slotId, petItem, `PET ${idx + 1}`, '🐾', this.state.isPetLocked);
         });
     }
-    getHeroRank(level = this.state.level) {
-        if (level >= 150)
-            return { rank: 'ULR', color: '#f43f5e', stroke: '#fbbf24' };
-        if (level >= 125)
-            return { rank: 'SSSR', color: '#c084fc', stroke: '#38bdf8' };
-        if (level >= 100)
-            return { rank: 'SSR', color: '#ef4444', stroke: '#f59e0b' };
-        if (level >= 90)
-            return { rank: 'SSS', color: '#dc2626', stroke: '#000000' };
-        if (level >= 75)
-            return { rank: 'SS', color: '#f97316', stroke: '#000000' };
-        if (level >= 60)
-            return { rank: 'S', color: '#fbbf24', stroke: '#000000' };
-        if (level >= 45)
-            return { rank: 'A', color: '#a855f7', stroke: '#000000' };
-        if (level >= 30)
-            return { rank: 'B', color: '#3b82f6', stroke: '#000000' };
-        if (level >= 20)
-            return { rank: 'C', color: '#06b6d4', stroke: '#000000' };
-        if (level >= 10)
-            return { rank: 'D', color: '#22c55e', stroke: '#000000' };
-        if (level >= 5)
-            return { rank: 'E', color: '#f3f4f6', stroke: '#000000' };
-        return { rank: 'F', color: '#9ca3af', stroke: '#000000' };
+    getRankTitle() {
+        const rankInfo = this.getHeroRank(this.state.level);
+        return `RANK ${rankInfo.rank}`;
     }
     getAscensionReqLevel() {
         const currentAsc = this.state.ascensionLevel || 0;

@@ -76,9 +76,14 @@ class DungeonScreen {
             }
             createProceduralTextures() {
                 // High-Quality Anime Hero Textures
+                // Young Murim Swordmaster Textures (Male & Female)
                 const gWarriorM = this.make.graphics({ x: 0, y: 0, add: false });
+                // Silk Murim Robe (Dark Slate & Emerald Trim)
+                gWarriorM.fillStyle(0x064e3b, 1);
+                gWarriorM.fillRect(12, 18, 24, 24);
                 gWarriorM.fillStyle(0x10b981, 1);
-                gWarriorM.fillRect(14, 18, 20, 22);
+                gWarriorM.fillRect(16, 18, 16, 24);
+                // Young Swordmaster Head & Silk Ribbon
                 gWarriorM.fillStyle(0xffd1b3, 1);
                 gWarriorM.fillCircle(24, 14, 11);
                 gWarriorM.fillStyle(0x047857, 1);
@@ -87,38 +92,40 @@ class DungeonScreen {
                 gWarriorM.fillStyle(0xffffff, 1);
                 gWarriorM.fillCircle(19, 12, 1);
                 gWarriorM.fillCircle(27, 12, 1);
-                gWarriorM.lineStyle(1.5, 0x991b1b, 0.9);
-                gWarriorM.lineBetween(17, 14, 21, 18);
-                gWarriorM.fillStyle(0x334155, 1);
-                gWarriorM.fillRect(12, 2, 24, 8);
+                // Celestial Headband & Floating Silk Ribbon Tail
                 gWarriorM.fillStyle(0xfbbf24, 1);
-                gWarriorM.fillTriangle(10, 4, 14, 4, 8, -4);
-                gWarriorM.fillTriangle(34, 4, 38, 4, 40, -4);
-                gWarriorM.lineStyle(4, 0xf8fafc, 1);
-                gWarriorM.lineBetween(34, 22, 46, 8);
-                gWarriorM.fillStyle(0x047857, 1);
-                gWarriorM.fillCircle(10, 28, 9);
+                gWarriorM.fillRect(12, 4, 24, 4);
+                gWarriorM.fillStyle(0x10b981, 1);
+                gWarriorM.fillTriangle(6, 6, 12, 2, 12, 10);
+                // Legendary Glowing Murim Qi Sword (Steel & Cyan Aura)
+                gWarriorM.lineStyle(5, 0x06b6d4, 0.85);
+                gWarriorM.lineBetween(32, 24, 46, 4);
+                gWarriorM.lineStyle(3, 0xffffff, 1);
+                gWarriorM.lineBetween(32, 24, 46, 4);
+                gWarriorM.fillStyle(0xfbbf24, 1);
+                gWarriorM.fillCircle(32, 24, 3);
                 gWarriorM.generateTexture('chibi_warrior_m', 48, 48);
                 const gWarriorF = this.make.graphics({ x: 0, y: 0, add: false });
-                gWarriorF.fillStyle(0x10b981, 1);
-                gWarriorF.fillRect(14, 18, 20, 22);
-                gWarriorF.fillStyle(0x7c2d12, 1);
-                gWarriorF.fillCircle(24, 16, 14);
+                // Female Murim Swordmaster Robe (Pink & Imperial Jade)
+                gWarriorF.fillStyle(0x831843, 1);
+                gWarriorF.fillRect(12, 18, 24, 24);
+                gWarriorF.fillStyle(0xf472b6, 1);
+                gWarriorF.fillRect(16, 18, 16, 24);
                 gWarriorF.fillStyle(0xffd1b3, 1);
                 gWarriorF.fillCircle(24, 14, 10);
-                gWarriorF.fillStyle(0x047857, 1);
+                gWarriorF.fillStyle(0xbe185d, 1);
                 gWarriorF.fillCircle(20, 13, 2.5);
                 gWarriorF.fillCircle(28, 13, 2.5);
                 gWarriorF.fillStyle(0xffffff, 1);
                 gWarriorF.fillCircle(19, 12, 1);
                 gWarriorF.fillCircle(27, 12, 1);
-                gWarriorF.fillStyle(0xf43f5e, 0.8);
-                gWarriorF.fillCircle(19, 16, 2);
-                gWarriorF.fillCircle(29, 16, 2);
-                gWarriorF.lineStyle(2, 0x34d399, 1);
-                gWarriorF.strokeCircle(24, 5, 7);
-                gWarriorF.lineStyle(4, 0xf8fafc, 1);
-                gWarriorF.lineBetween(34, 22, 46, 8);
+                // Hair Ribbon & Glowing Murim Blade
+                gWarriorF.fillStyle(0xf472b6, 1);
+                gWarriorF.fillCircle(14, 6, 5);
+                gWarriorF.lineStyle(5, 0xec4899, 0.85);
+                gWarriorF.lineBetween(32, 24, 46, 4);
+                gWarriorF.lineStyle(3, 0xffffff, 1);
+                gWarriorF.lineBetween(32, 24, 46, 4);
                 gWarriorF.generateTexture('chibi_warrior_f', 48, 48);
                 const gMageM = this.make.graphics({ x: 0, y: 0, add: false });
                 gMageM.fillStyle(0x2563eb, 1);

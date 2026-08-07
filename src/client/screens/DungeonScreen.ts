@@ -555,7 +555,7 @@ export class DungeonScreen implements ScreenLifecycle {
         this.spawnTimer = this.time.addEvent({ delay: 3500, callback: () => this.autoSpawnLoop(), loop: true });
         this.monsterAttackTimer = this.time.addEvent({ delay: 1800, callback: () => this.monsterAttackHeroLoop(), loop: true });
         this.monsterAbilityTimer = this.time.addEvent({ delay: 3800, callback: () => this.executeMonsterBossAbilities(), loop: true });
-        this.autoBattleTimer = this.time.addEvent({ delay: 300, callback: () => this.runAutoBattleLogic(), loop: true });
+        this.autoBattleTimer = this.time.addEvent({ delay: 60, callback: () => this.runAutoBattleLogic(), loop: true });
         this.autoSkillTimer = this.time.addEvent({ delay: 200, callback: () => this.runAutomaticSkillLogic(), loop: true });
         this.porterTimer = this.time.addEvent({ delay: 100, callback: () => this.updatePorterCollector(), loop: true });
 
@@ -2348,6 +2348,10 @@ export class DungeonScreen implements ScreenLifecycle {
 
       attackEnemy(enemy: any) {
         if (!enemy || !enemy.active || this.isDead) return;
+        const now = this.time.now;
+        const cooldown = this.isAutoBattle ? 70 : 300;
+        if (this.lastHeroAttackTime && now - this.lastHeroAttackTime < cooldown) return;
+        this.lastHeroAttackTime = now;
         this.attackTowardsPointer(enemy.x, enemy.y);
       }
 

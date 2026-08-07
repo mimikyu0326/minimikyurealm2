@@ -101,15 +101,25 @@ class TowerScreen {
           </div>
         </div>
 
-        <!-- Challenge Floor Button -->
-        <button id="btn-challenge-tower" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 text-sm font-black text-slate-950 rounded-2xl shadow-xl border border-emerald-300 transition active:scale-95 flex items-center justify-center gap-2 ${!hasKeys ? 'opacity-50 cursor-not-allowed' : ''}">
-          ⚔️ CHALLENGE FLOOR ${floor} (Uses 1 🔑 Key)
-        </button>
+        <!-- Tower Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3">
+          <button id="btn-challenge-tower" class="flex-1 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 text-xs sm:text-sm font-black text-slate-950 rounded-2xl shadow-xl border border-emerald-300 transition active:scale-95 flex items-center justify-center gap-2 ${!hasKeys ? 'opacity-50 cursor-not-allowed' : ''}">
+            ⚔️ CHALLENGE FLOOR ${floor} (1 🔑)
+          </button>
+
+          <button id="btn-auto-challenge-tower" class="flex-1 py-4 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 hover:from-amber-300 text-xs sm:text-sm font-black text-slate-950 rounded-2xl shadow-[0_0_25px_rgba(251,191,36,0.8)] border-2 border-white transition active:scale-95 flex items-center justify-center gap-2 cursor-pointer font-mono ${!hasKeys ? 'opacity-50 cursor-not-allowed' : ''}">
+            ⚡ AUTO TOWER (${keyCount} 🔑 KEYS)
+          </button>
+        </div>
       </div>
     `;
         const btn = document.getElementById('btn-challenge-tower');
         if (btn && hasKeys) {
             btn.onclick = () => this.challengeFloor();
+        }
+        const autoBtn = document.getElementById('btn-auto-challenge-tower');
+        if (autoBtn && hasKeys) {
+            autoBtn.onclick = () => this.challengeAllKeysAutoTower();
         }
     }
     challengeFloor() {
@@ -134,13 +144,98 @@ class TowerScreen {
             this.triggerBossSlainOverlay(bossData.name, floor, reward, porterRes.item);
             this.ui.showToast(`🎁 TOWER REWARD: ${reward.name} & ${porterRes.message}`, 'success');
         }
-        else {
-            this.audio.playSound('hit');
-            this.ui.showToast(`❌ CHALLENGE FAILED! Defeated by ${bossData.name} (CP ${cp} < ${requiredCp}).`, 'warning');
-        }
         this.gameState.notify();
         this.gameState.saveToFirebase();
         this.renderTowerFloor();
+    }
+    challengeAllKeysAutoTower() {
+        const keyCount = Math.min(20, this.gameState.state.towerKeys || 0);
+        if (keyCount <= 0) {
+            this.ui.showToast('⚠️ No Tower Keys remaining for Auto Tower!', 'warning');
+            return;
+        }
+        const startFloor = this.gameState.state.towerFloor || 1;
+        let currentFloor = startFloor;
+        const cp = this.gameState.state.cp;
+        const rewardsMap = new Map();
+        let keysUsed = 0;
+        for (let i = 0; i < keyCount; i++) {
+            const requiredCp = currentFloor * 40 + 15;
+            this.gameState.state.towerKeys--;
+            keysUsed++;
+            if (cp >= requiredCp) {
+                this.gameState.state.gold += 500 + currentFloor * 100;
+                this.gameState.state.exp += 300 + currentFloor * 50;
+                const reward = this.rollUniquePowerDrop(currentFloor);
+                this.gameState.grantOrUpgradePorter();
+                if (reward) {
+                    if (rewardsMap.has(reward.name)) {
+                        rewardsMap.get(reward.name).count++;
+                    }
+                    else {
+                        rewardsMap.set(reward.name, { name: reward.name, icon: reward.icon || '👑', count: 1 });
+                    }
+                }
+                currentFloor++;
+                this.gameState.state.towerFloor = currentFloor;
+            }
+            else {
+                break;
+            }
+        }
+        this.audio.playSound('levelup');
+        this.gameState.notify();
+        this.gameState.saveToFirebase();
+        this.renderTowerFloor();
+        const bossData = this.getFloorBossData(currentFloor - 1);
+        this.triggerBossSlainOverlay(bossData.name, currentFloor - 1, { name: 'Auto Tower Clear', icon: '⚡', cp: 5000 });
+        const rewardsList = Array.from(rewardsMap.values());
+        this.showAutoTowerSummaryModal(rewardsList, keysUsed, startFloor, currentFloor - 1);
+    }
+    showAutoTowerSummaryModal(rewards, keysUsed, startFloor, endFloor) {
+        const modal = document.getElementById('modal-gacha-acquired');
+        if (!modal)
+            return;
+        const modalBox = modal.querySelector('.spatial-window');
+        const bannerBadge = document.getElementById('gacha-result-banner-title');
+        if (bannerBadge) {
+            bannerBadge.innerText = `⚡ AUTO-TOWER SUMMARY (${keysUsed} KEYS CONSUMED)`;
+            bannerBadge.className = 'text-2xl md:text-3xl font-black text-amber-300 uppercase tracking-wider mb-6 text-center';
+        }
+        if (modalBox) {
+            modalBox.style.backgroundImage = `linear-gradient(rgba(2, 6, 23, 0.85), rgba(2, 6, 23, 0.95)), url('assets/murim_tower_result_bg.jpg')`;
+            modalBox.style.backgroundSize = 'cover';
+            modalBox.style.backgroundPosition = 'center';
+            modalBox.className = 'glass-panel spatial-window w-full max-w-6xl p-6 md:p-8 rounded-3xl border-2 border-amber-400 shadow-[0_0_60px_rgba(251,191,36,0.8)] relative text-center animate-scaleUp';
+        }
+        const grid = document.getElementById('gacha-result-grid');
+        if (grid) {
+            grid.className = 'grid grid-rows-10 grid-flow-col auto-cols-max overflow-x-auto gap-2.5 max-h-[60vh] p-4 border-2 border-amber-400/50 rounded-2xl bg-black/80 backdrop-blur-md shadow-inner text-center justify-center';
+            grid.innerHTML = '';
+            rewards.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'flex items-center justify-center gap-2.5 px-4 py-2 rounded-xl bg-slate-950/90 border border-emerald-400/60 shadow-md text-xs font-mono font-bold whitespace-nowrap text-center hover:scale-105 transition';
+                row.innerHTML = `
+          <span class="text-xl shrink-0">${item.icon}</span>
+          <span class="text-white font-black truncate max-w-[200px] text-center">${item.name}</span>
+          <span class="px-2 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-[11px] shadow">x${item.count}</span>
+        `;
+                grid.appendChild(row);
+            });
+        }
+        const wishAgainBtn = document.getElementById('btn-gacha-wish-again');
+        const sellAllBtn = document.getElementById('btn-gacha-sell-all');
+        if (wishAgainBtn)
+            wishAgainBtn.classList.add('hidden');
+        if (sellAllBtn)
+            sellAllBtn.classList.add('hidden');
+        const collectBtn = modal.querySelector('button[onclick*="collectGachaWithBagShakeEffect"]');
+        if (collectBtn) {
+            collectBtn.className = 'w-full py-4 bg-gradient-to-r from-amber-400 via-emerald-400 to-amber-300 hover:from-amber-300 hover:to-emerald-300 text-slate-950 font-black text-sm md:text-base rounded-2xl shadow-[0_0_35px_rgba(251,191,36,1)] border-2 border-white hover:scale-105 active:scale-95 transition cursor-pointer font-mono uppercase tracking-wider flex items-center justify-center gap-2 ring-4 ring-amber-400/80 animate-pulse text-center';
+            collectBtn.innerText = '🎒 COLLECT ALL TOWER REWARDS';
+        }
+        modal.classList.remove('hidden');
+        modal.className = 'fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-6 pointer-events-auto animate-scaleUp';
     }
     triggerBossSlainOverlay(bossName, floorNum, reward, porterItem) {
         const overlay = document.getElementById('tower-slain-overlay');

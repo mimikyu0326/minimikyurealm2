@@ -692,7 +692,10 @@ export class GachaScreen implements ScreenLifecycle {
 
     const modalBox = modal.querySelector('.spatial-window') as HTMLElement;
     const bannerBadge = document.getElementById('gacha-result-banner-title');
-    if (bannerBadge) bannerBadge.innerText = '⚡ AUTO-WISH CONVERSION SUMMARY';
+    if (bannerBadge) {
+      bannerBadge.innerText = '⚡ AUTO-WISH CONVERSION SUMMARY';
+      bannerBadge.className = 'text-2xl md:text-3xl font-black text-amber-300 uppercase tracking-wider mb-6 text-center';
+    }
 
     if (modalBox) {
       modalBox.style.backgroundImage = `linear-gradient(rgba(2, 6, 23, 0.85), rgba(2, 6, 23, 0.95)), url('assets/auto_wish_bg.jpg')`;
@@ -703,16 +706,16 @@ export class GachaScreen implements ScreenLifecycle {
 
     const grid = document.getElementById('gacha-result-grid');
     if (grid) {
-      // 10 MAXIMUM ROWS AND INFINITY COLUMNS TEXT-ONLY SUMMARY LIST
-      grid.className = 'grid grid-rows-10 grid-flow-col auto-cols-max overflow-x-auto gap-2.5 max-h-[60vh] p-4 border-2 border-amber-400/50 rounded-2xl bg-black/80 backdrop-blur-md shadow-inner text-left';
+      // 10 MAXIMUM ROWS AND INFINITY COLUMNS CENTER-ALIGNED TEXT-ONLY SUMMARY LIST
+      grid.className = 'grid grid-rows-10 grid-flow-col auto-cols-max overflow-x-auto gap-2.5 max-h-[60vh] p-4 border-2 border-amber-400/50 rounded-2xl bg-black/80 backdrop-blur-md shadow-inner text-center justify-center';
       grid.innerHTML = '';
 
       itemMap.forEach(({ item, count }) => {
         const row = document.createElement('div');
-        row.className = 'flex items-center gap-2.5 px-3.5 py-2 rounded-xl bg-slate-950/90 border border-emerald-400/60 shadow-md text-xs font-mono font-bold whitespace-nowrap hover:scale-105 transition';
+        row.className = 'flex items-center justify-center gap-2.5 px-4 py-2 rounded-xl bg-slate-950/90 border border-emerald-400/60 shadow-md text-xs font-mono font-bold whitespace-nowrap text-center hover:scale-105 transition';
         row.innerHTML = `
           <span class="text-xl shrink-0">${item.icon}</span>
-          <span class="text-white font-black truncate max-w-[200px]">${item.name}</span>
+          <span class="text-white font-black truncate max-w-[200px] text-center">${item.name}</span>
           <span class="px-2 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-[11px] shadow">x${count}</span>
         `;
         grid.appendChild(row);
@@ -724,6 +727,12 @@ export class GachaScreen implements ScreenLifecycle {
     const sellAllBtn = document.getElementById('btn-gacha-sell-all');
     if (wishAgainBtn) wishAgainBtn.classList.add('hidden');
     if (sellAllBtn) sellAllBtn.classList.add('hidden');
+
+    const collectBtn = modal.querySelector('button[onclick*="collectGachaWithBagShakeEffect"]') as HTMLElement;
+    if (collectBtn) {
+      collectBtn.className = 'w-full py-4 bg-gradient-to-r from-amber-400 via-emerald-400 to-amber-300 hover:from-amber-300 hover:to-emerald-300 text-slate-950 font-black text-sm md:text-base rounded-2xl shadow-[0_0_35px_rgba(251,191,36,1)] border-2 border-white hover:scale-105 active:scale-95 transition cursor-pointer font-mono uppercase tracking-wider flex items-center justify-center gap-2 ring-4 ring-amber-400/80 animate-pulse text-center';
+      collectBtn.innerText = '🎒 COLLECT ALL REWARDS';
+    }
 
     modal.classList.remove('hidden');
     modal.className = 'fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-6 pointer-events-auto animate-scaleUp';

@@ -218,6 +218,7 @@ export class GameStateService {
   private static instance: GameStateService;
   private listeners: Array<() => void> = [];
   private saveDebounceTimer: any = null;
+  private isNotifyScheduled: boolean = false;
 
   public state: GameState = {
     userId: 'guest-1',
@@ -902,8 +903,15 @@ export class GameStateService {
   public notify(): void {
     this.checkTowerKeyOverflow();
     this.recalculateCP();
-    this.listeners.forEach(fn => fn());
-    this.updateHUDDOM();
+
+    if (this.isNotifyScheduled) return;
+    this.isNotifyScheduled = true;
+
+    requestAnimationFrame(() => {
+      this.isNotifyScheduled = false;
+      this.listeners.forEach(fn => fn());
+      this.updateHUDDOM();
+    });
   }
 
   // PASSIVE IDLE VAULT REWARD ACCUMULATION

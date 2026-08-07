@@ -61,6 +61,8 @@ export class DungeonScreen implements ScreenLifecycle {
       private autoRoamAngle: number = 0;
       private radarSweepAngle: number = 0;
       private petLastAttackTimes: number[] = [];
+      private activeDamageTextCount: number = 0;
+      private activeExpPopupCount: number = 0;
 
       // Roll Dash Q Key variables
       private lastDashTime: number = 0;
@@ -1296,7 +1298,7 @@ export class DungeonScreen implements ScreenLifecycle {
       }
 
       ensureMinimumMonsters(minCount: number = 10) {
-        const activeEnemies = this.enemies.getChildren().filter((e: any) => e.active);
+        const activeEnemies = this.enemies.getChildren().filter((e: any) => e && e.active && !e.isDefeated);
         const activeCount = activeEnemies.length;
         const needed = minCount - activeCount;
 
@@ -1359,6 +1361,7 @@ export class DungeonScreen implements ScreenLifecycle {
         enemy.setScale(isMegaBoss ? 5.2 : (isBoss ? 2.6 : 1.2));
 
         (enemy as any).isEnemy = true;
+        (enemy as any).isDefeated = false;
         (enemy as any).enemyName = name;
         (enemy as any).lvl = scaledLvl;
         (enemy as any).hp = scaledHp;
@@ -2001,7 +2004,7 @@ export class DungeonScreen implements ScreenLifecycle {
         const time = this.time.now * 0.008;
 
         this.enemies.getChildren().forEach((e: any) => {
-          if (!e.active) return;
+          if (!e || !e.active || e.isDefeated) return;
 
           // AURA GRAPHICS EXCLUSIVELY ON BOSSES ONLY!
           if (e.isBoss || e.isMegaBoss) {
@@ -2172,7 +2175,7 @@ export class DungeonScreen implements ScreenLifecycle {
         this.renderHeroDungeonHUD();
 
         this.enemies.getChildren().slice().forEach((e: any) => {
-          if (!e || !e.active) {
+          if (!e || !e.active || e.isDefeated) {
             if (e && e.lvlText && e.lvlText.active) {
               e.lvlText.destroy();
               e.lvlText = null;
@@ -2614,13 +2617,19 @@ export class DungeonScreen implements ScreenLifecycle {
       }
 
       showFloatingExpText(expAmount: number, x: number, y: number) {
+        if (this.activeExpPopupCount >= 8) return;
+        this.activeExpPopupCount++;
+
         const el = document.createElement('div');
         el.className = 'exp-popup-text';
         el.innerText = `+${expAmount} EXP`;
         el.style.left = `${x}px`;
         el.style.top = `${y - 45}px`;
         document.body.appendChild(el);
-        setTimeout(() => el.remove(), 1000);
+        setTimeout(() => {
+          this.activeExpPopupCount = Math.max(0, this.activeExpPopupCount - 1);
+          if (el && el.parentNode) el.remove();
+        }, 1000);
       }
 
       showFloatingLevelUpText(level: number) {
@@ -2659,6 +2668,9 @@ export class DungeonScreen implements ScreenLifecycle {
       }
 
       showDamageText(damage: number, x: number, y: number) {
+        if (this.activeDamageTextCount >= 20) return;
+        this.activeDamageTextCount++;
+
         const txt = this.add.text(x + (Math.random() * 20 - 10), y - 30, `-${damage}`, {
           fontFamily: 'monospace',
           fontSize: '14px',
@@ -2676,7 +2688,10 @@ export class DungeonScreen implements ScreenLifecycle {
           scaleY: 1.3,
           duration: 400,
           ease: 'Power1',
-          onComplete: () => txt.destroy()
+          onComplete: () => {
+            this.activeDamageTextCount = Math.max(0, this.activeDamageTextCount - 1);
+            if (txt && txt.destroy) txt.destroy();
+          }
         });
       }
 

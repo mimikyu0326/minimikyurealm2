@@ -115,8 +115,17 @@ export class AudioService {
   }
 
 
+  private lastSoundTimes: Record<string, number> = {};
+
   public playSound(type: 'attack' | 'hit' | 'levelup' | 'potion' | 'click' | 'gacha' | 'victory'): void {
     if (!this.isSfxEnabled) return;
+    const nowTime = Date.now();
+    const minInterval = (type === 'attack' || type === 'hit') ? 80 : 120;
+    if (this.lastSoundTimes[type] && nowTime - this.lastSoundTimes[type] < minInterval) {
+      return;
+    }
+    this.lastSoundTimes[type] = nowTime;
+
     try {
       const ctx = this.initCtx();
       const osc = ctx.createOscillator();

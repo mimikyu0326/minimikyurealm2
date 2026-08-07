@@ -129,19 +129,23 @@ class DungeonScreen {
                 drawAnimeMurimGirl('chibi_warrior_f', 0x0284c7, 0x38bdf8);
                 drawAnimeMurimGirl('chibi_samurai_m', 0x064e3b, 0x10b981);
                 drawAnimeMurimGirl('chibi_samurai_f', 0x064e3b, 0x10b981);
-                // Telekinetic Flying Sword Texture (Steel & Glowing Cyan Blade)
+                // Telekinetic Flying Sword Texture (Massive Mythic Qi Sword Blade with Gold Pommel & Cyan Aura Flame)
                 const gFlyingSword = this.make.graphics({ x: 0, y: 0, add: false });
-                gFlyingSword.lineStyle(6, 0x06b6d4, 0.9);
-                gFlyingSword.lineBetween(8, 24, 40, 24);
-                gFlyingSword.lineStyle(3, 0xffffff, 1);
-                gFlyingSword.lineBetween(8, 24, 40, 24);
+                gFlyingSword.lineStyle(12, 0x06b6d4, 0.45);
+                gFlyingSword.lineBetween(8, 24, 54, 24); // Cyan Outer Aura
+                gFlyingSword.lineStyle(8, 0x0284c7, 0.95);
+                gFlyingSword.lineBetween(8, 24, 52, 24); // Deep Blue Blade
+                gFlyingSword.lineStyle(4, 0xffffff, 1);
+                gFlyingSword.lineBetween(8, 24, 52, 24); // White Sharp Core Edge
                 gFlyingSword.fillStyle(0xffffff, 1);
-                gFlyingSword.fillTriangle(40, 20, 48, 24, 40, 28);
+                gFlyingSword.fillTriangle(48, 16, 62, 24, 48, 32); // Blade Tip
                 gFlyingSword.fillStyle(0xfbbf24, 1);
-                gFlyingSword.fillRect(6, 18, 5, 12);
+                gFlyingSword.fillRect(8, 16, 6, 16); // Gold Guard Hilt
                 gFlyingSword.fillStyle(0x78350f, 1);
-                gFlyingSword.fillRect(0, 22, 7, 4);
-                gFlyingSword.generateTexture('flying_sword_sprite', 48, 48);
+                gFlyingSword.fillRect(0, 21, 9, 6); // Leather Handle Grip
+                gFlyingSword.fillStyle(0xf59e0b, 1);
+                gFlyingSword.fillCircle(0, 24, 4); // Gold Pommel Jewel
+                gFlyingSword.generateTexture('flying_sword_sprite', 64, 48);
                 const gMageM = this.make.graphics({ x: 0, y: 0, add: false });
                 gMageM.fillStyle(0x2563eb, 1);
                 gMageM.fillRect(14, 18, 20, 22);
@@ -627,8 +631,8 @@ class DungeonScreen {
                 this.mountSprite.setVisible(false);
                 this.player = this.add.sprite(width / 2, height / 2, spriteKey).setDepth(10);
                 this.player.setScale(2.0);
-                this.flyingSwordSprite = this.add.sprite((width / 2) + 20, (height / 2) + 4, 'flying_sword_sprite').setDepth(15);
-                this.flyingSwordSprite.setScale(1.2);
+                this.flyingSwordSprite = this.add.sprite((width / 2) + 24, (height / 2) + 4, 'flying_sword_sprite').setDepth(15);
+                this.flyingSwordSprite.setScale(2.5);
                 // OVERHEAD FLOATING HERO TITLE & REIN BANNER (PLAIN, CLEAN & EASY TO READ SANS-SERIF FONT)
                 this.heroOverheadText = this.add.text(width / 2, (height / 2) - 65, '', {
                     fontFamily: "Arial, Helvetica, 'Segoe UI', sans-serif",
@@ -2292,33 +2296,54 @@ class DungeonScreen {
                     }
                     const angle = Phaser.Math.Angle.Between(this.flyingSwordSprite.x, this.flyingSwordSprite.y, currentEnemy.x, currentEnemy.y);
                     this.flyingSwordSprite.setRotation(angle);
+                    this.flyingSwordSprite.setScale(2.8); // EPIC BIGGER FLYING SWORD!
                     this.tweens.add({
                         targets: this.flyingSwordSprite,
                         x: currentEnemy.x,
                         y: currentEnemy.y,
-                        duration: 110,
+                        duration: 100,
                         ease: 'Linear',
                         onComplete: () => {
                             if (currentEnemy && currentEnemy.active) {
-                                // Slash FX
-                                const isVertical = Math.random() > 0.5;
-                                const slashGraphic = this.add.graphics().setDepth(30);
-                                if (isVertical) {
-                                    slashGraphic.lineStyle(8, 0x06b6d4, 0.95);
-                                    slashGraphic.lineBetween(currentEnemy.x, currentEnemy.y - 40, currentEnemy.x, currentEnemy.y + 40);
-                                    slashGraphic.lineStyle(4, 0xffffff, 1);
-                                    slashGraphic.lineBetween(currentEnemy.x, currentEnemy.y - 40, currentEnemy.x, currentEnemy.y + 40);
-                                }
-                                else {
-                                    slashGraphic.lineStyle(8, 0xf59e0b, 0.95);
-                                    slashGraphic.lineBetween(currentEnemy.x - 45, currentEnemy.y, currentEnemy.x + 45, currentEnemy.y);
-                                    slashGraphic.lineStyle(4, 0xffffff, 1);
-                                    slashGraphic.lineBetween(currentEnemy.x - 45, currentEnemy.y, currentEnemy.x + 45, currentEnemy.y);
-                                }
-                                this.tweens.add({ targets: slashGraphic, alpha: 0, scaleX: 1.5, scaleY: 1.5, duration: 160, onComplete: () => slashGraphic.destroy() });
+                                // Play Crisp Metal Sword Impact Audio SFX
+                                self.audio.playSound('hit');
+                                // 1. "CHING CHING! ✨" METALLIC GOLDEN TEXT POPUP
+                                const chingText = this.add.text(currentEnemy.x, currentEnemy.y - 30, 'CHING CHING! ✨', {
+                                    fontFamily: 'monospace',
+                                    fontSize: '15px',
+                                    fontStyle: 'bold',
+                                    color: '#fbbf24',
+                                    stroke: '#06b6d4',
+                                    strokeThickness: 3.5
+                                }).setOrigin(0.5).setDepth(120);
+                                this.tweens.add({
+                                    targets: chingText,
+                                    y: currentEnemy.y - 65,
+                                    scaleX: 1.4,
+                                    scaleY: 1.4,
+                                    alpha: 0,
+                                    duration: 450,
+                                    ease: 'Back.out',
+                                    onComplete: () => chingText.destroy()
+                                });
+                                // 2. GOLDEN QI SPARK RINGS & CLASH BURST FX (REPLACED HORIZONTAL SLASH)
+                                const spark = this.add.graphics().setDepth(35);
+                                spark.lineStyle(4, 0xfbbf24, 0.95);
+                                spark.strokeCircle(currentEnemy.x, currentEnemy.y, 22);
+                                spark.lineStyle(3, 0x06b6d4, 1);
+                                spark.lineBetween(currentEnemy.x - 20, currentEnemy.y - 20, currentEnemy.x + 20, currentEnemy.y + 20);
+                                spark.lineBetween(currentEnemy.x + 20, currentEnemy.y - 20, currentEnemy.x - 20, currentEnemy.y + 20);
+                                this.tweens.add({
+                                    targets: spark,
+                                    alpha: 0,
+                                    scaleX: 1.8,
+                                    scaleY: 1.8,
+                                    duration: 180,
+                                    onComplete: () => spark.destroy()
+                                });
                                 this.applyAttackImpact(currentEnemy, currentEnemy.x, currentEnemy.y);
                             }
-                            this.time.delayedCall(40, () => processNextTarget());
+                            this.time.delayedCall(35, () => processNextTarget());
                         }
                     });
                 };

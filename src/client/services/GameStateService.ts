@@ -985,7 +985,9 @@ export class GameStateService {
     this.state.idleVault.accumulatedGold = 0;
     this.state.idleVault.lastClaimTime = now;
 
-    while (this.state.exp >= this.state.maxExp) {
+    let levelUpSafety = 0;
+    while (this.state.exp >= this.state.maxExp && levelUpSafety < 100) {
+      levelUpSafety++;
       this.state.level++;
       this.state.exp -= this.state.maxExp;
       this.state.maxExp = this.getNextLevelMaxExp(this.state.level);
@@ -1440,7 +1442,9 @@ export class GameStateService {
   }
 
   public getNextLevelMaxExp(level: number): number {
-    return Math.floor(100 * Math.pow(1.25, Math.max(1, level) - 1));
+    const safeLevel = Math.max(1, Math.floor(Number(level) || 1));
+    const result = Math.floor(100 * Math.pow(1.25, safeLevel - 1));
+    return (isNaN(result) || result < 100 || !isFinite(result)) ? 100 : result;
   }
 
   public updateCharacterPreviewDOM(): void {

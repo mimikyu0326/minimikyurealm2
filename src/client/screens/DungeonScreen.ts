@@ -60,6 +60,7 @@ export class DungeonScreen implements ScreenLifecycle {
       private earthRotationAngleY: number = 0;
       private autoRoamAngle: number = 0;
       private radarSweepAngle: number = 0;
+      private petLastAttackTimes: number[] = [];
 
       // Roll Dash Q Key variables
       private lastDashTime: number = 0;
@@ -552,8 +553,8 @@ export class DungeonScreen implements ScreenLifecycle {
         this.monsterAttackTimer = this.time.addEvent({ delay: 1800, callback: () => this.monsterAttackHeroLoop(), loop: true });
         this.monsterAbilityTimer = this.time.addEvent({ delay: 3800, callback: () => this.executeMonsterBossAbilities(), loop: true });
         this.autoBattleTimer = this.time.addEvent({ delay: 300, callback: () => this.runAutoBattleLogic(), loop: true });
-        this.autoSkillTimer = this.time.addEvent({ delay: 60, callback: () => this.runAutomaticSkillLogic(), loop: true });
-        this.porterTimer = this.time.addEvent({ delay: 60, callback: () => this.updatePorterCollector(), loop: true });
+        this.autoSkillTimer = this.time.addEvent({ delay: 200, callback: () => this.runAutomaticSkillLogic(), loop: true });
+        this.porterTimer = this.time.addEvent({ delay: 100, callback: () => this.updatePorterCollector(), loop: true });
 
         // HERO AURA BUILD TIMER (+2 PER SECOND UP TO 100/100)
         this.time.addEvent({
@@ -953,13 +954,13 @@ export class DungeonScreen implements ScreenLifecycle {
 
           // Fast continuous burn tick damage to ALL enemies inside max attack range
           this.enemies.getChildren().forEach((e: any) => {
-            if (!e.active) return;
+            if (!e || !e.active || e.isDefeated) return;
             const dist = Phaser.Math.Distance.Between(px, py, e.x, e.y);
             if (dist <= maxRange) {
               const tickDamage = Math.max(6, Math.floor(cpDamage * 0.15));
               e.hp -= tickDamage;
               this.showDamageText(tickDamage, e.x, e.y);
-              if (e.hp <= 0) this.onEnemyDefeated(e, e.x, e.y);
+              if (e.hp <= 0 && !e.isDefeated) this.onEnemyDefeated(e, e.x, e.y);
             }
           });
         } else if (skill.skillId === 'necromancer') {
@@ -1057,13 +1058,13 @@ export class DungeonScreen implements ScreenLifecycle {
 
           // 4. CORRODE ENEMIES INSIDE TOXIC ACID RAIN ZONE
           this.enemies.getChildren().forEach((e: any) => {
-            if (!e.active) return;
+            if (!e || !e.active || e.isDefeated) return;
             const dist = Phaser.Math.Distance.Between(px, py, e.x, e.y);
             if (dist <= maxRange) {
               const acidDamage = Math.max(6, Math.floor(cpDamage * 0.16));
               e.hp -= acidDamage;
               this.showDamageText(acidDamage, e.x, e.y);
-              if (e.hp <= 0) this.onEnemyDefeated(e, e.x, e.y);
+              if (e.hp <= 0 && !e.isDefeated) this.onEnemyDefeated(e, e.x, e.y);
             }
           });
         } else if (skill.skillId === 'cyborg') {
@@ -1077,7 +1078,7 @@ export class DungeonScreen implements ScreenLifecycle {
           // Shoot 3 ultra thick & wide lasers at once
           let laserCount = 0;
           this.enemies.getChildren().forEach((e: any) => {
-            if (!e.active || laserCount >= 3) return;
+            if (!e || !e.active || e.isDefeated || laserCount >= 3) return;
             const dist = Phaser.Math.Distance.Between(px, py, e.x, e.y);
             if (dist <= maxRange) {
               laserCount++;
@@ -1130,7 +1131,7 @@ export class DungeonScreen implements ScreenLifecycle {
           // Teleport & Execute Enemies inside blood mist range
           let executed = false;
           this.enemies.getChildren().slice().forEach((e: any) => {
-            if (!e || !e.active || executed) return;
+            if (!e || !e.active || e.isDefeated || executed) return;
             const dist = Phaser.Math.Distance.Between(px, py, e.x, e.y);
             if (dist <= maxRange) {
               executed = true;
@@ -1153,7 +1154,7 @@ export class DungeonScreen implements ScreenLifecycle {
               e.hp -= execDamage;
               this.showDamageText(execDamage, e.x, e.y);
 
-              if (e.hp <= 0) this.onEnemyDefeated(e, e.x, e.y);
+              if (e.hp <= 0 && !e.isDefeated) this.onEnemyDefeated(e, e.x, e.y);
             }
           });
         }
@@ -1217,13 +1218,14 @@ export class DungeonScreen implements ScreenLifecycle {
 
         // Magnetically pull items near player
         this.droppedItems.getChildren().forEach((item: any) => {
-          if (!item.active) return;
+          if (!item || !item.active) return;
           const pDist = Phaser.Math.Distance.Between(px, py, item.x, item.y);
           if (pDist <= (radius * 0.75)) {
             const pAngle = Phaser.Math.Angle.Between(item.x, item.y, px, py);
             item.x += Math.cos(pAngle) * 7.5;
             item.y += Math.sin(pAngle) * 7.5;
             if (pDist <= 35) {
+              item.setActive(false).setVisible(false);
               this.collectDroppedItem(item);
             }
           }
@@ -1252,7 +1254,8 @@ export class DungeonScreen implements ScreenLifecycle {
       }
 
       collectDroppedItem(item: any) {
-        if (!item || !item.active) return;
+        if (!item) return;
+        item.setActive(false).setVisible(false);
         if (item.isKey) {
           self.gameState.state.towerKeys = Math.min(20, (self.gameState.state.towerKeys || 0) + 1);
           self.ui.showToast('🔑 Tower Key Collected by Porter!', 'info');
@@ -1265,7 +1268,9 @@ export class DungeonScreen implements ScreenLifecycle {
         } else {
           self.gameState.state.gold += 80;
         }
-        item.destroy();
+        this.time.delayedCall(0, () => {
+          if (item && item.destroy) item.destroy();
+        });
         self.gameState.notify();
       }
 
@@ -1805,7 +1810,7 @@ export class DungeonScreen implements ScreenLifecycle {
           if (!this.lastAuraPulse || now - this.lastAuraPulse > 350) {
             this.lastAuraPulse = now;
             this.enemies.getChildren().slice().forEach((e: any) => {
-              if (!e || !e.active) return;
+              if (!e || !e.active || e.isDefeated) return;
               const dist = Phaser.Math.Distance.Between(px, py, e.x, e.y);
               if (dist <= maxAttackRange) {
                 const titanDmg = Math.floor((self.gameState.state.cp || 35) * 1.6);
@@ -1817,7 +1822,7 @@ export class DungeonScreen implements ScreenLifecycle {
                 shock.lineBetween(px, py, e.x, e.y);
                 this.tweens.add({ targets: shock, alpha: 0, duration: 150, onComplete: () => shock.destroy() });
 
-                if (e.hp <= 0) {
+                if (e.hp <= 0 && !e.isDefeated) {
                   this.onEnemyDefeated(e, e.x, e.y);
                 }
               }
@@ -2356,7 +2361,7 @@ export class DungeonScreen implements ScreenLifecycle {
       }
 
       applyAttackImpact(enemy: any, x: number, y: number) {
-        if (!enemy || !enemy.active) return;
+        if (!enemy || !enemy.active || enemy.isDefeated) return;
 
         const now = this.time.now;
 
@@ -2392,14 +2397,17 @@ export class DungeonScreen implements ScreenLifecycle {
         enemy.hp -= baseDamage;
         this.showDamageText(baseDamage, x, y);
 
-        if (enemy.hp <= 0) {
+        if (enemy.hp <= 0 && !enemy.isDefeated) {
           this.onEnemyDefeated(enemy, x, y);
         }
       }
 
       // WAVE SYSTEM & WORLD TIER INCREASE NOTICE
       onEnemyDefeated(enemy: any, x: number, y: number) {
-        if (!enemy || !enemy.active) return;
+        if (!enemy || !enemy.active || enemy.isDefeated) return;
+        enemy.isDefeated = true;
+        enemy.setActive(false);
+        enemy.setVisible(false);
 
         if (enemy.lvlText) {
           enemy.lvlText.destroy();
@@ -2451,8 +2459,10 @@ export class DungeonScreen implements ScreenLifecycle {
           this.spawnElementRuneDrop(x, y, 'fire');
         }
 
-        // EXP SCALING PER LEVEL WITH EXP CARRY-OVER
-        while (self.gameState.state.exp >= self.gameState.state.maxExp) {
+        // EXP SCALING PER LEVEL WITH EXP CARRY-OVER (PREVENT INFINITE LOOPS)
+        let levelUpSafety = 0;
+        while (self.gameState.state.exp >= self.gameState.state.maxExp && levelUpSafety < 100) {
+          levelUpSafety++;
           self.gameState.state.level++;
           self.gameState.state.exp -= self.gameState.state.maxExp;
           self.gameState.state.maxExp = self.gameState.getNextLevelMaxExp(self.gameState.state.level);
@@ -2835,6 +2845,7 @@ export class DungeonScreen implements ScreenLifecycle {
         if (!this.petSprites) this.petSprites = [];
         if (!this.petStates) this.petStates = [];
         if (!this.petKillCounts) this.petKillCounts = [];
+        if (!this.petLastAttackTimes) this.petLastAttackTimes = [];
 
         // Clean up extra sprites if equipped pets count decreased
         while (this.petSprites.length > activePets.length) {
@@ -2842,6 +2853,7 @@ export class DungeonScreen implements ScreenLifecycle {
           if (sprite) sprite.destroy();
           this.petStates.pop();
           this.petKillCounts.pop();
+          this.petLastAttackTimes.pop();
         }
 
         const px = this.player.x;
@@ -2872,6 +2884,7 @@ export class DungeonScreen implements ScreenLifecycle {
             this.petSprites[index] = sprite;
             this.petStates[index] = 'hunting';
             this.petKillCounts[index] = 0;
+            this.petLastAttackTimes[index] = 0;
           }
 
           const pet = this.petSprites[index];
@@ -2932,7 +2945,7 @@ export class DungeonScreen implements ScreenLifecycle {
             }
           } else {
             // 2. SEPARATED TARGET SELECTION (DISTRIBUTE PETS ACROSS DIFFERENT ENEMIES)
-            const activeEnemies = this.enemies.getChildren().filter((e: any) => e.active);
+            const activeEnemies = this.enemies.getChildren().filter((e: any) => e.active && !e.isDefeated);
             let targetEnemy: any = null;
 
             if (activeEnemies.length > 0) {
@@ -2951,11 +2964,16 @@ export class DungeonScreen implements ScreenLifecycle {
               pet.x += Math.cos(angle) * currentSpeed;
               pet.y += Math.sin(angle) * currentSpeed;
 
-              // EXECUTE UNIQUE ATTACK PATTERN FOR EACH PET VARIANT
-              if (distToEnemy <= (atkType === 'sniper' || atkType === 'laser' ? 240 : 65)) {
+              // EXECUTE UNIQUE ATTACK PATTERN FOR EACH PET VARIANT (WITH ATTACK COOLDOWN)
+              const now = this.time.now;
+              const lastAtk = this.petLastAttackTimes[index] || 0;
+              const petAtkCooldown = isSuper ? 300 : 600;
+
+              if (distToEnemy <= (atkType === 'sniper' || atkType === 'laser' ? 240 : 65) && (now - lastAtk >= petAtkCooldown)) {
+                this.petLastAttackTimes[index] = now;
+
                 const petDamage = Math.floor((petData.cpBonus || 45) * (petData.level || 1) * 1.6 * currentDmgMult);
                 targetEnemy.hp -= petDamage;
-                this.showDamageText(petDamage, targetEnemy.x, targetEnemy.y);
                 this.showDamageText(petDamage, targetEnemy.x, targetEnemy.y);
 
                 if (atkType === 'sniper') {
@@ -2986,7 +3004,7 @@ export class DungeonScreen implements ScreenLifecycle {
                   this.tweens.add({ targets: clawFx, alpha: 0, scaleX: 1.5, scaleY: 1.5, duration: 180, onComplete: () => clawFx.destroy() });
                 }
 
-                if (targetEnemy.hp <= 0) {
+                if (targetEnemy.hp <= 0 && !targetEnemy.isDefeated) {
                   this.petKillCounts[index] = (this.petKillCounts[index] || 0) + 1;
                   this.onEnemyDefeated(targetEnemy, targetEnemy.x, targetEnemy.y);
                 }
@@ -3241,6 +3259,7 @@ export class DungeonScreen implements ScreenLifecycle {
   }
 
   public triggerAttack(): void {
+    ScreenManager.getInstance().resetDungeonAfkTimer();
     if (this.phaserScene) {
       this.phaserScene.attackNearestEnemy();
     }

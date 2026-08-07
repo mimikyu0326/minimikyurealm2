@@ -1205,50 +1205,51 @@
 
 
 
-    <!-- LEFT SIDE MOBILE MIDDLE-LEFT AUTO BATTLE TOGGLE BUTTON -->
-    <div id="dungeon-autobattle-left-container" class="fixed left-3 top-1/2 -translate-y-1/2 z-30 pointer-events-auto">
+    <!-- LEFT SIDE MOBILE MIDDLE-LEFT AUTO BATTLE TOGGLE BUTTON (2X HIGHER THAN FEEDBACK LOG BAR) -->
+    <div id="dungeon-autobattle-left-container" class="fixed left-3 bottom-28 sm:bottom-32 z-30 pointer-events-auto">
       <button id="btn-toggle-autobattle" onclick="window.toggleAutoBattleFromUI()" class="px-3.5 py-3 md:px-4 md:py-3.5 rounded-2xl glass-panel border-2 border-emerald-500/80 bg-gradient-to-r from-slate-950 via-emerald-950 to-black text-emerald-300 font-black text-xs md:text-sm flex flex-col items-center justify-center gap-1 shadow-[0_0_20px_rgba(16,185,129,0.6)] transition hover:scale-110 active:scale-95 cursor-pointer" title="Toggle Auto Battle & Auto Meter Triggers">
         <span id="autobattle-repeat-icon" class="text-xl md:text-2xl transition inline-block">🔄</span>
         <span id="autobattle-status-text" class="tracking-wider font-mono text-[10px] md:text-xs">AUTO</span>
       </button>
     </div>
 
-    <!-- BOTTOM-RIGHT HERO ACTION DOCK (ATTACK BUTTON AND ACTION METERS) -->
-    <div id="hud-bottom-right-meters" class="fixed right-3 bottom-3 md:right-4 md:bottom-4 z-30 flex items-center gap-2 md:gap-3 pointer-events-auto">
+    <!-- BOTTOM-RIGHT HERO ACTION DOCK (ATTACK BUTTON AND ACTION METERS WITH 0/100 - 100/100 INDICATORS BELOW) -->
+    <div id="hud-bottom-right-meters" class="fixed right-3 bottom-3 md:right-4 md:bottom-4 z-30 flex items-end gap-2.5 md:gap-3.5 pointer-events-auto">
       <!-- ATTACK BUTTON -->
-      <div id="dungeon-attack-container" class="relative">
-        <span id="meter-auto-badge-attack" class="hidden absolute -top-2 -right-2 px-1.5 py-0.5 text-[9px] font-black bg-amber-400 text-slate-950 rounded-md shadow border border-white animate-pulse z-10 font-mono">AUTO ⚡</span>
-        <button id="btn-hero-attack" onclick="window.triggerAttack()" class="px-4 py-2.5 md:px-5 md:py-3 rounded-2xl glass-panel border-2 border-emerald-400 bg-gradient-to-r from-emerald-600 via-teal-700 to-emerald-900 text-white font-black text-xs md:text-sm flex items-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.8)] transition hover:scale-105 active:scale-95 cursor-pointer" title="Manual Attack">
+      <div id="dungeon-attack-container" class="relative flex flex-col items-center gap-1">
+        <span id="meter-auto-badge-attack" class="hidden absolute -top-2 -right-1 px-1.5 py-0.5 text-[8px] font-black bg-amber-400 text-slate-950 rounded-md shadow border border-white animate-pulse z-10 font-mono">AUTO ⚡</span>
+        <button id="btn-hero-attack" onclick="window.triggerAttack()" class="px-3.5 py-2.5 md:px-5 md:py-3 rounded-2xl glass-panel border-2 border-emerald-400 bg-gradient-to-r from-emerald-600 via-teal-700 to-emerald-900 text-white font-black text-xs md:text-sm flex items-center gap-1.5 shadow-[0_0_20px_rgba(16,185,129,0.8)] transition hover:scale-105 active:scale-95 cursor-pointer" title="Manual Attack">
           <span class="text-base md:text-lg">⚔️</span>
           <span class="tracking-wider font-mono">ATTACK</span>
         </button>
+        <span class="text-[9px] md:text-[10px] font-black text-emerald-300 font-mono drop-shadow bg-slate-950/80 px-2 py-0.5 rounded-md border border-emerald-500/60">READY</span>
       </div>
 
       <!-- BANKAI METER BUTTON -->
-      <div id="hero-aura-meter-container" class="relative">
-        <span id="meter-auto-badge-aura" class="hidden absolute -top-2 -right-2 px-1.5 py-0.5 text-[9px] font-black bg-amber-400 text-slate-950 rounded-md shadow border border-white animate-pulse z-10 font-mono">AUTO ⚡</span>
+      <div id="hero-aura-meter-container" class="relative flex flex-col items-center gap-1">
+        <span id="meter-auto-badge-aura" class="hidden absolute -top-2 -right-1 px-1.5 py-0.5 text-[8px] font-black bg-amber-400 text-slate-950 rounded-md shadow border border-white animate-pulse z-10 font-mono">AUTO ⚡</span>
         <button id="hero-aura-meter-btn" onclick="window.triggerHeroTitanAuraModeFromDOM()" class="w-11 h-11 md:w-13 md:h-13 rounded-2xl glass-panel border-2 border-red-500 bg-gradient-to-b from-slate-950 via-black to-red-950 flex items-center justify-center text-white shadow-[0_0_20px_rgba(239,68,68,0.8)] transition hover:scale-110 active:scale-95 group relative cursor-pointer" title="Bankai Meter">
           <span class="text-lg md:text-xl transition drop-shadow-[0_0_8px_rgba(255,255,255,1)]">🖤</span>
-          <span id="hero-aura-text" class="hidden">0/100</span>
         </button>
+        <span id="hero-aura-text" class="text-[9px] md:text-[10px] font-black text-red-300 font-mono drop-shadow bg-slate-950/80 px-1.5 py-0.5 rounded-md border border-red-500/60 whitespace-nowrap">0/100</span>
       </div>
 
       <!-- PET RUSH METER BUTTON -->
-      <div id="pet-squad-meter-container" class="relative">
-        <span id="meter-auto-badge-pet" class="hidden absolute -top-2 -right-2 px-1.5 py-0.5 text-[9px] font-black bg-amber-400 text-slate-950 rounded-md shadow border border-white animate-pulse z-10 font-mono">AUTO ⚡</span>
+      <div id="pet-squad-meter-container" class="relative flex flex-col items-center gap-1">
+        <span id="meter-auto-badge-pet" class="hidden absolute -top-2 -right-1 px-1.5 py-0.5 text-[8px] font-black bg-amber-400 text-slate-950 rounded-md shadow border border-white animate-pulse z-10 font-mono">AUTO ⚡</span>
         <button id="pet-squad-meter-btn" class="w-11 h-11 md:w-13 md:h-13 rounded-2xl glass-panel border-2 border-pink-500/80 bg-gradient-to-b from-pink-900 via-rose-950 to-black flex items-center justify-center text-pink-300 shadow-[0_0_20px_rgba(244,114,182,0.6)] transition group relative cursor-default" title="Pet Rush">
           <span class="text-lg md:text-xl transition">🐾</span>
-          <span id="pet-meter-text" class="hidden">0/100</span>
         </button>
+        <span id="pet-meter-text" class="text-[9px] md:text-[10px] font-black text-pink-300 font-mono drop-shadow bg-slate-950/80 px-1.5 py-0.5 rounded-md border border-pink-500/60 whitespace-nowrap">0/100</span>
       </div>
 
       <!-- SOUL KILL METER BUTTON -->
-      <div id="soul-killmeter-container" class="relative">
-        <span id="meter-auto-badge-soul" class="hidden absolute -top-2 -right-2 px-1.5 py-0.5 text-[9px] font-black bg-amber-400 text-slate-950 rounded-md shadow border border-white animate-pulse z-10 font-mono">AUTO ⚡</span>
+      <div id="soul-killmeter-container" class="relative flex flex-col items-center gap-1">
+        <span id="meter-auto-badge-soul" class="hidden absolute -top-2 -right-1 px-1.5 py-0.5 text-[8px] font-black bg-amber-400 text-slate-950 rounded-md shadow border border-white animate-pulse z-10 font-mono">AUTO ⚡</span>
         <button id="soul-killmeter-btn" onclick="window.triggerSoulCutscene()" class="w-11 h-11 md:w-13 md:h-13 rounded-2xl glass-panel border-2 border-purple-500/80 bg-gradient-to-b from-purple-900 via-indigo-950 to-black flex items-center justify-center text-purple-300 shadow-[0_0_20px_rgba(168,85,247,0.6)] transition hover:scale-110 active:scale-95 group relative" title="Soul Meter">
           <span class="text-lg md:text-xl transition">👻</span>
-          <span id="soul-meter-text" class="hidden">0/100</span>
         </button>
+        <span id="soul-meter-text" class="text-[9px] md:text-[10px] font-black text-purple-300 font-mono drop-shadow bg-slate-950/80 px-1.5 py-0.5 rounded-md border border-purple-500/60 whitespace-nowrap">0/100</span>
       </div>
     </div>
 

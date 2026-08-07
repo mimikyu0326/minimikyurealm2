@@ -75,57 +75,58 @@ class DungeonScreen {
                 this.createProceduralTextures();
             }
             createProceduralTextures() {
-                // Gorgeous Anime Chibi Murim Girl Goddess Textures (All Class/Gender Choices Map to this Model)
+                // Brand New Satisfying Modern Anime Girl Sprite Textures
                 const drawAnimeMurimGirl = (key, gownColor, accentColor) => {
                     const g = this.make.graphics({ x: 0, y: 0, add: false });
-                    // 1. Long Silky Dark Twintails & Hair Ribbons (Back Layer)
-                    g.fillStyle(0x311b92, 1);
-                    g.fillCircle(12, 18, 9); // Left Twintail
-                    g.fillCircle(36, 18, 9); // Right Twintail
-                    g.fillTriangle(6, 18, 12, 34, 16, 20); // Left Hair Flow
-                    g.fillTriangle(42, 18, 36, 34, 32, 20); // Right Hair Flow
-                    // 2. Imperial Silk Murim Dress & Floating Ribbon Tails
+                    // 1. Pastel Pink Twintails & Hair Ties (Back Layer)
+                    g.fillStyle(0xf472b6, 1);
+                    g.fillCircle(10, 16, 9); // Left Twintail
+                    g.fillCircle(38, 16, 9); // Right Twintail
+                    g.fillTriangle(4, 16, 10, 34, 14, 18); // Left Hair Flow
+                    g.fillTriangle(44, 16, 38, 34, 34, 18); // Right Hair Flow
+                    g.fillStyle(0x581c87, 1);
+                    g.fillCircle(11, 11, 3.5);
+                    g.fillCircle(37, 11, 3.5); // Hair Ties
+                    // 2. Stylish Modern Cyan Hoodie & Black Pleated Skirt Outfit
                     g.fillStyle(gownColor, 1);
-                    g.fillRect(14, 18, 20, 24); // Inner Silk Robe
+                    g.fillRect(14, 18, 20, 22); // Hoodie Base
                     g.fillStyle(accentColor, 1);
-                    g.fillRect(17, 18, 14, 24); // Outer Dress Coat
+                    g.fillRect(16, 18, 16, 22); // Hoodie Zipper Line
+                    g.fillStyle(0x18181b, 1);
+                    g.fillRect(14, 30, 20, 10); // Black Pleated Skirt
                     g.fillStyle(0xfbbf24, 1);
-                    g.fillRect(14, 27, 20, 3); // Gold Waist Sash
-                    g.fillStyle(0xf472b6, 1);
-                    g.fillTriangle(8, 26, 14, 24, 12, 40); // Floating Silk Ribbon
-                    g.fillStyle(0xf472b6, 1);
-                    g.fillTriangle(40, 26, 34, 24, 36, 40); // Floating Silk Ribbon
-                    // 3. Cute Anime Chibi Girl Head & Face
+                    g.fillRect(14, 29, 20, 2); // Gold Belt Accent
+                    // 3. Cute Porcelain Soft Anime Face & Hair Bangs
                     g.fillStyle(0xffe4e6, 1);
-                    g.fillCircle(24, 13, 10.5); // Porcelain Soft Face
-                    g.fillStyle(0x311b92, 1);
-                    g.fillCircle(24, 8, 11); // Crown Hair
-                    g.fillStyle(0x311b92, 1);
-                    g.fillTriangle(15, 10, 21, 16, 18, 7); // Anime Side Bangs
-                    g.fillStyle(0x311b92, 1);
-                    g.fillTriangle(33, 10, 27, 16, 30, 7);
-                    // 4. Large Sparkling Anime Girl Eyes & Rosy Blush Cheeks
-                    g.fillStyle(0xec4899, 0.5);
-                    g.fillCircle(17, 16, 2.5);
-                    g.fillCircle(31, 16, 2.5); // Rosy Blush
+                    g.fillCircle(24, 13, 10); // Face
+                    g.fillStyle(0xf472b6, 1);
+                    g.fillCircle(24, 8, 10.5); // Crown Hair
+                    g.fillStyle(0xf472b6, 1);
+                    g.fillTriangle(15, 10, 20, 16, 18, 7); // Anime Side Bangs
+                    g.fillStyle(0xf472b6, 1);
+                    g.fillTriangle(33, 10, 28, 16, 30, 7);
+                    // 4. Large Expressive Cyan Eyes & Soft Blush
+                    g.fillStyle(0xf43f5e, 0.45);
+                    g.fillCircle(17, 15, 2.5);
+                    g.fillCircle(31, 15, 2.5); // Soft Blush
                     g.fillStyle(0x06b6d4, 1);
                     g.fillCircle(19, 13, 3);
-                    g.fillCircle(29, 13, 3); // Large Cyan Anime Eyes
+                    g.fillCircle(29, 13, 3); // Cyan Anime Eyes
                     g.fillStyle(0xffffff, 1);
                     g.fillCircle(18, 12, 1.2);
-                    g.fillCircle(28, 12, 1.2); // Eye Highlights
-                    // 5. Golden Flower Hairclip Ornaments & Waist Scabbard Sheath
+                    g.fillCircle(28, 12, 1.2); // Highlights
+                    // 5. Yellow Star Hair Clip & Scabbard Sheath
                     g.fillStyle(0xfbbf24, 1);
-                    g.fillCircle(13, 10, 3.5);
-                    g.fillCircle(35, 10, 3.5); // Gold Flower Clips
+                    g.fillCircle(12, 9, 3);
+                    g.fillCircle(36, 9, 3); // Star Clips
                     g.fillStyle(0x78350f, 1);
-                    g.fillRect(32, 22, 12, 5); // Scabbard Sheath
+                    g.fillRect(32, 22, 12, 5); // Sheath
                     g.fillStyle(0xfbbf24, 1);
                     g.fillRect(30, 21, 3, 7);
                     g.generateTexture(key, 48, 48);
                 };
-                drawAnimeMurimGirl('chibi_warrior_m', 0x831843, 0xf472b6);
-                drawAnimeMurimGirl('chibi_warrior_f', 0x831843, 0xf472b6);
+                drawAnimeMurimGirl('chibi_warrior_m', 0x0284c7, 0x38bdf8);
+                drawAnimeMurimGirl('chibi_warrior_f', 0x0284c7, 0x38bdf8);
                 drawAnimeMurimGirl('chibi_samurai_m', 0x064e3b, 0x10b981);
                 drawAnimeMurimGirl('chibi_samurai_f', 0x064e3b, 0x10b981);
                 // Telekinetic Flying Sword Texture (Steel & Glowing Cyan Blade)
@@ -2219,50 +2220,56 @@ class DungeonScreen {
                 });
             }
             attackTowardsPointer(targetX, targetY) {
-                if (this.isDead)
+                if (this.isDead || this.isFlyingSwordAttacking)
                     return;
                 const maxRange = this.getAttackRangeRadius();
                 const px = this.player.x;
                 const py = this.player.y;
-                // Collect all enemy entities in attack range for Ricochet Chain
+                // Collect valid active enemies in range (limit chain up to 4 targets to prevent lag)
                 const targetEnemies = [];
                 this.enemies.getChildren().forEach((e) => {
-                    if (!e.active)
-                        return;
-                    const dist = Phaser.Math.Distance.Between(px, py, e.x, e.y);
-                    if (dist <= maxRange) {
-                        targetEnemies.push(e);
+                    if (e && e.active && targetEnemies.length < 4) {
+                        const dist = Phaser.Math.Distance.Between(px, py, e.x, e.y);
+                        if (dist <= maxRange) {
+                            targetEnemies.push(e);
+                        }
                     }
                 });
                 if (targetEnemies.length === 0)
                     return;
-                // SINGLE FLYING SWORD REMOTE CONTROL (Only 1 sword attacks at a time)
-                if (this.isFlyingSwordAttacking)
-                    return;
                 this.isFlyingSwordAttacking = true;
+                // Safety fallback timer: guarantee isFlyingSwordAttacking is reset after 1000ms max!
+                this.time.delayedCall(1000, () => {
+                    this.isFlyingSwordAttacking = false;
+                });
                 self.audio.playSound('attack');
                 let chainIndex = 0;
-                const ricochetToNextEnemy = () => {
+                const processNextTarget = () => {
                     if (chainIndex >= targetEnemies.length || !this.flyingSwordSprite || this.isDead) {
-                        // REMOTE CONTROL RETURN TO WAIST SCABBARD SHEATH
-                        this.tweens.add({
-                            targets: this.flyingSwordSprite,
-                            x: this.player.x + 18,
-                            y: this.player.y + 4,
-                            duration: 160,
-                            ease: 'Power2',
-                            onComplete: () => {
-                                this.isFlyingSwordAttacking = false;
-                                if (this.flyingSwordSprite)
-                                    this.flyingSwordSprite.setRotation(-Math.PI / 4);
-                            }
-                        });
+                        // Return Flying Sword back to sheath beside waist
+                        if (this.flyingSwordSprite && this.player) {
+                            this.tweens.add({
+                                targets: this.flyingSwordSprite,
+                                x: this.player.x + 18,
+                                y: this.player.y + 4,
+                                duration: 140,
+                                ease: 'Power2',
+                                onComplete: () => {
+                                    this.isFlyingSwordAttacking = false;
+                                    if (this.flyingSwordSprite)
+                                        this.flyingSwordSprite.setRotation(-Math.PI / 4);
+                                }
+                            });
+                        }
+                        else {
+                            this.isFlyingSwordAttacking = false;
+                        }
                         return;
                     }
                     const currentEnemy = targetEnemies[chainIndex];
+                    chainIndex++;
                     if (!currentEnemy || !currentEnemy.active) {
-                        chainIndex++;
-                        ricochetToNextEnemy();
+                        this.time.delayedCall(30, () => processNextTarget());
                         return;
                     }
                     const angle = Phaser.Math.Angle.Between(this.flyingSwordSprite.x, this.flyingSwordSprite.y, currentEnemy.x, currentEnemy.y);
@@ -2271,32 +2278,33 @@ class DungeonScreen {
                         targets: this.flyingSwordSprite,
                         x: currentEnemy.x,
                         y: currentEnemy.y,
-                        duration: 130,
+                        duration: 110,
                         ease: 'Linear',
                         onComplete: () => {
-                            // Perform Ricochet Vertical / Horizontal Slash FX on target
-                            const isVertical = Math.random() > 0.5;
-                            const slashGraphic = this.add.graphics().setDepth(30);
-                            if (isVertical) {
-                                slashGraphic.lineStyle(8, 0x06b6d4, 0.95);
-                                slashGraphic.lineBetween(currentEnemy.x, currentEnemy.y - 45, currentEnemy.x, currentEnemy.y + 45);
-                                slashGraphic.lineStyle(4, 0xffffff, 1);
-                                slashGraphic.lineBetween(currentEnemy.x, currentEnemy.y - 45, currentEnemy.x, currentEnemy.y + 45);
+                            if (currentEnemy && currentEnemy.active) {
+                                // Slash FX
+                                const isVertical = Math.random() > 0.5;
+                                const slashGraphic = this.add.graphics().setDepth(30);
+                                if (isVertical) {
+                                    slashGraphic.lineStyle(8, 0x06b6d4, 0.95);
+                                    slashGraphic.lineBetween(currentEnemy.x, currentEnemy.y - 40, currentEnemy.x, currentEnemy.y + 40);
+                                    slashGraphic.lineStyle(4, 0xffffff, 1);
+                                    slashGraphic.lineBetween(currentEnemy.x, currentEnemy.y - 40, currentEnemy.x, currentEnemy.y + 40);
+                                }
+                                else {
+                                    slashGraphic.lineStyle(8, 0xf59e0b, 0.95);
+                                    slashGraphic.lineBetween(currentEnemy.x - 45, currentEnemy.y, currentEnemy.x + 45, currentEnemy.y);
+                                    slashGraphic.lineStyle(4, 0xffffff, 1);
+                                    slashGraphic.lineBetween(currentEnemy.x - 45, currentEnemy.y, currentEnemy.x + 45, currentEnemy.y);
+                                }
+                                this.tweens.add({ targets: slashGraphic, alpha: 0, scaleX: 1.5, scaleY: 1.5, duration: 160, onComplete: () => slashGraphic.destroy() });
+                                this.applyAttackImpact(currentEnemy, currentEnemy.x, currentEnemy.y);
                             }
-                            else {
-                                slashGraphic.lineStyle(8, 0xf59e0b, 0.95);
-                                slashGraphic.lineBetween(currentEnemy.x - 50, currentEnemy.y, currentEnemy.x + 50, currentEnemy.y);
-                                slashGraphic.lineStyle(4, 0xffffff, 1);
-                                slashGraphic.lineBetween(currentEnemy.x - 50, currentEnemy.y, currentEnemy.x + 50, currentEnemy.y);
-                            }
-                            this.tweens.add({ targets: slashGraphic, alpha: 0, scaleX: 1.6, scaleY: 1.6, duration: 180, onComplete: () => slashGraphic.destroy() });
-                            this.applyAttackImpact(currentEnemy, currentEnemy.x, currentEnemy.y);
-                            chainIndex++;
-                            ricochetToNextEnemy();
+                            this.time.delayedCall(40, () => processNextTarget());
                         }
                     });
                 };
-                ricochetToNextEnemy();
+                processNextTarget();
             }
             checkRangeImpact(x, y) {
                 this.enemies.getChildren().forEach((e) => {

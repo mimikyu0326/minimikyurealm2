@@ -38,7 +38,7 @@ export class ScreenManager {
 
     // Disable 5-second Idle AFK auto-transfer when Auto-Battle is ON or Cutscene is active!
     const dungeonScreen = this.registeredScreens.get('dungeon') as any;
-    if (dungeonScreen && dungeonScreen.isCutsceneActive) {
+    if (dungeonScreen && (dungeonScreen.isAutoBattle || dungeonScreen.isCutsceneActive)) {
       return;
     }
 
@@ -46,6 +46,8 @@ export class ScreenManager {
       // 5-second Idle Auto-transfer to Grove (IDLE)
       this.dungeonAfkTimer = setTimeout(() => {
         if (this.currentScreen === 'dungeon') {
+          const dScreen = this.registeredScreens.get('dungeon') as any;
+          if (dScreen && dScreen.isAutoBattle) return;
           console.log('[AFK] 5 seconds of inactivity in Dungeon. Auto-transferring to Sanctuary Grove (IDLE)...');
           this.showScreen('idle');
         }

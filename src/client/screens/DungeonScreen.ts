@@ -827,16 +827,21 @@ export class DungeonScreen implements ScreenLifecycle {
           }
         }
 
-        // PURSUE, CONTINUOUSLY AUTO-ATTACK, AND MOVE AWAY / EVADE NEAREST ENEMY
+        // PURSUE, CONTINUOUSLY AUTO-ATTACK, AND EVADE NEARBY ENEMIES & BOSSES
         const maxRange = this.getAttackRangeRadius();
         let targetEnemy: any = null;
         let minDist = Infinity;
+        let actualDistToTarget = 0;
 
         this.enemies.getChildren().slice().forEach((e: any) => {
           if (!e || !e.active || e.isDefeated) return;
           const dist = Phaser.Math.Distance.Between(this.player.x, this.player.y, e.x, e.y);
-          if (dist < minDist) {
-            minDist = dist;
+          const isBoss = e.isBoss || e.isMegaBoss;
+          const weightedDist = isBoss ? dist * 0.45 : dist;
+
+          if (weightedDist < minDist) {
+            minDist = weightedDist;
+            actualDistToTarget = dist;
             targetEnemy = e;
           }
         });
@@ -844,17 +849,17 @@ export class DungeonScreen implements ScreenLifecycle {
         const speed = this.getHeroMoveSpeed() * 1.5;
 
         if (targetEnemy) {
-          // CONTINUOUSLY AUTO-ATTACK NEAREST ENEMY
+          // CONTINUOUSLY AUTO-ATTACK NEARBY ENEMY / BOSS
           this.attackEnemy(targetEnemy);
 
           // DYNAMIC WASD MOVEMENT PHYSICS: MOVE TOWARDS OR MOVE AWAY / DODGE IF TOO CLOSE
           const targetAngle = Phaser.Math.Angle.Between(this.player.x, this.player.y, targetEnemy.x, targetEnemy.y);
           let moveAngle = targetAngle;
 
-          if (minDist < 60) {
+          if (actualDistToTarget < 60) {
             // MOVE AWAY FROM ENEMY TO RETREAT / DODGE MELEE HITS
             moveAngle = targetAngle + Math.PI;
-          } else if (minDist <= maxRange) {
+          } else if (actualDistToTarget <= maxRange) {
             // TACTICAL SIDE-STRAFE ORBITING WHILE CONTINUOUSLY ATTACKING
             const side = Math.sin(this.time.now * 0.006) > 0 ? 1 : -1;
             moveAngle = targetAngle + (Math.PI / 2.2 * side);

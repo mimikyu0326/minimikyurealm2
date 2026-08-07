@@ -683,6 +683,10 @@ button:active, .item-slot:active, .tab-btn:active {
   box-sizing: border-box;
 }
 
+/* =========================================================
+   UNIVERSAL MOBILE RESPONSIVE ENGINE (MOBILE APP & WEBSITE)
+   ========================================================= */
+
 /* 4. Navigation & Top Header Bar Responsive Auto-Adjust */
 #game-top-bar {
   padding-left: clamp(0.5rem, 1.5vw, 1.5rem);
@@ -694,56 +698,68 @@ button:active, .item-slot:active, .tab-btn:active {
   padding: clamp(4px, 0.4vw, 8px) clamp(8px, 0.8vw, 16px);
 }
 
-/* 5. Left-Side AUTO Button Auto-Scaling & 2x Height Above Feedback Log Bar */
+/* 5. Left-Side AUTO Button Mobile Responsiveness (2x Height Above Feedback Log Bar) */
 #dungeon-autobattle-left-container {
   bottom: clamp(7rem, 15vh + 3rem, 14rem) !important;
   top: auto !important;
+  left: 12px !important;
   transform: none !important;
   transition: transform 0.2s ease, scale 0.2s ease;
+  z-index: 45 !important;
 }
 
 @media (max-width: 768px) {
   #dungeon-autobattle-left-container {
     left: 8px !important;
-    bottom: clamp(6.5rem, 14vh + 2.5rem, 12rem) !important;
-    scale: 0.9;
+    bottom: clamp(5.5rem, 12vh + 2rem, 10rem) !important;
+    scale: 0.85;
+  }
+
+  #btn-toggle-autobattle {
+    padding: 0.5rem 0.65rem !important;
+    border-radius: 1rem !important;
   }
 }
 
 @media (max-width: 480px) {
   #dungeon-autobattle-left-container {
     left: 4px !important;
-    scale: 0.82;
+    bottom: clamp(4.5rem, 10vh + 1.8rem, 8.5rem) !important;
+    scale: 0.78;
   }
 }
 
 @media (max-height: 500px) {
-  /* Mobile Landscape View */
+  /* Mobile Landscape View Adjustments */
   #dungeon-autobattle-left-container {
-    scale: 0.75;
+    scale: 0.7;
     left: 4px !important;
+    bottom: 3.5rem !important;
   }
   #hud-bottom-right-meters {
-    scale: 0.75;
+    scale: 0.72;
     right: 4px !important;
+    bottom: 0.25rem !important;
+  }
+  .game-view-screen {
+    max-height: calc(100dvh - 40px) !important;
   }
 }
 
-/* 6. Touch-Optimized HUD Dock Auto-Adjustment */
+/* 6. Touch-Optimized HUD Dock Mobile Responsiveness */
 @media (max-width: 768px) {
   #hud-bottom-right-meters {
-    top: 50% !important;
-    bottom: auto !important;
-    right: 8px !important;
-    transform: translateY(-50%) !important;
-    flex-direction: column !important;
-    gap: 0.4rem !important;
+    right: 6px !important;
+    bottom: 6px !important;
+    gap: 0.35rem !important;
     z-index: 45 !important;
+    scale: 0.88;
+    transform-origin: bottom right;
   }
 
   #btn-hero-attack {
-    padding: 0.5rem 0.75rem !important;
-    font-size: 0.75rem !important;
+    padding: 0.45rem 0.65rem !important;
+    font-size: 0.7rem !important;
   }
 
   #hud-bottom-right-meters button {
@@ -751,10 +767,56 @@ button:active, .item-slot:active, .tab-btn:active {
   }
 }
 
-/* 7. Auto-Adjust Settings Button on Mobile Viewports */
+/* 7. Auto-Adjust Settings Button & View Containers on Mobile Viewports */
 @media (max-width: 480px) {
   .setting-btn-text {
     display: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  html, body {
+    font-size: 14px;
+    touch-action: manipulation;
+  }
+
+  .game-view-screen {
+    padding: 0.25rem 0.4rem !important;
+    max-height: calc(100dvh - 55px) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .glass-panel {
+    padding: 0.65rem 0.75rem !important;
+    border-radius: 1rem !important;
+  }
+
+  #screen-auth > div,
+  #screen-char-create > div {
+    max-height: 92dvh !important;
+    overflow-y: auto !important;
+    padding: 1rem 1.1rem !important;
+    width: 95vw !important;
+  }
+
+  .game-icon-glow {
+    width: 3.5rem !important;
+    height: 3.5rem !important;
+  }
+
+  h1.title-font {
+    font-size: 1.25rem !important;
+  }
+
+  header nav {
+    padding: 0.2rem !important;
+    gap: 0.2rem !important;
+  }
+
+  header nav button {
+    padding: 0.25rem 0.45rem !important;
+    font-size: 0.65rem !important;
   }
 }
 
